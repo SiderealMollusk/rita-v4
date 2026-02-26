@@ -1,0 +1,18 @@
+# Local Identity & Context (Never Commit)
+.user.ctx
+
+# Kubernetes Credentials (Never Commit)
+.kube/
+kubeconfig
+*.kubeconfig
+
+# System / IDE
+.DS_Store
+.history/
+node_modules/
+*.log
+
+# Infrastructure secrets that might be generated locally
+*.pem
+*.key
+.env

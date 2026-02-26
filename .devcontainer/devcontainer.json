@@ -1,0 +1,30 @@
+{
+    "name": "Homelab Dev Ops",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:1": {
+            "configureZsh": true
+        }
+    },
+    "containerEnv": {
+        // This pulls the token from your Mac's shell into the container
+        "OP_SERVICE_ACCOUNT_TOKEN": "${localEnv:OP_SERVICE_ACCOUNT_TOKEN}"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                "redhat.vscode-yaml",
+                "1Password.op-vscode"
+            ],
+            "settings": {
+                "1Password.op-vscode.account": "my", 
+                "1Password.op-vscode.vault": "rita-v4"
+            }
+        }
+    },
+    "remoteUser": "vscode",
+    "postCreateCommand": "chmod +x scripts/**/*.sh && echo 'source /workspaces/rita-v4/.labrc' >> ~/.zshrc && echo 'alias pan-up=\"/workspaces/rita-v4/scripts/pan-up.sh\"' >> ~/.zshrc"
+}
