@@ -1,17 +1,16 @@
 {
     "name": "Homelab Dev Ops",
-    "build": {
-        "dockerfile": "Dockerfile"
-    },
-    "features": {
-        "ghcr.io/devcontainers/features/common-utils:1": {
-            "configureZsh": true
-        }
+    "build": { 
+        "dockerfile": "Dockerfile" 
     },
     "containerEnv": {
-        // This pulls the token from your Mac's shell into the container
+        // Pulls your token from your Mac's shell env into the container
         "OP_SERVICE_ACCOUNT_TOKEN": "${localEnv:OP_SERVICE_ACCOUNT_TOKEN}"
     },
+    "mounts": [
+        // Bridge: Mac Docker Socket -> Container Docker Socket
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
     "customizations": {
         "vscode": {
             "extensions": [
@@ -21,10 +20,12 @@
             ],
             "settings": {
                 "1Password.op-vscode.account": "my", 
-                "1Password.op-vscode.vault": "rita-v4"
+                "1Password.op-vscode.vault": "rita-v4",
+                "terminal.integrated.defaultProfile.linux": "zsh"
             }
         }
     },
     "remoteUser": "vscode",
-    "postCreateCommand": "chmod +x scripts/**/*.sh && echo 'source /workspaces/rita-v4/.labrc' >> ~/.zshrc && echo 'alias pan-up=\"/workspaces/rita-v4/scripts/pan-up.sh\"' >> ~/.zshrc"
+    "postCreateCommand": "chmod +x scripts/**/*.sh && echo 'source /workspaces/rita-v4/.labrc' >> ~/.zshrc && echo 'alias pan-up=\"source /workspaces/rita-v4/scripts/pan-up.sh\"' >> ~/.zshrc",
+    "postStartCommand": "sudo chmod 666 /var/run/docker.sock"
 }

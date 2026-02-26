@@ -1,0 +1,7 @@
+#!/bin/bash
+# Shared K8s Lab Configuration
+export CLUSTER_NAME="rita-local"
+export K8S_NAMESPACE="external-secrets"
+
+# Dynamically set KUBECONFIG based on the cluster name
+export KUBECONFIG="$HOME/.kube/config-$CLUSTER_NAME"
