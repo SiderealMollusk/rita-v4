@@ -10,11 +10,13 @@ RUN apt-get update && apt-get install -y curl ca-certificates gnupg lsb-release 
     && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
     # 2. Install Helm
     && curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash \
-    # 3. Install 1Password CLI
+    # 3. Install k3d (Local K8s in Docker)
+    && curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash \
+    # 4. Install 1Password CLI
     && curl -sS https://downloads.1password.com/linux/keys/1password.asc | gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main" | tee /etc/apt/sources.list.d/1password.list \
     && apt-get update && apt-get install -y 1password-cli \
-    # 4. Install Pangolin & Newt
+    # 5. Install Pangolin & Newt
     && curl -fsSL https://static.pangolin.net/get-cli.sh | bash \
     && curl -fsSL https://static.pangolin.net/get-newt.sh | bash \
     # Clean up
