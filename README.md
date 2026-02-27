@@ -15,6 +15,15 @@ LAB_IDENTITY="Admin"
 ```
 
 ## Per session / restart of devcontainer
-per session run scripts/1-session-setup scripts
-(automate this maybe?)
+run:
+```bash
+source scripts/1-session/01-load-variables.sh
+scripts/1-session/03-k8s-up.sh
+scripts/1-session/04-k8s-status.sh
+```
 
+If kubectl shows `host.docker.internal:* connection refused`, run:
+```bash
+scripts/1-session/03-k8s-up.sh
+```
+This refreshes the isolated kubeconfig at `$HOME/.kube/config-rita-local` and re-checks API reachability.

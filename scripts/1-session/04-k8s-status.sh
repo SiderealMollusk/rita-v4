@@ -1,13 +1,15 @@
 #!/bin/bash
+set -euo pipefail
 
 # 1. Environment Setup
-BASE_DIR="/workspaces/rita-v4/scripts"
+BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 if [ -f "$BASE_DIR/.k8s-env" ]; then
     source "$BASE_DIR/.k8s-env"
 else
     echo "Error: Configuration not found at $BASE_DIR/.k8s-env"
     exit 1
 fi
+export KUBECONFIG
 
 # Colors for scannability
 GREEN='\033[0;32m'
@@ -37,6 +39,14 @@ else
     echo "      $CLUSTER_INFO"
 fi
 
+# 4. Kubernetes API Reachability
+if kubectl version --request-timeout=10s > /dev/null 2>&1; then
+    echo -e "  [${GREEN}OK${NC}] Kubernetes API: Reachable"
+else
+    echo -e "  [${RED}!!${NC}] Kubernetes API: Unreachable (run scripts/1-session/03-k8s-up.sh)"
+    exit 1
+fi
+
 # 4. External Secrets Operator Health
 # Checks if all three core pods are in Running state
 ESO_COUNT=$(kubectl get pods -n "$K8S_NAMESPACE" --no-headers 2>/dev/null | grep "Running" | wc -l)
@@ -48,7 +58,7 @@ fi
 
 # 5. Kubeconfig Context
 if [[ "$KUBECONFIG" == *"$CLUSTER_NAME"* ]]; then
-    echo -e "  [${GREEN}OK${NC}] Kubeconfig: Isolated"
+    echo -e "  [${GREEN}OK${NC}] Kubeconfig: Isolated ($KUBECONFIG)"
 else
     echo -e "  [${YELLOW}??${NC}] Kubeconfig: Default context in use"
 fi
