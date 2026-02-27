@@ -16,6 +16,8 @@ if [ ! -f "$INV" ]; then
   runbook_fail "Inventory not found: $INV"
 fi
 
+runbook_refresh_known_hosts_from_inventory "$INV"
+
 echo "[INFO] Using inventory: $INV"
 ansible-inventory -i "$INV" --list >/dev/null
 ansible -i "$INV" vps -m ping -b

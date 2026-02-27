@@ -20,9 +20,10 @@ scripts/2-ops/vps/01-ansible-ping.sh
 VPS bring-up sequence wrappers:
 ```bash
 scripts/2-ops/vps/02-bootstrap-host.sh
-scripts/2-ops/vps/03-install-k3s.sh
-scripts/2-ops/vps/04-install-eso.sh
-scripts/2-ops/vps/05-apply-secret-bridge.sh
+scripts/2-ops/vps/03-install-runtime.sh
+scripts/2-ops/vps/04-install-pangolin-server.sh
+scripts/2-ops/vps/05-capture-setup-token.sh
+scripts/2-ops/vps/06-verify-pangolin-server.sh
 ```
 
 ## Scaling Later

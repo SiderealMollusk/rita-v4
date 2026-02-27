@@ -4,47 +4,40 @@ Run these in order. All scripts are no-arg and opinionated.
 
 Quick full run:
 - `00-run-all.sh`
-- Executes steps `01` through `08` in order and stops on first failure.
+- Executes steps `01` through `06` in order and stops on first failure.
 
-## Infrastructure bring-up (Ansible)
+## Host and Runtime
 1. `01-ansible-ping.sh`
 - Confirms inventory parsing and SSH+sudo connectivity.
 
 2. `02-bootstrap-host.sh`
 - Baseline host setup (packages, firewall, fail2ban).
 
-3. `03-install-k3s.sh`
-- Installs single-node k3s control plane on VPS.
+3. `03-install-runtime.sh`
+- Installs Docker runtime, pins Docker Compose v2 plugin, and creates Pangolin directories.
 
-4. `04-install-eso.sh`
-- Installs External Secrets Operator via Helm.
+## Pangolin-Server Deploy
+4. `04-install-pangolin-server.sh`
+- Stages official Pangolin installer on VPS and prints the interactive install command.
 
-5. `05-apply-secret-bridge.sh`
-- Applies SecretStore + ExternalSecret and verifies decoded test value.
+5. `05-capture-setup-token.sh`
+- Scans installer/container logs for setup-token hints so they can be stored in 1Password.
 
-## Pangolin workflows (after infra is healthy)
-6. `06-pangolin-preflight.sh`
-- Verifies k8s/ESO/secret preconditions before Pangolin deploy.
+6. `06-verify-pangolin-server.sh`
+- Verifies Docker state, Pangolin-related containers, and endpoint reachability.
 
-7. `07-pangolin-deploy.sh`
-- Deploys Pangolin in attached mode.
+7. `07-rollback-pangolin-server.sh`
+- Manual rollback step (not part of `00-run-all.sh`).
 
-8. `08-pangolin-verify.sh`
-- Verifies post-deploy status.
+Canonical terminology and deployment guardrails:
+- `docs/pangolin/0001-deploy-model.md`
 
-9. `09-pangolin-rollback.sh`
-- Executes rollback (`pangolin down`) when needed.
-
-## 1Password prerequisites
-- `OP_SERVICE_ACCOUNT_TOKEN` must be present in the shell running script `05`.
-- Vault referenced by `op_vault_id` (in `ops/ansible/group_vars/vps.yml`) must contain:
-  - item `test`
-  - field `foo`
-  - expected value `bar`
-- SSH admin key for VPS access should be stored in your user vault (separate from app secrets when possible).
+## 1Password
+- Store setup/admin tokens captured in step `05` into 1Password immediately.
+- Keep secrets out of repo files.
 
 ## Config source split
 - Hosts/IPs: `ops/ansible/inventory/*.ini`
-- Automation vars (including `op_vault_id`): `ops/ansible/group_vars/*.yml`
+- Automation vars: `ops/ansible/group_vars/*.yml`
 - Hittable route catalog: `ops/network/routes.yml`
 - Secrets: 1Password only

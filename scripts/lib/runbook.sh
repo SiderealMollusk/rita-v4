@@ -41,6 +41,39 @@ runbook_require_env() {
   fi
 }
 
+runbook_refresh_known_hosts_from_inventory() {
+  local inventory_path="$1"
+  [ -f "$inventory_path" ] || runbook_fail "inventory not found: $inventory_path"
+
+  runbook_require_cmd ssh-keygen
+  runbook_require_cmd ssh-keyscan
+
+  local known_hosts_path="${HOME}/.ssh/known_hosts"
+  mkdir -p "${HOME}/.ssh"
+  touch "$known_hosts_path"
+  chmod 600 "$known_hosts_path"
+
+  awk '
+    BEGIN { in_vps=0 }
+    /^\[vps\]/ { in_vps=1; next }
+    /^\[/ { in_vps=0 }
+    in_vps && $0 !~ /^[[:space:]]*#/ && NF > 0 {
+      host=""; port="22"
+      for (i=1; i<=NF; i++) {
+        if ($i ~ /^ansible_host=/) { split($i,a,"="); host=a[2] }
+        if ($i ~ /^ansible_port=/) { split($i,a,"="); port=a[2] }
+      }
+      if (host != "") { print host, port }
+    }
+  ' "$inventory_path" | while read -r host port; do
+    [ -n "$host" ] || continue
+    echo "[INFO] Refreshing SSH host key for ${host}:${port}"
+    ssh-keygen -R "$host" -f "$known_hosts_path" >/dev/null 2>&1 || true
+    ssh-keygen -R "[${host}]:${port}" -f "$known_hosts_path" >/dev/null 2>&1 || true
+    ssh-keyscan -H -p "$port" "$host" >> "$known_hosts_path" 2>/dev/null || runbook_fail "failed to scan ssh host key for ${host}:${port}"
+  done
+}
+
 # Extract a simple top-level YAML key value from a file.
 # Supports lines like: key: "value" or key: value
 runbook_yaml_get() {

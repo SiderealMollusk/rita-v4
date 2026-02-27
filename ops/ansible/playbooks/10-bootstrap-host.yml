@@ -16,15 +16,23 @@
           - fail2ban
         state: present
 
+    - name: Read UFW status
+      ansible.builtin.command: ufw status verbose
+      register: ufw_status
+      changed_when: false
+
+    - name: Derive current UFW default policies
+      ansible.builtin.set_fact:
+        ufw_incoming_is_deny: "{{ 'Default: deny (incoming)' in ufw_status.stdout }}"
+        ufw_outgoing_is_allow: "{{ '(outgoing)' in ufw_status.stdout and 'allow (outgoing)' in ufw_status.stdout }}"
+
     - name: Ensure UFW default deny incoming
       ansible.builtin.command: ufw default deny incoming
-      changed_when: "'Default incoming policy changed' in ufw_default_incoming.stdout"
-      register: ufw_default_incoming
+      when: not ufw_incoming_is_deny
 
     - name: Ensure UFW default allow outgoing
       ansible.builtin.command: ufw default allow outgoing
-      changed_when: "'Default outgoing policy changed' in ufw_default_outgoing.stdout"
-      register: ufw_default_outgoing
+      when: not ufw_outgoing_is_allow
 
     - name: Allow SSH via UFW
       ansible.builtin.command: ufw allow OpenSSH

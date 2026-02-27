@@ -11,4 +11,4 @@ if [ "$#" -ne 0 ]; then
 fi
 
 cd "$REPO_ROOT"
-exec "$REPO_ROOT/scripts/2-ops/vps/07-pangolin-deploy.sh"
+exec "$REPO_ROOT/scripts/2-ops/vps/04-install-pangolin-server.sh"

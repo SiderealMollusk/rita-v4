@@ -16,5 +16,7 @@ if [ ! -f "$GROUP_VARS" ]; then
   runbook_fail "missing group vars file at $GROUP_VARS"
 fi
 
+runbook_refresh_known_hosts_from_inventory "$INV"
+
 echo "[INFO] Running host bootstrap playbook"
 ansible-playbook -i "$INV" "$PB" -e "@$GROUP_VARS"

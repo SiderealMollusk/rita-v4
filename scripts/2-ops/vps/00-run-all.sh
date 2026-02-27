@@ -12,12 +12,10 @@ VPS_DIR="$REPO_ROOT/scripts/2-ops/vps"
 STEPS=(
   "01-ansible-ping.sh"
   "02-bootstrap-host.sh"
-  "03-install-k3s.sh"
-  "04-install-eso.sh"
-  "05-apply-secret-bridge.sh"
-  "06-pangolin-preflight.sh"
-  "07-pangolin-deploy.sh"
-  "08-pangolin-verify.sh"
+  "03-install-runtime.sh"
+  "04-install-pangolin-server.sh"
+  "05-capture-setup-token.sh"
+  "06-verify-pangolin-server.sh"
 )
 
 echo "[INFO] Running VPS runbook pipeline"

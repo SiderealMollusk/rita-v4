@@ -10,9 +10,7 @@ pangolin_endpoint: "https://{{ pangolin_domain }}"
 # Optional explicit advertise IP for templates that require it.
 pangolin_advertise_ip: "{{ public_ip }}"
 
-# ESO + 1Password bridge defaults
-eso_namespace: "external-secrets"
-op_vault_id: "5vr4hef2746tpplvjx424xafvu"
-test_secret_item: "test"
-test_secret_field: "foo"
-test_secret_expected_value: "bar"
+# Pangolin server runtime/install paths
+pangolin_install_dir: "/opt/pangolin"
+pangolin_installer_url: "https://static.pangolin.net/get-installer.sh"
+docker_compose_version: "v2.39.1"

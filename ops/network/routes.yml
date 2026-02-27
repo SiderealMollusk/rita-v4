@@ -5,11 +5,11 @@ pangolin_domain: "pangolin.virgil.info"
 pangolin_endpoint: "https://pangolin.virgil.info"
 
 routes:
-  - name: "pangolin-hub"
+  - name: "pangolin-server"
     fqdn: "pangolin.virgil.info"
     backend: "main-vps"
     exposure: "public"
     ports:
       - 80
       - 443
-    notes: "Primary Pangolin hub endpoint."
+    notes: "Primary Pangolin server endpoint."
