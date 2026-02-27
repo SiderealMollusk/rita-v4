@@ -1,0 +1,50 @@
+---
+- name: Install k3s control plane on VPS
+  hosts: vps
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Install k3s if missing
+      ansible.builtin.shell: |
+        curl -sfL https://get.k3s.io | sh -
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: Ensure k3s service is enabled and running
+      ansible.builtin.service:
+        name: k3s
+        enabled: true
+        state: started
+
+    - name: Wait for node to become Ready
+      ansible.builtin.shell: |
+        kubectl get nodes --no-headers | awk '{print $2}' | grep -q 'Ready'
+      register: k3s_ready
+      retries: 30
+      delay: 5
+      until: k3s_ready.rc == 0
+      changed_when: false
+
+    - name: Ensure kubeconfig for ansible user
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/.kube"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Copy kubeconfig for ansible user
+      ansible.builtin.copy:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: "/home/{{ ansible_user }}/.kube/config"
+        remote_src: true
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0600"
+
+    - name: Rewrite kubeconfig server host to public IP
+      ansible.builtin.replace:
+        path: "/home/{{ ansible_user }}/.kube/config"
+        regexp: '127\\.0\\.0\\.1'
+        replace: "{{ hostvars[inventory_hostname].ansible_host }}"

@@ -26,6 +26,6 @@
         }
     },
     "remoteUser": "vscode",
-    "postCreateCommand": "chmod +x scripts/**/*.sh && echo 'source /workspaces/rita-v4/.labrc' >> ~/.zshrc && echo 'alias pan-up=\"source /workspaces/rita-v4/scripts/pan-up.sh\"' >> ~/.zshrc",
+    "postCreateCommand": "chmod +x scripts/**/*.sh && echo 'source /workspaces/rita-v4/.labrc' >> ~/.zshrc && echo 'alias pan-up=\"/workspaces/rita-v4/scripts/1-session/06-pangolin-up.sh\"' >> ~/.zshrc",
     "postStartCommand": "sudo chmod 666 /var/run/docker.sock"
 }

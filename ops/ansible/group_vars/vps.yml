@@ -1,0 +1,18 @@
+# Shared vars for all hosts in the [vps] inventory group.
+# Keep host identity/IP in inventory; reference it here for templates/manifests.
+
+public_ip: "{{ hostvars[inventory_hostname].ansible_host }}"
+
+# Update when domain is finalized.
+pangolin_domain: "pangolin.virgil.info"
+pangolin_endpoint: "https://{{ pangolin_domain }}"
+
+# Optional explicit advertise IP for templates that require it.
+pangolin_advertise_ip: "{{ public_ip }}"
+
+# ESO + 1Password bridge defaults
+eso_namespace: "external-secrets"
+op_vault_id: "5vr4hef2746tpplvjx424xafvu"
+test_secret_item: "test"
+test_secret_field: "foo"
+test_secret_expected_value: "bar"

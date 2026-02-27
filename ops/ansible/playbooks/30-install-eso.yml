@@ -1,0 +1,52 @@
+---
+- name: Install External Secrets Operator on VPS k3s
+  hosts: vps
+  become: true
+  gather_facts: true
+
+  vars:
+    eso_namespace: external-secrets
+    k3s_kubeconfig: /etc/rancher/k3s/k3s.yaml
+
+  tasks:
+    - name: Install helm if missing
+      ansible.builtin.shell: |
+        curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      args:
+        creates: /usr/local/bin/helm
+
+    - name: Add external-secrets helm repo
+      ansible.builtin.command: helm repo add external-secrets https://charts.external-secrets.io
+      register: repo_add
+      changed_when: "'already exists' not in repo_add.stderr"
+      failed_when: repo_add.rc != 0 and ('already exists' not in repo_add.stderr)
+      environment:
+        KUBECONFIG: "{{ k3s_kubeconfig }}"
+
+    - name: Update helm repos
+      ansible.builtin.command: helm repo update
+      changed_when: false
+      environment:
+        KUBECONFIG: "{{ k3s_kubeconfig }}"
+
+    - name: Install/upgrade external-secrets chart
+      ansible.builtin.command: >-
+        helm upgrade --install external-secrets external-secrets/external-secrets
+        --namespace {{ eso_namespace }}
+        --create-namespace
+        --set installCRDs=true
+        --wait
+      environment:
+        KUBECONFIG: "{{ k3s_kubeconfig }}"
+
+    - name: Wait for SecretStore CRD
+      ansible.builtin.command: kubectl wait --for condition=established --timeout=120s crd/secretstores.external-secrets.io
+      changed_when: false
+      environment:
+        KUBECONFIG: "{{ k3s_kubeconfig }}"
+
+    - name: Wait for ExternalSecret CRD
+      ansible.builtin.command: kubectl wait --for condition=established --timeout=120s crd/externalsecrets.external-secrets.io
+      changed_when: false
+      environment:
+        KUBECONFIG: "{{ k3s_kubeconfig }}"

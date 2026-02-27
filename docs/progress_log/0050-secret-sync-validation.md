@@ -25,7 +25,7 @@ Scope: Rebuild reliability + 1Password ExternalSecret key format validation.
 - Rebuild should produce synced ExternalSecret and target Kubernetes Secret.
 - Validation commands:
 ```bash
-scripts/2-ops/local/rebuild-cluster.sh
+scripts/2-ops/local/10-rebuild-cluster.sh
 kubectl get externalsecret lab-test-sync -n external-secrets
 kubectl get secret rita-test-k8s-secret -n external-secrets -o jsonpath='{.data.my-test-value}' | base64 -d; echo
 ```

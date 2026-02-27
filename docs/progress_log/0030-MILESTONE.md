@@ -29,7 +29,7 @@ op item get "test" --vault "rita-v4" --fields label="foo" --reveal.
 🛠️ Key Commands Established
 
 Intent	Command
-Initialize Session	source scripts/pan-up.sh
+Initialize Session	scripts/1-session/06-pangolin-up.sh
 Direct Secret Pull	op read "op://rita-v4/test/foo"
 Re-sync Config	source .labrc
 ⏭️ Next Step: Block 2

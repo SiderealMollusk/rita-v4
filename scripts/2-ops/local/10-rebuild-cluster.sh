@@ -1,5 +1,9 @@
 #!/bin/bash
-source /workspaces/rita-v4/scripts/.k8s-env
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+source "$REPO_ROOT/scripts/.k8s-env"
 
 # Safety Guard
 if [[ "$CLUSTER_NAME" != "rita-local" ]]; then
@@ -18,4 +22,4 @@ k3d cluster delete "$CLUSTER_NAME"
 rm -f "$KUBECONFIG"
 
 # Execute the master bootstrap
-/workspaces/rita-v4/scripts/0-local-setup/02-k8s/01-bootstrap-k8s.sh
+"$REPO_ROOT/scripts/0-local-setup/02-k8s/01-bootstrap-k8s.sh"
