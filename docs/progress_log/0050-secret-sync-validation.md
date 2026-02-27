@@ -32,3 +32,8 @@ kubectl get secret rita-test-k8s-secret -n external-secrets -o jsonpath='{.data.
 - Expected result:
   - `lab-test-sync` READY = `True`
   - decoded value = `bar`
+
+## 2026-02-27 Update
+- Secret format decision (`test/foo`) remains correct.
+- Validation has now been reproduced through VPS Ansible secret-bridge workflow.
+- See latest logs: `0060-vps-ansible-bootstrap.md`, `0070-vps-reset-and-reseed.md`.

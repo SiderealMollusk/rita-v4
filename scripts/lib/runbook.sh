@@ -41,3 +41,20 @@ runbook_require_env() {
   fi
 }
 
+# Extract a simple top-level YAML key value from a file.
+# Supports lines like: key: "value" or key: value
+runbook_yaml_get() {
+  local file_path="$1"
+  local key="$2"
+  [ -f "$file_path" ] || return 1
+  awk -v k="$key" '
+    $0 ~ "^[[:space:]]*"k":[[:space:]]*" {
+      sub("^[[:space:]]*"k":[[:space:]]*", "", $0)
+      gsub(/^"/, "", $0)
+      gsub(/"$/, "", $0)
+      gsub(/[[:space:]]+$/, "", $0)
+      print $0
+      exit
+    }
+  ' "$file_path"
+}

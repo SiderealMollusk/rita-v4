@@ -35,3 +35,8 @@ Re-sync Config	source .labrc
 ⏭️ Next Step: Block 2
 
 With the "Secure Bridge" verified, the next phase moves from Identity to Infrastructure. We will spin up a local Kubernetes instance (k3d/Kind) to test the External Secrets Operator—ensuring we can move "bar" from 1Password into a K8s pod without manual script intervention.
+
+## 2026-02-27 Update
+- Milestone remains valid as completed baseline.
+- Current implementation has progressed beyond local-only setup to VPS-first automation.
+- See latest logs: `0060-vps-ansible-bootstrap.md`, `0070-vps-reset-and-reseed.md`.

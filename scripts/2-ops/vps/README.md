@@ -2,6 +2,10 @@
 
 Run these in order. All scripts are no-arg and opinionated.
 
+Quick full run:
+- `00-run-all.sh`
+- Executes steps `01` through `08` in order and stops on first failure.
+
 ## Infrastructure bring-up (Ansible)
 1. `01-ansible-ping.sh`
 - Confirms inventory parsing and SSH+sudo connectivity.
@@ -38,3 +42,9 @@ Run these in order. All scripts are no-arg and opinionated.
   - field `foo`
   - expected value `bar`
 - SSH admin key for VPS access should be stored in your user vault (separate from app secrets when possible).
+
+## Config source split
+- Hosts/IPs: `ops/ansible/inventory/*.ini`
+- Automation vars (including `op_vault_id`): `ops/ansible/group_vars/*.yml`
+- Hittable route catalog: `ops/network/routes.yml`
+- Secrets: 1Password only

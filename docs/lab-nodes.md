@@ -1,15 +1,14 @@
-# Labnodes
-Everything that exists in the lab so far
+# Lab Nodes
 
-## Repo
-This repo 
-https://github.com/SiderealMollusk/rita-v4
+Human-readable inventory for lab machines and roles.
+Canonical machine/IP values for automation live in Ansible inventory.
 
+## Source of truth
+- Hosts/IPs: `ops/ansible/inventory/*.ini`
+- Endpoint/domain vars: `ops/ansible/group_vars/*.yml`
+- Hittable routes: `ops/network/routes.yml`
+- Secrets: 1Password only (not in repo)
 
-## Dev machine
-- In theory any machine with this repo and 1password access
-- Actually just my mac
-
-## Dev Machine k8
-- Repo has tooling to set up a k8 cp, and worker on host docker
+## Nodes
+- [main-vps](/Users/virgil/Dev/rita-v4/docs/nodes/main-vps.md)
 - 

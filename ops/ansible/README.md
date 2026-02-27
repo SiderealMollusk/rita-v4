@@ -5,6 +5,7 @@ This repo uses Ansible as the single source of truth for host identity and deplo
 ## Current Inventory
 - `inventory/vps.ini`: current VPS hosts.
 - `group_vars/vps.yml`: vars shared by the `[vps]` group and reusable in templates/manifests.
+- `../network/routes.yml`: human/audit route catalog for externally hittable endpoints.
 
 ## Usage
 ```bash
