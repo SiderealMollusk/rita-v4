@@ -61,7 +61,7 @@ Constraint:
 ### In Scope
 1. Install Newt on `ops-brain`.
 2. Install Pangolin CLI on the Mac.
-3. Verify `ops-brain` site registration to `pangolin-server`.
+3. Verify the `monitoring` site registration from `ops-brain` to `pangolin-server`.
 4. Install the initial monitoring stack on k3s.
 5. Expose selected monitoring endpoints through Pangolin.
 6. Start defining blueprint-managed route declarations.
@@ -83,7 +83,7 @@ Constraint:
 - node label present
 - `helm version`
 - kubeconfig works as `virgil`
-3. Create a Pangolin site for `ops-brain`.
+3. Create a Pangolin site named `monitoring` for `ops-brain`.
 4. Store Newt site credentials in 1Password.
 5. Install Newt on the laptop as a persistent systemd service.
 6. Confirm `ops-brain` appears as connected in Pangolin.
@@ -180,7 +180,7 @@ Reason:
 6. Node, pod, app, and route health all have defined checks.
 
 ## Immediate Next Actions
-1. create/store the `ops-brain` Newt site credentials in 1Password
+1. create/store the `monitoring` Pangolin site credentials in 1Password
 2. run `scripts/2-ops/ops-brain/02-services/00-run-all.sh`
 3. choose the initial monitoring chart set and pinned versions
 4. create `ops/helm/monitoring/` with committed values

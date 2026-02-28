@@ -26,7 +26,7 @@ Added `scripts/2-ops/host/` for Mac-host-only actions:
 1. `00-run-all.sh`
 2. `01-seed-ops-brain-ssh.sh`
 3. `02-seed-main-vps-ssh.sh`
-4. `10-write-ops-brain-newt-secret.sh`
+4. `10-write-monitoring-pangolin-site-secret.sh`
 5. `README.md`
 
 Purpose:
@@ -89,7 +89,7 @@ These statements were true enough to rely on:
 3. if a script path and a prose doc disagree, trust the script path and update the doc
 
 ## Immediate Next Steps
-1. create the `ops-brain` Pangolin site from the Mac
-2. store Newt credentials with `scripts/2-ops/host/10-write-ops-brain-newt-secret.sh`
+1. create the `monitoring` Pangolin site from the Mac
+2. store Newt credentials with `scripts/2-ops/host/10-write-monitoring-pangolin-site-secret.sh`
 3. run `scripts/2-ops/ops-brain/02-services/00-run-all.sh`
 4. build `11-install-monitoring-stack.sh`

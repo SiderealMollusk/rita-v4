@@ -23,6 +23,22 @@ runbook_require_cmd ansible
 runbook_require_cmd op
 runbook_refresh_known_hosts_from_inventory "$INV"
 
+OPS_BRAIN_ANSIBLE_USER="$(awk '
+  /^\[/ { next }
+  $0 !~ /^[[:space:]]*#/ && NF > 0 {
+    for (i=1; i<=NF; i++) {
+      if ($i ~ /^ansible_user=/) {
+        split($i, a, "=")
+        print a[2]
+        exit
+      }
+    }
+  }
+' "$INV")"
+[ -n "$OPS_BRAIN_ANSIBLE_USER" ] || runbook_fail "ansible_user missing in $INV"
+OPS_BRAIN_KUBECONFIG="/home/${OPS_BRAIN_ANSIBLE_USER}/.kube/config"
+KUBE_ENV="export KUBECONFIG=${OPS_BRAIN_KUBECONFIG}"
+
 PANGOLIN_ENDPOINT="$(runbook_yaml_get "$ROUTES_FILE" "pangolin_endpoint" || true)"
 [ -n "$PANGOLIN_ENDPOINT" ] || runbook_fail "pangolin_endpoint missing in $ROUTES_FILE"
 
@@ -68,10 +84,11 @@ echo "[INFO] Copying committed Newt values to ops-brain"
 ansible -i "$INV" ops_brain -b -m copy -a "src=$VALUES_FILE dest=$REMOTE_VALUES_FILE mode=0644"
 
 echo "[INFO] Ensuring Newt namespace exists"
-ansible -i "$INV" ops_brain -b -m shell -a "kubectl create namespace $NEWT_NAMESPACE --dry-run=client -o yaml | kubectl apply -f -"
+ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && kubectl create namespace $NEWT_NAMESPACE --dry-run=client -o yaml | kubectl apply -f -"
 
 echo "[INFO] Creating/updating Newt credentials secret"
 ansible -i "$INV" ops_brain -b -m shell -a "set -e
+$KUBE_ENV
 PANGOLIN_ENDPOINT=\"\$(printf '%s' '$PANGOLIN_ENDPOINT_B64' | base64 -d)\"
 NEWT_ID=\"\$(printf '%s' '$NEWT_ID_B64' | base64 -d)\"
 NEWT_SECRET=\"\$(printf '%s' '$NEWT_SECRET_B64' | base64 -d)\"
@@ -84,9 +101,9 @@ kubectl create secret generic $NEWT_SECRET_NAME -n $NEWT_NAMESPACE --from-env-fi
 rm -f /tmp/newt-cred.env"
 
 echo "[INFO] Adding/updating Fossorial Helm repo on ops-brain"
-ansible -i "$INV" ops_brain -b -m shell -a "helm repo add $NEWT_HELM_REPO_NAME $NEWT_HELM_REPO_URL >/dev/null 2>&1 || true && helm repo update $NEWT_HELM_REPO_NAME"
+ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm repo add $NEWT_HELM_REPO_NAME $NEWT_HELM_REPO_URL >/dev/null 2>&1 || true && helm repo update $NEWT_HELM_REPO_NAME"
 
 echo "[INFO] Installing/upgrading Newt Helm release"
-ansible -i "$INV" ops_brain -b -m shell -a "helm upgrade --install $NEWT_RELEASE $NEWT_HELM_CHART -n $NEWT_NAMESPACE -f $REMOTE_VALUES_FILE --wait"
+ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm upgrade --install $NEWT_RELEASE $NEWT_HELM_CHART -n $NEWT_NAMESPACE -f $REMOTE_VALUES_FILE --wait"
 
 echo "[OK] Newt install/upgrade submitted. Verify with kubectl and Pangolin site status."
