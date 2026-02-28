@@ -14,7 +14,8 @@ for step in \
   03-configure-power-policy.sh \
   04-install-k3s.sh \
   05-install-helm.sh \
-  06-label-node.sh
+  06-label-node.sh \
+  07-verify-cluster.sh
   do
   echo "[INFO] >>> ${step}"
   "$SCRIPT_DIR/${step}"

@@ -24,3 +24,5 @@ Failure impact:
   - `fossorial/pangolin` is not listed.
 - Impact:
   - Helm deploy path for `pangolin-server` is blocked upstream as of this date.
+  - `newt` has an obvious first-party Helm/Kubernetes path.
+  - `pangolin-server` does not have an obvious first-party Kubernetes/self-host chart path in the current validated evidence set for this repo.

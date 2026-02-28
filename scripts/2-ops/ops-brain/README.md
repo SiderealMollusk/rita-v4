@@ -9,6 +9,7 @@ Execution order:
 4. `04-install-k3s.sh`
 5. `05-install-helm.sh`
 6. `06-label-node.sh`
+7. `07-verify-cluster.sh`
 
 Use `00-run-all.sh` to run the whole sequence.
 
