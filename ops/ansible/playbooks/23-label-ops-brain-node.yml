@@ -1,0 +1,22 @@
+---
+- name: Label ops-brain node
+  hosts: ops_brain
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Require ops_brain_k3s_role_label var
+      ansible.builtin.assert:
+        that:
+          - ops_brain_k3s_role_label is defined
+          - ops_brain_k3s_role_label | length > 0
+        fail_msg: "Missing required var: ops_brain_k3s_role_label (set it in ops/ansible/group_vars/ops_brain.yml)."
+
+    - name: Get node name
+      ansible.builtin.command: kubectl get nodes -o jsonpath={.items[0].metadata.name}
+      register: k3s_node_name
+      changed_when: false
+
+    - name: Label node as ops-brain
+      ansible.builtin.command: kubectl label node {{ k3s_node_name.stdout }} {{ ops_brain_k3s_role_label }} --overwrite
+      changed_when: true

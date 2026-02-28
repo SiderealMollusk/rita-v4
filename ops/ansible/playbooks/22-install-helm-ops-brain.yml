@@ -1,0 +1,30 @@
+---
+- name: Install Helm on ops-brain
+  hosts: ops_brain
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Require helm_install_method var
+      ansible.builtin.assert:
+        that:
+          - helm_install_method is defined
+          - helm_install_method == 'script'
+        fail_msg: "ops-brain currently supports helm_install_method=script only."
+
+    - name: Require helm_install_script_url var
+      ansible.builtin.assert:
+        that:
+          - helm_install_script_url is defined
+          - helm_install_script_url | length > 0
+        fail_msg: "Missing required var: helm_install_script_url (set it in ops/ansible/group_vars/ops_brain.yml)."
+
+    - name: Install Helm if missing
+      ansible.builtin.shell: |
+        curl -fsSL {{ helm_install_script_url }} | bash
+      args:
+        creates: /usr/local/bin/helm
+
+    - name: Verify Helm installation
+      ansible.builtin.command: helm version --short
+      changed_when: false

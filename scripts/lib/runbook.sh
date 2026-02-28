@@ -54,11 +54,10 @@ runbook_refresh_known_hosts_from_inventory() {
   chmod 600 "$known_hosts_path"
 
   awk '
-    BEGIN { in_vps=0 }
-    /^\[vps\]/ { in_vps=1; next }
-    /^\[/ { in_vps=0 }
-    in_vps && $0 !~ /^[[:space:]]*#/ && NF > 0 {
-      host=""; port="22"
+    /^\[/ { next }
+    $0 !~ /^[[:space:]]*#/ && NF > 0 {
+      host=""
+      port="22"
       for (i=1; i<=NF; i++) {
         if ($i ~ /^ansible_host=/) { split($i,a,"="); host=a[2] }
         if ($i ~ /^ansible_port=/) { split($i,a,"="); port=a[2] }

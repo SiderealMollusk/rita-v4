@@ -1,0 +1,8 @@
+ops_brain_public_ip: "{{ hostvars[inventory_hostname].ansible_host }}"
+
+ops_brain_k3s_role_label: "rita.role=ops-brain"
+ops_brain_disable_sleep: true
+
+k3s_channel: "stable"
+helm_install_method: "script"
+helm_install_script_url: "https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"

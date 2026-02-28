@@ -45,6 +45,9 @@ Validated: 2026-02-27
 - VPS runbook scripts: `scripts/2-ops/vps/`
 - Ansible playbooks: `ops/ansible/playbooks/`
 - Human reset playbook: `docs/reset-vps.md`
+- Current sequencing plan: `docs/plans/0110-ops-brain-platform-workload-sequencing.md`
+- Detailed ops-brain plan: `docs/plans/0120-ops-brain-k3s-monitoring-stack.md`
+- Detailed Pangolin CLI plan: `docs/plans/0130-pangolin-cli-route-management.md`
 - Additional ops domains:
   - `scripts/2-ops/nuc/`
   - `scripts/2-ops/worker/`
