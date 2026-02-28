@@ -1,7 +1,9 @@
 # Lab Nodes
 
-Human-readable inventory for lab machines and roles.
+Human-readable node index.
 Canonical machine/IP values for automation live in Ansible inventory.
+
+Use the latest relevant progress note in `docs/progress_log/` as the practical timestamp for how current these summaries are.
 
 ## Source of truth
 - Hosts/IPs: `ops/ansible/inventory/*.ini`
@@ -11,13 +13,19 @@ Canonical machine/IP values for automation live in Ansible inventory.
 
 ## Nodes
 - [main-vps](/Users/virgil/Dev/rita-v4/docs/nodes/main-vps.md)
-- Planned:
-  - `ops-brain` (16 GB laptop): monitoring stack, operator-facing services, possible internal control plane
-  - `platform-node` (12 GB NUC): CI/CD, registry, Git, deployment platform services
-  - `workload-node` (64 GB server): application workloads only
+- [ops-brain](/Users/virgil/Dev/rita-v4/docs/nodes/ops-brain.md)
+- [platform-node](/Users/virgil/Dev/rita-v4/docs/nodes/platform-node.md)
+- [workload-node](/Users/virgil/Dev/rita-v4/docs/nodes/workload-node.md)
 
 ## Placement Model
-This placement reflects prior user research and was independently re-validated during current planning:
-- `ops-brain`: best fit for monitoring because it can drive a real display/console workflow and favors operator visibility over raw compute
-- `platform-node`: best fit for CI/CD and platform support services
-- `workload-node`: kept clean for application and compute load
+This placement reflects prior user research and later repo-side validation:
+- `ops-brain`: monitoring, operator-facing control, internal k3s control plane
+- `platform-node`: CI/CD and platform support services
+- `workload-node`: application and compute load
+- `main-vps`: public edge runtime and `pangolin-server`
+
+## Verify
+1. machine identity/IPs: `ops/ansible/inventory/*.ini`
+2. role placement: `docs/service-placement.md`
+3. public/operator routes: `ops/network/routes.yml`
+4. recent validated state: `docs/progress_log/0090-pangolin-server-working-and-node-placement.md`, `docs/progress_log/0100-ops-brain-bootstrap-complete.md`, `docs/progress_log/0110-topology-docs-tightened.md`
