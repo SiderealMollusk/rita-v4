@@ -16,4 +16,8 @@ runbook_refresh_known_hosts_from_inventory "$INV"
 
 echo "[INFO] Using inventory: $INV"
 ansible-inventory -i "$INV" --list >/dev/null
-ansible -i "$INV" ops_brain -m ping -b
+if ! ansible -i "$INV" ops_brain -m ping; then
+  echo "[INFO] If SSH/admin access needs to be re-seeded from the Mac host, run:"
+  echo "       scripts/2-ops/host/01-seed-ops-brain-ssh.sh"
+  exit 1
+fi

@@ -29,6 +29,24 @@ runbook_require_cmd() {
   command -v "$1" >/dev/null 2>&1 || runbook_fail "missing command: $1"
 }
 
+runbook_require_host_terminal() {
+  if [ -f /.dockerenv ] || grep -q 'docker\|containerd' /proc/1/cgroup 2>/dev/null; then
+    runbook_fail "Run this script from your Mac host terminal, not inside the devcontainer."
+  fi
+}
+
+runbook_require_op_user_session() {
+  if [ -n "${OP_SERVICE_ACCOUNT_TOKEN:-}" ]; then
+    echo "[FAIL] OP_SERVICE_ACCOUNT_TOKEN is set; this puts op CLI in service-account mode."
+    echo "[INFO] Run these first:"
+    echo "       unset OP_SERVICE_ACCOUNT_TOKEN"
+    echo "       op signin"
+    exit 1
+  fi
+  runbook_require_cmd op
+  op whoami >/dev/null
+}
+
 runbook_require_env() {
   local var_name="$1"
   local hint="${2:-}"

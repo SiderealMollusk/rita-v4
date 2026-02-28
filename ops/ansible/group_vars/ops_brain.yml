@@ -6,3 +6,13 @@ ops_brain_disable_sleep: true
 k3s_channel: "stable"
 helm_install_method: "script"
 helm_install_script_url: "https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"
+
+pangolin_newt_namespace: "newt"
+pangolin_newt_release_name: "ops-brain-newt"
+pangolin_newt_secret_name: "newt-cred"
+pangolin_newt_helm_repo_name: "fossorial"
+pangolin_newt_helm_repo_url: "https://charts.fossorial.io"
+pangolin_newt_helm_chart: "fossorial/newt"
+pangolin_newt_values_file: "ops/helm/newt/values.ops-brain.yaml"
+pangolin_newt_credentials_vault_id: "5vr4hef2746tpplvjx424xafvu"
+pangolin_newt_credentials_item: "newt-site-ops-brain"

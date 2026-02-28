@@ -134,10 +134,12 @@ Define health surfaces at four layers:
 
 ## Proposed Repo Deliverables
 ### Scripts
-1. `scripts/2-ops/ops-brain/07-verify-cluster.sh`
-2. `scripts/2-ops/ops-brain/10-install-newt.sh`
-3. `scripts/2-ops/ops-brain/11-install-monitoring-stack.sh`
-4. `scripts/2-ops/ops-brain/12-verify-monitoring-stack.sh`
+1. `scripts/2-ops/ops-brain/01-bootstrap/00-run-all.sh`
+2. `scripts/2-ops/ops-brain/02-services/00-run-all.sh`
+3. `scripts/2-ops/ops-brain/07-verify-cluster.sh`
+4. `scripts/2-ops/ops-brain/10-install-newt.sh`
+5. `scripts/2-ops/ops-brain/11-install-monitoring-stack.sh`
+6. `scripts/2-ops/ops-brain/12-verify-monitoring-stack.sh`
 
 ### Playbooks / Config
 1. Ansible or templated systemd/config path for Newt on laptop
@@ -178,8 +180,8 @@ Reason:
 6. Node, pod, app, and route health all have defined checks.
 
 ## Immediate Next Actions
-1. add `07-verify-cluster.sh`
-2. design `10-install-newt.sh`
+1. create/store the `ops-brain` Newt site credentials in 1Password
+2. run `scripts/2-ops/ops-brain/02-services/00-run-all.sh`
 3. choose the initial monitoring chart set and pinned versions
 4. create `ops/helm/monitoring/` with committed values
 5. install Pangolin CLI on the Mac and confirm auth flow against the self-hosted server

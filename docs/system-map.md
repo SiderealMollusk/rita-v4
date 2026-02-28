@@ -41,7 +41,7 @@ Validated navigation model: 2026-02-28
 
 ## Cluster Boundaries
 - Local simulation cluster:
-  - Scripts: `scripts/1-session/` and `scripts/2-ops/local/`
+  - Scripts: `scripts/1-session/` and `scripts/2-ops/devcontainer/`
   - Typical context: local k3d (`rita-local`)
 - Public edge runtime:
   - Scripts: `scripts/2-ops/vps/`
@@ -56,6 +56,7 @@ Validated navigation model: 2026-02-28
   - `scripts/0-local-setup/01-lan/`
 
 ## Deployment Runbooks
+- Host/operator-boundary runbooks: `scripts/2-ops/host/`
 - VPS runbook scripts: `scripts/2-ops/vps/`
 - Ops-brain runbook scripts: `scripts/2-ops/ops-brain/`
 - Ansible playbooks: `ops/ansible/playbooks/`

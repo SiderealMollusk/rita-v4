@@ -43,7 +43,7 @@ Shape:
 - not a canonical production/runtime environment
 
 Verify:
-1. `scripts/2-ops/local/`
+1. `scripts/2-ops/devcontainer/`
 2. `scripts/1-session/`
 
 ## Notes
