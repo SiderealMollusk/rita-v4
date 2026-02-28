@@ -29,23 +29,46 @@ ITEM_TITLE="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_credentials_item" ||
 echo "[INFO] This script does not create a Pangolin site."
 echo "[INFO] Prerequisite: you must already have created the site in Pangolin at:"
 echo "       $PANGOLIN_ENDPOINT"
-echo "[INFO] You will need the issued site id and site secret from Pangolin before continuing."
+echo "[INFO] Paste the Pangolin Helm install snippet exactly as shown in the site creation screen."
+echo "[INFO] This script will extract endpoint/id/secret and write the canonical OP item."
 
-if [ -n "${NEWT_ID:-}" ]; then
-  NEWT_ID_VALUE="$NEWT_ID"
-else
-  read -r -p "Pangolin site id: " NEWT_ID_VALUE
+read -r -p "Pangolin site name: " PASTED_SITE_NAME
+[ -n "$PASTED_SITE_NAME" ] || runbook_fail "Pangolin site name is empty"
+
+if [ "$PASTED_SITE_NAME" != "$SITE_NAME" ]; then
+  echo "[FAIL] Pasted site name '$PASTED_SITE_NAME' does not match repo-configured site '$SITE_NAME'."
+  echo "[INFO] If this is intentional, update these canonical vars first:"
+  echo "       $GROUP_VARS"
+  echo "       - pangolin_newt_site_slug"
+  echo "       - pangolin_newt_site_name"
+  echo "       - pangolin_newt_credentials_item"
+  exit 1
 fi
 
-if [ -n "${NEWT_SECRET:-}" ]; then
-  NEWT_SECRET_VALUE="$NEWT_SECRET"
-else
-  read -r -s -p "Pangolin site secret: " NEWT_SECRET_VALUE
-  echo
-fi
+echo "[INFO] Paste Pangolin Helm snippet, then press Ctrl-D:"
+HELM_SNIPPET="$(cat)"
+[ -n "$HELM_SNIPPET" ] || runbook_fail "No Helm snippet was pasted"
 
-[ -n "$NEWT_ID_VALUE" ] || runbook_fail "Newt site id is empty"
-[ -n "$NEWT_SECRET_VALUE" ] || runbook_fail "Newt site secret is empty"
+extract_quoted_value() {
+  local input="$1"
+  local key="$2"
+  printf '%s\n' "$input" | sed -n "s/.*${key}=\"\\([^\"]*\\)\".*/\\1/p" | tail -n 1
+}
+
+EXTRACTED_ENDPOINT="$(extract_quoted_value "$HELM_SNIPPET" "endpointKey")"
+NEWT_ID_VALUE="$(extract_quoted_value "$HELM_SNIPPET" "idKey")"
+NEWT_SECRET_VALUE="$(extract_quoted_value "$HELM_SNIPPET" "secretKey")"
+
+[ -n "$EXTRACTED_ENDPOINT" ] || runbook_fail "Could not extract endpointKey from pasted Helm snippet"
+[ -n "$NEWT_ID_VALUE" ] || runbook_fail "Could not extract idKey from pasted Helm snippet"
+[ -n "$NEWT_SECRET_VALUE" ] || runbook_fail "Could not extract secretKey from pasted Helm snippet"
+
+if [ "$EXTRACTED_ENDPOINT" != "$PANGOLIN_ENDPOINT" ]; then
+  echo "[FAIL] Pasted endpoint '$EXTRACTED_ENDPOINT' does not match canonical repo endpoint '$PANGOLIN_ENDPOINT'."
+  echo "[INFO] If Pangolin moved, update:"
+  echo "       $ROUTES_FILE"
+  exit 1
+fi
 
 if op item get "$ITEM_TITLE" --vault "$VAULT_ID" >/dev/null 2>&1; then
   echo "[INFO] Updating existing 1Password item: $ITEM_TITLE"
@@ -65,3 +88,5 @@ fi
 
 echo "[OK] 1Password item is ready: $ITEM_TITLE"
 echo "[INFO] Endpoint stored from repo routes: $PANGOLIN_ENDPOINT"
+echo "[INFO] Extracted id length: ${#NEWT_ID_VALUE}"
+echo "[INFO] Extracted secret length: ${#NEWT_SECRET_VALUE}"

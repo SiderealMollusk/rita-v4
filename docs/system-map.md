@@ -5,6 +5,11 @@ It intentionally links to source files instead of duplicating values.
 
 Use the latest relevant progress note in `docs/progress_log/` as the practical timestamp for how current the linked summaries are.
 
+Reading order for uncertain state:
+1. latest relevant progress note
+2. machine-readable source files (`inventory`, `group_vars`, `routes`, scripts)
+3. clue docs in `docs/`
+
 Validated navigation model: 2026-02-28
 
 ## Pangolin Semantics (Pangolin-Server vs CLI vs Newt)

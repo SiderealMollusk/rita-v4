@@ -9,7 +9,7 @@ The following parts of the flow were already working:
 1. `ops-brain` SSH + Ansible access
 2. k3s on `ops-brain`
 3. Helm on `ops-brain`
-4. Pangolin site credentials readable from 1Password item `pangolin_site_monitoring`
+4. Pangolin site credentials readable from 1Password item `pangolin_site_ops_brain`
 5. Newt namespace creation
 6. Kubernetes secret creation for Newt credentials
 7. Fossorial Helm repo add/update

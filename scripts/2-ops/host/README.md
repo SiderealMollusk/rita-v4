@@ -20,14 +20,16 @@ Current scripts:
 - seeds SSH/admin access for `main-vps` from canonical inventory
 - expects root password SSH on the fresh machine
 
-4. `10-write-monitoring-pangolin-site-secret.sh`
+4. `10-write-ops-brain-pangolin-site-secret.sh`
 - creates or updates the `ops-brain` Newt credential item in 1Password
 - requires that the Pangolin site already exists
-- stores:
+- prompts for the Pangolin site name
+- ingests the rendered Pangolin Helm snippet by paste
+- extracts and stores:
   - `endpoint`
   - `id`
   - `secret`
 
 Notes:
-1. site creation in Pangolin is a separate host-side/operator step and should feed into `10-write-monitoring-pangolin-site-secret.sh`.
+1. site creation in Pangolin is a separate host-side/operator step and should feed into `10-write-ops-brain-pangolin-site-secret.sh`.
 2. service-account mode is intentionally blocked here because these scripts are operator workflows.
