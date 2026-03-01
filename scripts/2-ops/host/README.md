@@ -15,6 +15,7 @@ Current host-only responsibilities:
 1. bootstrap identity
 2. write/update secrets in 1Password
 3. run Pangolin CLI mutations using the host-side authenticated operator session
+4. run Uptime Kuma API mutations using host-held operator credentials
 
 This directory is intentionally small. If a task does not need host-held privilege, it should live elsewhere.
 
@@ -52,6 +53,13 @@ Current scripts:
 - assumes Pangolin CLI is already authenticated
 - reads the Pangolin site identifier from `pangolin_site_ops_brain`
 - resolves Pangolin CLI from `PATH` or `~/.local/bin/pangolin`
+
+7. `30-seed-kuma-monitors.sh`
+- seeds Uptime Kuma monitors from the canonical Pangolin monitoring blueprint
+- runs on the Mac host
+- uses a temporary SSH-backed tunnel to reach Kuma directly on `ops-brain`
+- reads Kuma admin credentials from `kuma_ops_brain_admin` in 1Password
+- creates the 1Password login item if it is missing and you provide credentials interactively
 
 Notes:
 1. site creation in Pangolin is a separate host-side/operator step and should feed into `10-write-ops-brain-pangolin-site-secret.sh`.

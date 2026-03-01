@@ -72,6 +72,7 @@ ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && kubectl logs -n $MON_NS
 
 echo "[INFO] Grafana admin password retrieval command"
 echo "       ssh virgil@192.168.6.16 'export KUBECONFIG=/home/${OPS_BRAIN_ANSIBLE_USER}/.kube/config && kubectl get secret -n ${MON_NS} ${PROM_RELEASE}-grafana -o jsonpath=\"{.data.admin-password}\" | base64 -d; echo'"
+echo "[INFO] Run the following port-forward commands from the Mac host terminal, not inside the devcontainer."
 echo "[INFO] Grafana port-forward command"
 echo "       ssh virgil@192.168.6.16 'export KUBECONFIG=/home/${OPS_BRAIN_ANSIBLE_USER}/.kube/config && kubectl port-forward -n ${MON_NS} svc/${PROM_RELEASE}-grafana 3000:80'"
 echo "[INFO] Prometheus port-forward command"
