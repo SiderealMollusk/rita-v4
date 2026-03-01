@@ -18,6 +18,7 @@ ITEM_PREFIX="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_credentials_item_pr
 SITE_SLUG="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_site_slug" || true)"
 SITE_NAME="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_site_name" || true)"
 ITEM_TITLE="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_credentials_item" || true)"
+SITE_IDENTIFIER_FIELD="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_site_identifier_field" || true)"
 VAULT_ID="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_credentials_vault_id" || true)"
 ID_MIN_LENGTH="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_id_min_length" || true)"
 SECRET_MIN_LENGTH="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_secret_min_length" || true)"
@@ -27,6 +28,7 @@ EXPECTED_ENDPOINT="$(runbook_yaml_get "$ROUTES_FILE" "pangolin_endpoint" || true
 [ -n "$SITE_SLUG" ] || runbook_fail "pangolin_newt_site_slug missing in $GROUP_VARS"
 [ -n "$SITE_NAME" ] || runbook_fail "pangolin_newt_site_name missing in $GROUP_VARS"
 [ -n "$ITEM_TITLE" ] || runbook_fail "pangolin_newt_credentials_item missing in $GROUP_VARS"
+[ -n "$SITE_IDENTIFIER_FIELD" ] || runbook_fail "pangolin_newt_site_identifier_field missing in $GROUP_VARS"
 [ -n "$VAULT_ID" ] || runbook_fail "pangolin_newt_credentials_vault_id missing in $GROUP_VARS"
 [ -n "$ID_MIN_LENGTH" ] || runbook_fail "pangolin_newt_id_min_length missing in $GROUP_VARS"
 [ -n "$SECRET_MIN_LENGTH" ] || runbook_fail "pangolin_newt_secret_min_length missing in $GROUP_VARS"
@@ -45,6 +47,7 @@ fi
 echo "[INFO] Reading Pangolin site note: $ITEM_TITLE"
 SITE_NOTE_ENDPOINT="$(op item get "$ITEM_TITLE" --vault "$VAULT_ID" --fields label='endpoint')"
 SITE_NOTE_NAME="$(op item get "$ITEM_TITLE" --vault "$VAULT_ID" --fields label='name')"
+SITE_NOTE_IDENTIFIER="$(op item get "$ITEM_TITLE" --vault "$VAULT_ID" --fields label="$SITE_IDENTIFIER_FIELD")"
 SITE_NOTE_ID="$(op item get "$ITEM_TITLE" --vault "$VAULT_ID" --fields label='id')"
 SITE_NOTE_SECRET="$(op item get "$ITEM_TITLE" --vault "$VAULT_ID" --reveal --fields label='secret')"
 
@@ -52,6 +55,7 @@ SITE_NOTE_SECRET="$(op item get "$ITEM_TITLE" --vault "$VAULT_ID" --reveal --fie
 [ "$SITE_NOTE_ENDPOINT" = "$EXPECTED_ENDPOINT" ] || runbook_fail "field 'endpoint' mismatch: expected '$EXPECTED_ENDPOINT', got '$SITE_NOTE_ENDPOINT'"
 [ -n "$SITE_NOTE_NAME" ] || runbook_fail "field 'name' missing or empty in $ITEM_TITLE"
 [ "$SITE_NOTE_NAME" = "$SITE_NAME" ] || runbook_fail "field 'name' mismatch: expected '$SITE_NAME', got '$SITE_NOTE_NAME'"
+[ -n "$SITE_NOTE_IDENTIFIER" ] || runbook_fail "field '$SITE_IDENTIFIER_FIELD' missing or empty in $ITEM_TITLE"
 case "$SITE_NOTE_SECRET" in
   "[use '"*" --reveal' to reveal]")
     runbook_fail "field 'secret' is still a concealed-field placeholder, not the revealed secret"
@@ -68,5 +72,6 @@ echo "[OK] Pangolin site note is readable and matches repo contract"
 echo "[INFO] title: $ITEM_TITLE"
 echo "[INFO] endpoint: $SITE_NOTE_ENDPOINT"
 echo "[INFO] name: $SITE_NOTE_NAME"
+echo "[INFO] site identifier: $SITE_NOTE_IDENTIFIER"
 echo "[INFO] id length: $ID_LENGTH"
 echo "[INFO] secret length: $SECRET_LENGTH"

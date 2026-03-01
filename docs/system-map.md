@@ -69,10 +69,26 @@ Validated navigation model: 2026-02-28
 - Current sequencing plan: `docs/plans/0110-ops-brain-platform-workload-sequencing.md`
 - Detailed ops-brain plan: `docs/plans/0120-ops-brain-k3s-monitoring-stack.md`
 - Detailed Pangolin CLI / access plan: `docs/plans/0130-pangolin-cli-route-management.md`
+- Pangolin resource layer plan: `docs/plans/0150-pangolin-resource-management-for-ops-brain.md`
 - Additional ops domains:
   - `scripts/2-ops/nuc/`
   - `scripts/2-ops/worker/`
   - `scripts/2-ops/gpu/`
+
+## Current Ordered Capacity
+1. Host lane:
+- bootstrap identity
+- write secrets
+- apply Pangolin mutations with host-held auth
+2. Devcontainer lane:
+- validate repo-driven secrets/contracts
+- run reproducible automation
+3. Ops-brain lane:
+- bootstrap Debian + k3s + Helm
+- install Newt
+- install monitoring
+4. Pangolin resource layer:
+- expose validated cluster-local targets from the site perspective
 
 ## Change Rule
 1. Update canonical source files first.

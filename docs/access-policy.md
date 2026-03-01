@@ -11,6 +11,7 @@ For the most recent validated state, use the latest relevant progress note in `d
 3. SSH keys come from 1Password.
 4. Repo automation should assume `virgil` + sudo, not permanent root login.
 5. Public/operator-facing service access should prefer Pangolin-managed routes.
+6. Privileged operator mutations should stay on the Mac host when the auth/session lives there.
 
 ## Machine Login Pattern
 ### VPS
@@ -35,6 +36,7 @@ For the most recent validated state, use the latest relevant progress note in `d
 2. Pangolin semantics and guardrails:
 - `docs/pangolin/0001-deploy-model.md`
 3. Monitoring/operator services are intended to be exposed intentionally, not by ad-hoc direct host access.
+4. Cluster-local service addresses are valid Pangolin targets only when they have been verified from the Newt/site perspective.
 
 ## Verify
 1. Confirm host/user details from `ops/ansible/inventory/*.ini`

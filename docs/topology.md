@@ -35,6 +35,7 @@ For the most recent validated state, check the latest relevant progress note in 
 3. Internal nodes live on the LAN and are discovered/managed from repo inventories.
 4. `ops-brain` is the first internal k3s cluster/control-plane node.
 5. `main-vps` is not the internal cluster control plane.
+6. Pangolin resources for `ops-brain` should target addresses resolvable from the Newt/site perspective, including verified `*.svc.cluster.local` cluster-local service names.
 
 ## Verify
 1. Hosts/IPs:
@@ -48,3 +49,4 @@ For the most recent validated state, check the latest relevant progress note in 
 5. Recent validated state:
 - `docs/progress_log/0100-ops-brain-bootstrap-complete.md`
 - `docs/progress_log/0090-pangolin-server-working-and-node-placement.md`
+- `docs/progress_log/0240-newt-can-reach-cluster-services.md`

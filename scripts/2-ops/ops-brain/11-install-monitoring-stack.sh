@@ -56,6 +56,13 @@ PROMTAIL_CHART="$(runbook_yaml_get "$GROUP_VARS" "monitoring_promtail_chart" || 
 PROMTAIL_VALUES_REL="$(runbook_yaml_get "$GROUP_VARS" "monitoring_promtail_values_file" || true)"
 PROMTAIL_VALUES="$REPO_ROOT/${PROMTAIL_VALUES_REL}"
 
+KUMA_RELEASE="$(runbook_yaml_get "$GROUP_VARS" "monitoring_kuma_release_name" || true)"
+KUMA_REPO_NAME="$(runbook_yaml_get "$GROUP_VARS" "monitoring_kuma_repo_name" || true)"
+KUMA_REPO_URL="$(runbook_yaml_get "$GROUP_VARS" "monitoring_kuma_repo_url" || true)"
+KUMA_CHART="$(runbook_yaml_get "$GROUP_VARS" "monitoring_kuma_chart" || true)"
+KUMA_VALUES_REL="$(runbook_yaml_get "$GROUP_VARS" "monitoring_kuma_values_file" || true)"
+KUMA_VALUES="$REPO_ROOT/${KUMA_VALUES_REL}"
+
 [ -n "$MON_NS" ] || runbook_fail "monitoring_namespace missing in $GROUP_VARS"
 [ -n "$MON_TIMEOUT" ] || runbook_fail "monitoring_helm_timeout missing in $GROUP_VARS"
 [ -n "$PROM_RELEASE" ] || runbook_fail "monitoring_kube_prometheus_release_name missing in $GROUP_VARS"
@@ -76,10 +83,17 @@ PROMTAIL_VALUES="$REPO_ROOT/${PROMTAIL_VALUES_REL}"
 [ -n "$PROMTAIL_CHART" ] || runbook_fail "monitoring_promtail_chart missing in $GROUP_VARS"
 [ -n "$PROMTAIL_VALUES_REL" ] || runbook_fail "monitoring_promtail_values_file missing in $GROUP_VARS"
 [ -f "$PROMTAIL_VALUES" ] || runbook_fail "promtail values file not found: $PROMTAIL_VALUES"
+[ -n "$KUMA_RELEASE" ] || runbook_fail "monitoring_kuma_release_name missing in $GROUP_VARS"
+[ -n "$KUMA_REPO_NAME" ] || runbook_fail "monitoring_kuma_repo_name missing in $GROUP_VARS"
+[ -n "$KUMA_REPO_URL" ] || runbook_fail "monitoring_kuma_repo_url missing in $GROUP_VARS"
+[ -n "$KUMA_CHART" ] || runbook_fail "monitoring_kuma_chart missing in $GROUP_VARS"
+[ -n "$KUMA_VALUES_REL" ] || runbook_fail "monitoring_kuma_values_file missing in $GROUP_VARS"
+[ -f "$KUMA_VALUES" ] || runbook_fail "uptime-kuma values file not found: $KUMA_VALUES"
 
 REMOTE_PROM_VALUES="/tmp/rita-kube-prometheus-values.yaml"
 REMOTE_LOKI_VALUES="/tmp/rita-loki-values.yaml"
 REMOTE_PROMTAIL_VALUES="/tmp/rita-promtail-values.yaml"
+REMOTE_KUMA_VALUES="/tmp/rita-uptime-kuma-values.yaml"
 
 echo "[INFO] Verifying Newt release is present before installing monitoring"
 ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm status ops-brain-newt -n newt >/dev/null"
@@ -91,6 +105,7 @@ echo "[INFO] Copying committed monitoring values to ops-brain"
 ansible -i "$INV" ops_brain -b -m copy -a "src=$PROM_VALUES dest=$REMOTE_PROM_VALUES mode=0644"
 ansible -i "$INV" ops_brain -b -m copy -a "src=$LOKI_VALUES dest=$REMOTE_LOKI_VALUES mode=0644"
 ansible -i "$INV" ops_brain -b -m copy -a "src=$PROMTAIL_VALUES dest=$REMOTE_PROMTAIL_VALUES mode=0644"
+ansible -i "$INV" ops_brain -b -m copy -a "src=$KUMA_VALUES dest=$REMOTE_KUMA_VALUES mode=0644"
 
 echo "[INFO] Adding/updating monitoring Helm repos on ops-brain"
 ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm repo add $PROM_REPO_NAME $PROM_REPO_URL >/dev/null 2>&1 || true && helm repo update $PROM_REPO_NAME"
@@ -100,9 +115,14 @@ if [ "$PROMTAIL_REPO_NAME" = "$LOKI_REPO_NAME" ]; then
 else
   ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm repo add $PROMTAIL_REPO_NAME $PROMTAIL_REPO_URL >/dev/null 2>&1 || true && helm repo update $PROMTAIL_REPO_NAME"
 fi
+if [ "$KUMA_REPO_NAME" = "$PROM_REPO_NAME" ] || [ "$KUMA_REPO_NAME" = "$LOKI_REPO_NAME" ] || [ "$KUMA_REPO_NAME" = "$PROMTAIL_REPO_NAME" ]; then
+  :
+else
+  ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm repo add $KUMA_REPO_NAME $KUMA_REPO_URL >/dev/null 2>&1 || true && helm repo update $KUMA_REPO_NAME"
+fi
 
 echo "[INFO] Clearing stuck monitoring Helm release state if needed"
-for release in "$PROM_RELEASE" "$LOKI_RELEASE" "$PROMTAIL_RELEASE"; do
+for release in "$PROM_RELEASE" "$LOKI_RELEASE" "$PROMTAIL_RELEASE" "$KUMA_RELEASE"; do
   ansible -i "$INV" ops_brain -b -m shell -a "set -e
 $KUBE_ENV
 if helm status $release -n $MON_NS >/tmp/rita-helm-status.txt 2>&1; then
@@ -141,6 +161,16 @@ if ! ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm upgrade --ins
   ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && kubectl get events -n $MON_NS --sort-by=.lastTimestamp | tail -n 30" || true
   ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm status $PROMTAIL_RELEASE -n $MON_NS" || true
   runbook_fail "Promtail install failed or timed out. See diagnostics above."
+fi
+
+echo "[INFO] Installing/upgrading Uptime Kuma"
+if ! ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm upgrade --install $KUMA_RELEASE $KUMA_CHART -n $MON_NS -f $REMOTE_KUMA_VALUES --wait --timeout $MON_TIMEOUT"; then
+  echo "[INFO] Uptime Kuma release failed or timed out. Dumping diagnostics."
+  ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && kubectl get pods -n $MON_NS -o wide" || true
+  ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && kubectl get pvc -n $MON_NS" || true
+  ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && kubectl get events -n $MON_NS --sort-by=.lastTimestamp | tail -n 30" || true
+  ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm status $KUMA_RELEASE -n $MON_NS" || true
+  runbook_fail "Uptime Kuma install failed or timed out. See diagnostics above."
 fi
 
 echo "[OK] Monitoring stack install submitted. Verify with 12-verify-monitoring-stack.sh"

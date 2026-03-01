@@ -36,16 +36,24 @@ MON_NS="$(runbook_yaml_get "$GROUP_VARS" "monitoring_namespace" || true)"
 PROM_RELEASE="$(runbook_yaml_get "$GROUP_VARS" "monitoring_kube_prometheus_release_name" || true)"
 LOKI_RELEASE="$(runbook_yaml_get "$GROUP_VARS" "monitoring_loki_release_name" || true)"
 PROMTAIL_RELEASE="$(runbook_yaml_get "$GROUP_VARS" "monitoring_promtail_release_name" || true)"
+KUMA_RELEASE="$(runbook_yaml_get "$GROUP_VARS" "monitoring_kuma_release_name" || true)"
 
 [ -n "$MON_NS" ] || runbook_fail "monitoring_namespace missing in $GROUP_VARS"
 [ -n "$PROM_RELEASE" ] || runbook_fail "monitoring_kube_prometheus_release_name missing in $GROUP_VARS"
 [ -n "$LOKI_RELEASE" ] || runbook_fail "monitoring_loki_release_name missing in $GROUP_VARS"
 [ -n "$PROMTAIL_RELEASE" ] || runbook_fail "monitoring_promtail_release_name missing in $GROUP_VARS"
+[ -n "$KUMA_RELEASE" ] || runbook_fail "monitoring_kuma_release_name missing in $GROUP_VARS"
 
 echo "[INFO] Verifying monitoring Helm releases"
 ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm status $PROM_RELEASE -n $MON_NS >/dev/null"
 ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm status $LOKI_RELEASE -n $MON_NS >/dev/null"
 ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm status $PROMTAIL_RELEASE -n $MON_NS >/dev/null"
+ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && helm status $KUMA_RELEASE -n $MON_NS >/dev/null"
+
+KUMA_SERVICE_NAME="$(ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && kubectl get svc -n $MON_NS -l app.kubernetes.io/instance=$KUMA_RELEASE,app.kubernetes.io/name=uptime-kuma -o jsonpath='{.items[0].metadata.name}'" \
+  | awk -F'>>' 'NF > 1 {gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2); print $2}' \
+  | tail -n 1)"
+[ -n "$KUMA_SERVICE_NAME" ] || runbook_fail "could not determine Uptime Kuma service name in namespace $MON_NS"
 
 echo "[INFO] Verifying monitoring namespace pods are not crashlooping"
 ansible -i "$INV" ops_brain -b -m shell -a "$KUBE_ENV && kubectl get pods -n $MON_NS --no-headers | awk 'NF { if (\$3 ~ /(CrashLoopBackOff|Error|ImagePullBackOff|ErrImagePull|Pending)/) bad=1 } END { exit bad }'"
@@ -70,5 +78,7 @@ echo "[INFO] Prometheus port-forward command"
 echo "       ssh virgil@192.168.6.16 'export KUBECONFIG=/home/${OPS_BRAIN_ANSIBLE_USER}/.kube/config && kubectl port-forward -n ${MON_NS} svc/${PROM_RELEASE}-prometheus 9090:9090'"
 echo "[INFO] Loki port-forward command"
 echo "       ssh virgil@192.168.6.16 'export KUBECONFIG=/home/${OPS_BRAIN_ANSIBLE_USER}/.kube/config && kubectl port-forward -n ${MON_NS} svc/${LOKI_RELEASE} 3100:3100'"
+echo "[INFO] Uptime Kuma port-forward command"
+echo "       ssh virgil@192.168.6.16 'export KUBECONFIG=/home/${OPS_BRAIN_ANSIBLE_USER}/.kube/config && kubectl port-forward -n ${MON_NS} svc/${KUMA_SERVICE_NAME} 3001:80'"
 
 echo "[OK] Monitoring stack verification complete"

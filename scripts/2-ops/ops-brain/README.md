@@ -2,6 +2,11 @@
 
 These scripts manage the laptop that acts as the `ops-brain`.
 
+Freshness anchor:
+1. [0240-newt-can-reach-cluster-services.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0240-newt-can-reach-cluster-services.md)
+2. [0230-grafana-init-chown-disabled.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0230-grafana-init-chown-disabled.md)
+3. [0220-monitoring-storage-budgets.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0220-monitoring-storage-budgets.md)
+
 Top-level orchestration:
 1. `00-run-all.sh`
 - runs all currently known phases in order
@@ -37,4 +42,14 @@ Notes:
    - `kube-prometheus-stack`
    - `loki`
    - `promtail`
+   - `uptime-kuma`
 6. Monitoring stays internal first; Pangolin exposure comes after internal verification.
+7. Uptime Kuma is deployed as part of the monitoring stack, but monitor definitions are a separate seeded layer.
+
+Current capacity order:
+1. bootstrap host
+2. bootstrap cluster
+3. connect site with Newt
+4. install monitoring stack
+5. verify cluster-local service reachability from Newt
+6. expose selected services later through Pangolin resource declarations

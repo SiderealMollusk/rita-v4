@@ -1,0 +1,29 @@
+# Canonical expected Uptime Kuma monitors for operator-facing endpoints.
+# This is the desired monitor inventory, not proof that Kuma has been seeded yet.
+
+monitors:
+  - name: pangolin-server
+    type: http
+    url: https://pangolin.virgil.info
+    expected_status_codes:
+      - 200
+      - 302
+
+  - name: grafana
+    type: http
+    url: https://grafana.virgil.info/login
+    expected_status_codes:
+      - 200
+
+  - name: prometheus
+    type: http
+    url: https://prometheus.virgil.info/graph
+    expected_status_codes:
+      - 200
+
+  - name: alertmanager
+    type: http
+    url: https://alertmanager.virgil.info
+    expected_status_codes:
+      - 200
+      - 302

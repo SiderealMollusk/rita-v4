@@ -13,3 +13,31 @@ routes:
       - 80
       - 443
     notes: "Primary Pangolin server endpoint."
+  - name: "ops-brain-grafana"
+    fqdn: "grafana.virgil.info"
+    backend: "ops-brain"
+    exposure: "pangolin"
+    ports:
+      - 80
+    notes: "Pangolin-routed Grafana resource targeting the ops-brain monitoring cluster."
+  - name: "ops-brain-prometheus"
+    fqdn: "prometheus.virgil.info"
+    backend: "ops-brain"
+    exposure: "pangolin"
+    ports:
+      - 9090
+    notes: "Pangolin-routed Prometheus resource targeting the ops-brain monitoring cluster."
+  - name: "ops-brain-alertmanager"
+    fqdn: "alertmanager.virgil.info"
+    backend: "ops-brain"
+    exposure: "pangolin"
+    ports:
+      - 9093
+    notes: "Pangolin-routed Alertmanager resource targeting the ops-brain monitoring cluster."
+  - name: "ops-brain-uptime-kuma"
+    fqdn: "uptime.virgil.info"
+    backend: "ops-brain"
+    exposure: "pangolin"
+    ports:
+      - 80
+    notes: "Pangolin-routed Uptime Kuma resource targeting the ops-brain monitoring cluster."

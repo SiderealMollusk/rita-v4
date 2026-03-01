@@ -29,6 +29,27 @@ runbook_require_cmd() {
   command -v "$1" >/dev/null 2>&1 || runbook_fail "missing command: $1"
 }
 
+runbook_find_pangolin_cli() {
+  if command -v pangolin >/dev/null 2>&1; then
+    command -v pangolin
+    return 0
+  fi
+
+  local fallback="${HOME}/.local/bin/pangolin"
+  if [ -x "$fallback" ]; then
+    printf '%s\n' "$fallback"
+    return 0
+  fi
+
+  return 1
+}
+
+runbook_require_pangolin_cli() {
+  local pangolin_bin
+  pangolin_bin="$(runbook_find_pangolin_cli)" || runbook_fail "missing command: pangolin"
+  printf '%s\n' "$pangolin_bin"
+}
+
 runbook_require_host_terminal() {
   if [ -f /.dockerenv ] || grep -q 'docker\|containerd' /proc/1/cgroup 2>/dev/null; then
     runbook_fail "Run this script from your Mac host terminal, not inside the devcontainer."
