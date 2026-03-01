@@ -10,7 +10,9 @@ runbook_require_no_args "$@"
 
 echo "[INFO] Running ops-brain services phase"
 for step in \
-  10-install-newt.sh
+  10-install-newt.sh \
+  11-install-monitoring-stack.sh \
+  12-verify-monitoring-stack.sh
   do
   echo "[INFO] >>> ${step}"
   "$PARENT_DIR/${step}"

@@ -1,0 +1,63 @@
+grafana:
+  enabled: true
+  initChownData:
+    enabled: false
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://ops-brain-loki:3100
+      isDefault: false
+      jsonData:
+        maxLines: 1000
+  persistence:
+    enabled: true
+    type: pvc
+    storageClassName: local-path
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    retention: 7d
+    retentionSize: 8GB
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+
+defaultRules:
+  create: true
+
+kubeControllerManager:
+  enabled: false
+
+kubeScheduler:
+  enabled: false
+
+kubeEtcd:
+  enabled: false

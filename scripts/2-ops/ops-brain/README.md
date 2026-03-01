@@ -25,9 +25,16 @@ Bootstrap lane:
 
 Services lane:
 1. `10-install-newt.sh`
+2. `11-install-monitoring-stack.sh`
+3. `12-verify-monitoring-stack.sh`
 
 Notes:
 1. This path assumes fresh Debian 12 with working `virgil` SSH + sudo.
 2. Docker is not part of this path; k3s uses containerd.
 3. The laptop remains schedulable for now; taints come later when more physical nodes join.
 4. `00-run-all.sh` is intentionally stricter now: it runs bootstrap and services, and stops on the first unmet prerequisite.
+5. The first-pass monitoring stack is:
+   - `kube-prometheus-stack`
+   - `loki`
+   - `promtail`
+6. Monitoring stays internal first; Pangolin exposure comes after internal verification.
