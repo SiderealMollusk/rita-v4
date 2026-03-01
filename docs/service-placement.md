@@ -11,7 +11,7 @@ This placement model matches prior user research and was independently re-valida
 
 2. `platform-node`
 - Hardware: 12 GB NUC
-- Purpose: CI/CD and platform support services
+- Purpose: platform services worker capacity and clean declarative lane
 
 3. `workload-node`
 - Hardware: 64 GB server
@@ -35,14 +35,16 @@ Reason:
 - laptop is a good "look at it directly" station with attached display
 
 ### platform-node
+- k3s worker capacity
 - Gitea
-- CI runners
-- Argo CD
-- Zot
+- Flux-managed platform services
+- shared Postgres
+- optional CI runners later
 - Supporting automation/platform services
 
 Reason:
-- better fit for bursty automation and registry workloads than the edge or workload server
+- better fit for clean declarative platform services than the operator-heavy `ops-brain`
+- adds schedulable capacity without creating a second internal cluster
 
 ### workload-node
 - application workloads
@@ -65,3 +67,4 @@ Reason:
 1. Do not place the full monitoring stack on the public edge VPS.
 2. Do not place CI/CD core services on the workload node unless forced by capacity constraints.
 3. Keep the 64 GB server aesthetically and operationally "clean" for workloads.
+4. Treat `ops-brain` as the tolerated bootstrap/monitoring edge and prefer clean platform services on `platform-node`.

@@ -11,6 +11,12 @@ Build the next phase of the lab in the right order:
 5. bring the 64 GB GPU workload server back online cleanly
 6. unify health checks across machines, containers, and apps
 
+## Freshness
+The overall sequencing still holds, but the platform-service details have moved forward.
+
+For the current platform direction, use:
+1. [0160-platform-flux-gitea-and-worker-expansion.md](/Users/virgil/Dev/rita-v4/docs/plans/0160-platform-flux-gitea-and-worker-expansion.md)
+
 This plan assumes the currently validated placement model:
 - `ops-brain` = laptop
 - `platform-node` = NUC
@@ -93,18 +99,22 @@ Use the actual Pangolin CLI correctly this time, for blueprints and route manage
 ### Objective
 Design the platform-node before installing everything blindly.
 
+This phase is superseded in detail by:
+1. [0160-platform-flux-gitea-and-worker-expansion.md](/Users/virgil/Dev/rita-v4/docs/plans/0160-platform-flux-gitea-and-worker-expansion.md)
+
 ### Questions to Answer
 1. what actually belongs in CI/CD
 2. what deploys through GitOps vs manual runbooks
 3. which services need Gitea
-4. whether Argo CD is managing only internal clusters or more
+4. how Flux is bootstrapped and becomes authoritative
 5. how registry, build artifacts, and deployment manifests are organized
 
 ### Expected Services
 1. Gitea
-2. CI runners
-3. Argo CD
-4. Zot
+2. Flux
+3. shared Postgres
+4. optional CI runners later
+5. optional registry later
 
 ### Deliverables
 1. service design doc for CI/CD flow
