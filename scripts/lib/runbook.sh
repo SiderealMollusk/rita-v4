@@ -129,3 +129,21 @@ runbook_yaml_get() {
     }
   ' "$file_path"
 }
+
+runbook_inventory_get_field() {
+  local inventory_path="$1"
+  local host_alias="$2"
+  local field_name="$3"
+  [ -f "$inventory_path" ] || return 1
+  awk -v host="$host_alias" -v field="$field_name" '
+    $1 == host {
+      for (i = 2; i <= NF; i++) {
+        split($i, a, "=")
+        if (a[1] == field) {
+          print a[2]
+          exit
+        }
+      }
+    }
+  ' "$inventory_path"
+}

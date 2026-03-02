@@ -23,7 +23,7 @@ For the most recent validated state, check the latest relevant progress note in 
 
 3. `platform-node`
 - planned internal NUC on the LAN
-- intended home of a clean k3s worker lane for platform services
+- intended home of a clean k3s worker node for platform services
 
 4. `workload-node`
 - planned internal 64 GB server on the LAN

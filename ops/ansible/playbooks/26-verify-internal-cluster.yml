@@ -1,0 +1,41 @@
+---
+- name: Verify internal cluster state
+  hosts: ops_brain
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Require label map for verification
+      ansible.builtin.assert:
+        that:
+          - internal_cluster_node_labels is defined
+          - internal_cluster_node_labels | length > 0
+        fail_msg: "Missing required var: internal_cluster_node_labels."
+
+  tasks:
+    - name: Show current node inventory
+      ansible.builtin.command: kubectl get nodes -o wide
+      register: internal_cluster_nodes
+      changed_when: false
+
+    - name: Print current node inventory
+      ansible.builtin.debug:
+        var: internal_cluster_nodes.stdout_lines
+
+    - name: Verify expected nodes are Ready
+      ansible.builtin.shell: >-
+        kubectl get node {{ item.key }}
+        -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+      register: internal_cluster_ready_checks
+      changed_when: false
+      loop: "{{ internal_cluster_node_labels | dict2items }}"
+      failed_when: internal_cluster_ready_checks.stdout != "True"
+
+    - name: Verify expected node labels exist
+      ansible.builtin.shell: >-
+        kubectl get node {{ item.key }}
+        -o jsonpath='{.metadata.labels.rita\.role}'
+      register: internal_cluster_label_checks
+      changed_when: false
+      loop: "{{ internal_cluster_node_labels | dict2items }}"
+      failed_when: internal_cluster_label_checks.stdout != (item.value | regex_replace('^rita\\.role=', ''))

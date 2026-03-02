@@ -27,14 +27,19 @@ Validated navigation model: 2026-02-28
 ## Hosts and IPs
 - Source of truth: `ops/ansible/inventory/`
 - Current files:
+  - `ops/ansible/inventory/proxmox.ini`
   - `ops/ansible/inventory/vps.ini`
   - `ops/ansible/inventory/ops-brain.ini`
+  - `ops/ansible/inventory/platform.ini`
+  - `ops/ansible/inventory/internal-cluster.ini`
 
 ## Automation Variables (domains, namespaces, deploy vars)
 - Source of truth: `ops/ansible/group_vars/`
 - Current files:
   - `ops/ansible/group_vars/vps.yml`
   - `ops/ansible/group_vars/ops_brain.yml`
+  - `ops/ansible/group_vars/platform.yml`
+  - `ops/ansible/group_vars/internal_cluster.yml`
 
 ## Hittable Routes (FQDN -> backend/ports/exposure)
 - Source of truth: `ops/network/routes.yml`
@@ -51,7 +56,8 @@ Validated navigation model: 2026-02-28
 - Public edge runtime:
   - Scripts: `scripts/2-ops/vps/`
 - Internal ops cluster:
-  - Scripts: `scripts/2-ops/ops-brain/`
+  - Scripts: `scripts/2-ops/ops-brain/` and `scripts/2-ops/worker/`
+  - GitOps tree: `ops/gitops/clusters/internal/`
 
 ## Secrets (references only; never values)
 - Runtime secret source: 1Password
@@ -61,12 +67,20 @@ Validated navigation model: 2026-02-28
   - `scripts/0-local-setup/01-lan/`
 
 ## Deployment Runbooks
+- Vocabulary/reference rules: `docs/vocabulary.md`
+- Freshness/reference rules: `docs/freshness.md`
+- Durable machine-onboarding contract: `docs/adding-a-machine.md`
 - Host/operator-boundary runbooks: `scripts/2-ops/host/`
 - VPS runbook scripts: `scripts/2-ops/vps/`
 - Ops-brain runbook scripts: `scripts/2-ops/ops-brain/`
+- Platform worker runbook scripts: `scripts/2-ops/worker/`
+- NUC/Proxmox runbook scripts: `scripts/2-ops/nuc/`
 - Ansible playbooks: `ops/ansible/playbooks/`
+- GitOps manifests: `ops/gitops/`
 - Human reset playbook: `docs/reset-vps.md`
-- Current sequencing plan: `docs/plans/0110-ops-brain-platform-workload-sequencing.md`
+- Current platform architecture plan: `docs/plans/0160-platform-flux-gitea-and-worker-expansion.md`
+- Current platform execution plan: `docs/plans/0170-platform-worker-execution-plan.md`
+- Earlier sequencing plan: `docs/plans/0110-ops-brain-platform-workload-sequencing.md`
 - Detailed ops-brain plan: `docs/plans/0120-ops-brain-k3s-monitoring-stack.md`
 - Detailed Pangolin CLI / access plan: `docs/plans/0130-pangolin-cli-route-management.md`
 - Pangolin resource layer plan: `docs/plans/0150-pangolin-resource-management-for-ops-brain.md`

@@ -3,9 +3,9 @@
 These scripts manage the laptop that acts as the `ops-brain`.
 
 Freshness anchor:
-1. [0240-newt-can-reach-cluster-services.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0240-newt-can-reach-cluster-services.md)
-2. [0230-grafana-init-chown-disabled.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0230-grafana-init-chown-disabled.md)
-3. [0220-monitoring-storage-budgets.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0220-monitoring-storage-budgets.md)
+1. [0420-flux-bootstrap-complete-and-cluster-network-policy-codified.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0420-flux-bootstrap-complete-and-cluster-network-policy-codified.md)
+2. [0410-flux-bootstrap-blocked-by-kubeconfig-and-host-api-tech-debt.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0410-flux-bootstrap-blocked-by-kubeconfig-and-host-api-tech-debt.md)
+3. [0400-platform-worker-joined-and-cluster-mismatch-found.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0400-platform-worker-joined-and-cluster-mismatch-found.md)
 
 Top-level orchestration:
 1. `00-run-all.sh`
@@ -27,6 +27,7 @@ Bootstrap lane:
 5. `05-install-helm.sh`
 6. `06-label-node.sh`
 7. `07-verify-cluster.sh`
+8. `08-sync-kubeconfig.sh`
 
 Services lane:
 1. `10-install-newt.sh`
@@ -45,6 +46,8 @@ Notes:
    - `uptime-kuma`
 6. Monitoring stays internal first; Pangolin exposure comes after internal verification.
 7. Uptime Kuma is deployed as part of the monitoring stack, but monitor definitions are a separate seeded layer.
+8. `08-sync-kubeconfig.sh` is the canonical rerender path for `/home/virgil/.kube/config` on ops-brain when host-side consumers need a durable kubeconfig.
+9. Durable machine-onboarding expectations live in `docs/adding-a-machine.md`.
 
 Current capacity order:
 1. bootstrap host

@@ -1,22 +1,18 @@
 ---
-- name: Bootstrap ops-brain host baseline
-  hosts: ops_brain
+- name: Bootstrap platform worker host baseline
+  hosts: platform_workers
   become: true
   gather_facts: true
 
   tasks:
-    - name: Require k3s API allowlist vars
+    - name: Require flannel VXLAN allowlist vars
       ansible.builtin.assert:
         that:
-          - ops_brain_k3s_api_port is defined
-          - ops_brain_k3s_api_port | length > 0
-          - ops_brain_k3s_api_allowed_sources is defined
-          - ops_brain_k3s_api_allowed_sources | length > 0
-          - ops_brain_flannel_vxlan_port is defined
-          - ops_brain_flannel_vxlan_port | length > 0
-          - ops_brain_flannel_allowed_sources is defined
-          - ops_brain_flannel_allowed_sources | length > 0
-        fail_msg: "Missing ops-brain k3s API UFW allowlist vars."
+          - platform_flannel_vxlan_port is defined
+          - platform_flannel_vxlan_port | length > 0
+          - platform_flannel_allowed_sources is defined
+          - platform_flannel_allowed_sources | length > 0
+        fail_msg: "Missing platform flannel VXLAN UFW allowlist vars."
 
     - name: Install baseline packages
       ansible.builtin.apt:
@@ -52,7 +48,7 @@
       changed_when: "'Skipping adding existing rule' not in ufw_allow_ssh.stdout"
       register: ufw_allow_ssh
 
-    - name: Allow k3s API from approved internal sources
+    - name: Allow flannel VXLAN from approved control-plane sources
       ansible.builtin.command:
         argv:
           - ufw
@@ -62,27 +58,10 @@
           - to
           - any
           - port
-          - "{{ ops_brain_k3s_api_port }}"
-          - proto
-          - tcp
-      loop: "{{ ops_brain_k3s_api_allowed_sources }}"
-      register: ufw_allow_k3s_api
-      changed_when: "'Skipping adding existing rule' not in ufw_allow_k3s_api.stdout"
-
-    - name: Allow flannel VXLAN from approved worker sources
-      ansible.builtin.command:
-        argv:
-          - ufw
-          - allow
-          - from
-          - "{{ item }}"
-          - to
-          - any
-          - port
-          - "{{ ops_brain_flannel_vxlan_port }}"
+          - "{{ platform_flannel_vxlan_port }}"
           - proto
           - udp
-      loop: "{{ ops_brain_flannel_allowed_sources }}"
+      loop: "{{ platform_flannel_allowed_sources }}"
       register: ufw_allow_flannel_vxlan
       changed_when: "'Skipping adding existing rule' not in ufw_allow_flannel_vxlan.stdout"
 
@@ -96,3 +75,13 @@
         name: fail2ban
         enabled: true
         state: started
+
+    - name: Verify expected platform hostname
+      ansible.builtin.assert:
+        that:
+          - platform_expected_hostname is defined
+          - ansible_hostname == platform_expected_hostname
+        fail_msg: >-
+          Platform hostname mismatch. Expected '{{ platform_expected_hostname }}'
+          but found '{{ ansible_hostname }}'. Rebuild or fix cloud-init before
+          continuing.

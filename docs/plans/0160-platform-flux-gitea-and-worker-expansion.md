@@ -3,7 +3,7 @@ Status: ACTIVE
 Date: 2026-03-01
 
 ## Goal
-Expand the current internal k3s cluster beyond `ops-brain`, convert the NUC into a clean `platform` worker lane, and establish the first declarative platform-services foundation for:
+Expand the current internal k3s cluster beyond `ops-brain`, convert the NUC into a clean `platform-node` worker node, and establish the first declarative platform-services foundation for:
 1. `Flux`
 2. `Gitea`
 3. shared platform/app `Postgres`

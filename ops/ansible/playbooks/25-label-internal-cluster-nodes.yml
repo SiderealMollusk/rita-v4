@@ -1,0 +1,20 @@
+---
+- name: Label internal cluster nodes
+  hosts: ops_brain
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Require internal cluster label map
+      ansible.builtin.assert:
+        that:
+          - internal_cluster_node_labels is defined
+          - internal_cluster_node_labels | length > 0
+        fail_msg: "Missing required var: internal_cluster_node_labels."
+
+  tasks:
+    - name: Apply role labels to internal cluster nodes
+      ansible.builtin.command: >-
+        kubectl label node {{ item.key }} {{ item.value }} --overwrite
+      loop: "{{ internal_cluster_node_labels | dict2items }}"
+      changed_when: true

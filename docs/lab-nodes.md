@@ -20,7 +20,7 @@ Use the latest relevant progress note in `docs/progress_log/` as the practical t
 ## Placement Model
 This placement reflects prior user research and later repo-side validation:
 - `ops-brain`: monitoring, operator-facing control, internal k3s control plane
-- `platform-node`: CI/CD and platform support services
+- `platform-node`: platform services worker capacity and clean declarative lane
 - `workload-node`: application and compute load
 - `main-vps`: public edge runtime and `pangolin-server`
 
@@ -28,4 +28,4 @@ This placement reflects prior user research and later repo-side validation:
 1. machine identity/IPs: `ops/ansible/inventory/*.ini`
 2. role placement: `docs/service-placement.md`
 3. public/operator routes: `ops/network/routes.yml`
-4. recent validated state: `docs/progress_log/0090-pangolin-server-working-and-node-placement.md`, `docs/progress_log/0100-ops-brain-bootstrap-complete.md`, `docs/progress_log/0110-topology-docs-tightened.md`
+4. recent validated state: `docs/progress_log/0420-flux-bootstrap-complete-and-cluster-network-policy-codified.md`, `docs/progress_log/0400-platform-worker-joined-and-cluster-mismatch-found.md`, `docs/progress_log/0390-platform-flux-gitea-direction-locked.md`

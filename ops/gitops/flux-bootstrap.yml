@@ -1,0 +1,4 @@
+github_token_item: "github_pats"
+github_token_field: "flux-bootstrap-rita-v4"
+github_branch: "main"
+github_path: "ops/gitops/clusters/internal"

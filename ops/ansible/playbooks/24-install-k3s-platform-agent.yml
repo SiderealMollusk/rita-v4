@@ -1,0 +1,73 @@
+---
+- name: Join platform worker to the internal k3s cluster
+  hosts: platform_workers
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Require control plane group
+      ansible.builtin.assert:
+        that:
+          - internal_cluster_control_plane_group is defined
+          - internal_cluster_control_plane_group | length > 0
+          - groups[internal_cluster_control_plane_group] is defined
+          - groups[internal_cluster_control_plane_group] | length > 0
+        fail_msg: >-
+          Missing internal_cluster_control_plane_group or no matching hosts in
+          inventory.
+
+    - name: Require k3s channel
+      ansible.builtin.assert:
+        that:
+          - k3s_channel is defined
+          - k3s_channel | length > 0
+        fail_msg: "Missing required var: k3s_channel."
+
+    - name: Require expected platform hostname
+      ansible.builtin.assert:
+        that:
+          - platform_expected_hostname is defined
+          - ansible_hostname == platform_expected_hostname
+        fail_msg: >-
+          Platform hostname mismatch. Expected '{{ platform_expected_hostname }}'
+          but found '{{ ansible_hostname }}'.
+
+  tasks:
+    - name: Read k3s node token from control plane
+      ansible.builtin.slurp:
+        src: /var/lib/rancher/k3s/server/node-token
+      register: internal_cluster_node_token_raw
+      delegate_to: "{{ groups[internal_cluster_control_plane_group][0] }}"
+      become: true
+
+    - name: Decode k3s node token
+      ansible.builtin.set_fact:
+        internal_cluster_node_token: "{{ internal_cluster_node_token_raw.content | b64decode | trim }}"
+
+    - name: Install k3s agent if missing
+      ansible.builtin.shell: |
+        curl -sfL https://get.k3s.io | \
+          INSTALL_K3S_CHANNEL={{ k3s_channel }} \
+          K3S_URL=https://{{ hostvars[groups[internal_cluster_control_plane_group][0]].ansible_host }}:{{ internal_cluster_server_port }} \
+          K3S_TOKEN={{ internal_cluster_node_token | quote }} \
+          sh -
+      args:
+        creates: /etc/systemd/system/k3s-agent.service
+
+    - name: Ensure k3s-agent service is enabled and running
+      ansible.builtin.service:
+        name: k3s-agent
+        enabled: true
+        state: started
+
+    - name: Wait for platform node to become Ready
+      ansible.builtin.shell: >-
+        kubectl get node {{ platform_expected_hostname }}
+        -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+      register: platform_node_ready
+      changed_when: false
+      retries: 30
+      delay: 5
+      until: platform_node_ready.stdout == "True"
+      delegate_to: "{{ groups[internal_cluster_control_plane_group][0] }}"
+      become: true

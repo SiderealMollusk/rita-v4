@@ -1,0 +1,62 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitea
+  namespace: platform
+spec:
+  dependsOn:
+    - name: platform-postgres
+      namespace: platform
+  interval: 30m
+  chart:
+    spec:
+      chart: gitea
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+      version: "2.*"
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    adminUsername: virgil
+    adminEmail: admin@example.invalid
+    existingSecret: gitea-admin-secret
+    existingSecretKey: admin-password
+    appName: Rita Forge
+    rootURL: ""
+    exposeSSH: false
+    postgresql:
+      enabled: false
+    externalDatabase:
+      host: platform-postgres
+      port: 5432
+      user: gitea
+      database: gitea
+      existingSecret: gitea-db-secret
+      existingSecretPasswordKey: db-password
+    persistence:
+      enabled: true
+      storageClass: local-path
+      size: 10Gi
+    service:
+      type: ClusterIP
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
+    nodeSelector:
+      rita.role: platform
+    commonLabels:
+      rita.service/name: gitea
+      rita.service/tier: platform
+      rita.observability/logs: "true"
+      rita.observability/probe: "http"
+      rita.backup/stateful: "true"

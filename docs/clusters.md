@@ -25,14 +25,17 @@ Purpose:
 - monitoring stack home
 
 Shape:
-- currently single-node `k3s` on `ops-brain`
-- intended to grow later with additional physical nodes
+- current control plane is `ops-brain`
+- repo now carries a codified worker-join path for the `platform-node`
+- intended steady-state shape is `ops-brain` + `platform-node`
 
 Verify:
 1. `scripts/2-ops/ops-brain/07-verify-cluster.sh`
-2. `ops/ansible/inventory/ops-brain.ini`
-3. `ops/ansible/group_vars/ops_brain.yml`
-4. `docs/progress_log/0100-ops-brain-bootstrap-complete.md`
+2. `scripts/2-ops/worker/05-verify-cluster.sh`
+3. `ops/ansible/inventory/internal-cluster.ini`
+4. `ops/ansible/group_vars/internal_cluster.yml`
+5. `docs/adding-a-machine.md`
+6. `docs/progress_log/0420-flux-bootstrap-complete-and-cluster-network-policy-codified.md`
 
 ## 3. Local Simulation Cluster
 Purpose:

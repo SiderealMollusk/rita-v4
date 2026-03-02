@@ -1,0 +1,3 @@
+name	namespace	stateful	data_class	durable	backup_target	backup_implemented	notes
+platform-postgres	platform	true	durable-app-state	true	nas/postgres	false	intentionally-unimplemented-until-nas-lane-is-real
+gitea	platform	true	durable-app-state	true	nas/app-state	false	intentionally-unimplemented-until-nas-lane-is-real
