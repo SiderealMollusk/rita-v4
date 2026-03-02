@@ -1,6 +1,6 @@
 ---
-- name: Join platform worker to the internal k3s cluster
-  hosts: platform_workers
+- name: Join workload worker to the internal k3s cluster
+  hosts: workload_workers
   become: true
   gather_facts: true
 
@@ -23,13 +23,13 @@
           - k3s_channel | length > 0
         fail_msg: "Missing required var: k3s_channel."
 
-    - name: Require expected platform hostname
+    - name: Require expected workload hostname
       ansible.builtin.assert:
         that:
-          - platform_expected_hostname is defined
-          - ansible_facts["hostname"] == platform_expected_hostname
+          - workload_expected_hostname is defined
+          - ansible_facts["hostname"] == workload_expected_hostname
         fail_msg: >-
-          Platform hostname mismatch. Expected '{{ platform_expected_hostname }}'
+          Workload hostname mismatch. Expected '{{ workload_expected_hostname }}'
           but found '{{ ansible_facts["hostname"] }}'.
 
   tasks:
@@ -60,14 +60,14 @@
         enabled: true
         state: started
 
-    - name: Wait for platform node to become Ready
+    - name: Wait for workload node to become Ready
       ansible.builtin.shell: >-
-        kubectl get node {{ platform_expected_hostname }}
+        kubectl get node {{ workload_expected_hostname }}
         -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
-      register: platform_node_ready
+      register: workload_node_ready
       changed_when: false
       retries: 30
       delay: 5
-      until: platform_node_ready.stdout == "True"
+      until: workload_node_ready.stdout == "True"
       delegate_to: "{{ groups[internal_cluster_control_plane_group][0] }}"
       become: true

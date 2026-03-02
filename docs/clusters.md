@@ -35,7 +35,7 @@ Verify:
 3. `ops/ansible/inventory/internal-cluster.ini`
 4. `ops/ansible/group_vars/internal_cluster.yml`
 5. `docs/adding-a-machine.md`
-6. `docs/progress_log/0420-flux-bootstrap-complete-and-cluster-network-policy-codified.md`
+6. `docs/progress_log/0430-workload-node-joined-and-api-policy-extended.md`
 
 ## 3. Local Simulation Cluster
 Purpose:

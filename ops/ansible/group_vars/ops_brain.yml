@@ -5,14 +5,17 @@ ops_brain_disable_sleep: true
 ops_brain_k3s_api_port: "6443"
 ops_brain_k3s_api_allowed_sources:
   - "192.168.5.182"
+  - "192.168.6.181"
   - "192.168.5.227"
 ops_brain_flannel_vxlan_port: "8472"
 ops_brain_flannel_allowed_sources:
   - "192.168.5.182"
+  - "192.168.6.181"
 
 k3s_channel: "stable"
 helm_install_method: "script"
 helm_install_script_url: "https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"
+eso_namespace: "external-secrets"
 
 pangolin_newt_namespace: "newt"
 pangolin_newt_release_name: "ops-brain-newt"

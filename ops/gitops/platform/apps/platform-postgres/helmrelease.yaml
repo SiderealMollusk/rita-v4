@@ -23,12 +23,9 @@ spec:
     fullnameOverride: platform-postgres
     auth:
       enablePostgresUser: true
-      username: gitea
-      database: gitea
       existingSecret: platform-postgres-auth
       secretKeys:
         adminPasswordKey: postgres-password
-        userPasswordKey: password
     architecture: standalone
     primary:
       persistence:
@@ -49,6 +46,12 @@ spec:
         rita.service/tier: data
         rita.observability/logs: "true"
         rita.backup/stateful: "true"
+      initdb:
+        scripts:
+          00-platform-postgres-readme.sql: |
+            -- Shared platform Postgres base instance.
+            -- App-specific databases/users should be created deliberately later,
+            -- not implicitly by the base service bootstrap.
     metrics:
       enabled: true
       serviceMonitor:

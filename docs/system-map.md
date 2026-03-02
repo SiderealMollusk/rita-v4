@@ -31,6 +31,8 @@ Validated navigation model: 2026-02-28
   - `ops/ansible/inventory/vps.ini`
   - `ops/ansible/inventory/ops-brain.ini`
   - `ops/ansible/inventory/platform.ini`
+  - `ops/ansible/inventory/workload.ini`
+  - `ops/ansible/inventory/workload-cluster.ini`
   - `ops/ansible/inventory/internal-cluster.ini`
 
 ## Automation Variables (domains, namespaces, deploy vars)
@@ -39,6 +41,7 @@ Validated navigation model: 2026-02-28
   - `ops/ansible/group_vars/vps.yml`
   - `ops/ansible/group_vars/ops_brain.yml`
   - `ops/ansible/group_vars/platform.yml`
+  - `ops/ansible/group_vars/workload.yml`
   - `ops/ansible/group_vars/internal_cluster.yml`
 
 ## Hittable Routes (FQDN -> backend/ports/exposure)
@@ -70,10 +73,12 @@ Validated navigation model: 2026-02-28
 - Vocabulary/reference rules: `docs/vocabulary.md`
 - Freshness/reference rules: `docs/freshness.md`
 - Durable machine-onboarding contract: `docs/adding-a-machine.md`
+- Current workload onboarding state: `docs/progress_log/0430-workload-node-joined-and-api-policy-extended.md`
 - Host/operator-boundary runbooks: `scripts/2-ops/host/`
 - VPS runbook scripts: `scripts/2-ops/vps/`
 - Ops-brain runbook scripts: `scripts/2-ops/ops-brain/`
 - Platform worker runbook scripts: `scripts/2-ops/worker/`
+- Workload worker runbook scripts: `scripts/2-ops/workload/`
 - NUC/Proxmox runbook scripts: `scripts/2-ops/nuc/`
 - Ansible playbooks: `ops/ansible/playbooks/`
 - GitOps manifests: `ops/gitops/`

@@ -99,6 +99,28 @@ Use it for:
 1. inventory identity
 2. VM-level references that must distinguish it from the worker VM
 
+### `workload-pve`
+Meaning:
+1. the physical Proxmox substrate for the `workload-node` lane
+
+Use it for:
+1. physical host inventory identity
+2. Proxmox inspection and VM lifecycle operations for the workload lane
+
+### `workload-vm-worker`
+Meaning:
+1. the worker VM hosted on `workload-pve`
+2. the future internal-cluster worker used for application and compute placement
+
+Use it for:
+1. inventory identity
+2. workload worker onboarding automation
+3. VM-level references that must distinguish it from `platform-vm-worker`
+
+Rule:
+1. inventory alias may be `workload-vm-worker`
+2. in-guest hostname may still be `workload`
+
 ### `workload-node`
 Meaning:
 1. the conceptual server role for application and compute workloads

@@ -1,0 +1,21 @@
+---
+- name: Label workload node
+  hosts: ops_brain
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Require workload node label var
+      ansible.builtin.assert:
+        that:
+          - workload_k3s_role_label is defined
+          - workload_k3s_role_label | length > 0
+          - workload_expected_hostname is defined
+          - workload_expected_hostname | length > 0
+        fail_msg: "Missing workload node label or hostname vars."
+
+  tasks:
+    - name: Label node as workload
+      ansible.builtin.command: kubectl label node {{ workload_expected_hostname }} {{ workload_k3s_role_label }} --overwrite
+      register: workload_label_result
+      changed_when: "'not labeled' not in workload_label_result.stdout"

@@ -4,6 +4,5 @@ resources:
   - ../../platform/namespaces
   - ../../platform/sources
   - ../../platform/apps/platform-postgres
-  - ../../platform/apps/gitea
   - ../../platform/observability
   - ../../platform/backup-state

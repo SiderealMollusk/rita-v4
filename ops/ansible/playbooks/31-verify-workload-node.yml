@@ -1,0 +1,32 @@
+---
+- name: Verify workload node state
+  hosts: ops_brain
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Require workload verify vars
+      ansible.builtin.assert:
+        that:
+          - workload_expected_hostname is defined
+          - workload_expected_hostname | length > 0
+          - workload_k3s_role_label is defined
+          - workload_k3s_role_label | length > 0
+        fail_msg: "Missing workload verify vars."
+
+  tasks:
+    - name: Verify workload node is Ready
+      ansible.builtin.command: >-
+        kubectl get node {{ workload_expected_hostname }}
+        -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+      register: workload_node_ready
+      changed_when: false
+      failed_when: workload_node_ready.stdout != "True"
+
+    - name: Verify workload label exists
+      ansible.builtin.command: >-
+        kubectl get node {{ workload_expected_hostname }}
+        -o jsonpath='{.metadata.labels.rita\.role}'
+      register: workload_node_role
+      changed_when: false
+      failed_when: workload_node_role.stdout != "workload"

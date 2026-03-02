@@ -33,6 +33,8 @@ Services lane:
 1. `10-install-newt.sh`
 2. `11-install-monitoring-stack.sh`
 3. `12-verify-monitoring-stack.sh`
+4. `13-install-eso.sh`
+5. `14-apply-secret-bridge.sh`
 
 Notes:
 1. This path assumes fresh Debian 12 with working `virgil` SSH + sudo.
@@ -48,6 +50,8 @@ Notes:
 7. Uptime Kuma is deployed as part of the monitoring stack, but monitor definitions are a separate seeded layer.
 8. `08-sync-kubeconfig.sh` is the canonical rerender path for `/home/virgil/.kube/config` on ops-brain when host-side consumers need a durable kubeconfig.
 9. Durable machine-onboarding expectations live in `docs/adding-a-machine.md`.
+10. External Secrets on the internal cluster is a cluster capability bootstrap, not a platform app.
+11. `14-apply-secret-bridge.sh` intentionally applies the canonical `onepassword-cluster-store.yaml` from `ops/gitops/` after creating the `op-token` secret.
 
 Current capacity order:
 1. bootstrap host

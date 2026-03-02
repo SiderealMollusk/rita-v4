@@ -1,6 +1,6 @@
 ---
-- name: Bootstrap platform worker host baseline
-  hosts: platform_workers
+- name: Bootstrap workload worker host baseline
+  hosts: workload_workers
   become: true
   gather_facts: true
 
@@ -8,11 +8,11 @@
     - name: Require flannel VXLAN allowlist vars
       ansible.builtin.assert:
         that:
-          - platform_flannel_vxlan_port is defined
-          - platform_flannel_vxlan_port | length > 0
-          - platform_flannel_allowed_sources is defined
-          - platform_flannel_allowed_sources | length > 0
-        fail_msg: "Missing platform flannel VXLAN UFW allowlist vars."
+          - workload_flannel_vxlan_port is defined
+          - workload_flannel_vxlan_port | length > 0
+          - workload_flannel_allowed_sources is defined
+          - workload_flannel_allowed_sources | length > 0
+        fail_msg: "Missing workload flannel VXLAN UFW allowlist vars."
 
     - name: Install baseline packages
       ansible.builtin.apt:
@@ -58,10 +58,10 @@
           - to
           - any
           - port
-          - "{{ platform_flannel_vxlan_port }}"
+          - "{{ workload_flannel_vxlan_port }}"
           - proto
           - udp
-      loop: "{{ platform_flannel_allowed_sources }}"
+      loop: "{{ workload_flannel_allowed_sources }}"
       register: ufw_allow_flannel_vxlan
       changed_when: "'Skipping adding existing rule' not in ufw_allow_flannel_vxlan.stdout"
 
@@ -76,12 +76,12 @@
         enabled: true
         state: started
 
-    - name: Verify expected platform hostname
+    - name: Verify expected workload hostname
       ansible.builtin.assert:
         that:
-          - platform_expected_hostname is defined
-          - ansible_facts["hostname"] == platform_expected_hostname
+          - workload_expected_hostname is defined
+          - ansible_facts["hostname"] == workload_expected_hostname
         fail_msg: >-
-          Platform hostname mismatch. Expected '{{ platform_expected_hostname }}'
+          Workload hostname mismatch. Expected '{{ workload_expected_hostname }}'
           but found '{{ ansible_facts["hostname"] }}'. Rebuild or fix cloud-init before
           continuing.
