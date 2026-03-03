@@ -20,6 +20,7 @@ Target application surface:
 5. `Deck`
 6. `Notes`
 7. `Tasks`
+8. `Talk`
 
 Deferred from the earlier first-wave sequence:
 1. `Leantime`
@@ -34,7 +35,7 @@ As of `0470`:
 1. the base Nextcloud deployment is live
 2. Redis is live
 3. external Postgres is live and in use
-4. the target collaboration apps are enabled
+4. the target collaboration apps are enabled, including `Talk`
 5. this plan now governs follow-on automation and hardening, not first bring-up
 
 ## Why This Pivot Is Coherent
@@ -74,6 +75,7 @@ For this repo, the right interpretation is:
 1. `Nextcloud` is a Pangolin Public Resource
 2. use `app.virgil.info` as the dedicated public host
 3. treat it as the main public collaboration suite, not an internal-only tool
+4. in the validated v1 setup, the Pangolin backend path to `nextcloud.workload.svc.cluster.local:8080` works with backend SSL enabled and should not be "simplified" based on generic reverse-proxy assumptions
 
 ### Data
 1. use external PostgreSQL via `platform-postgres`

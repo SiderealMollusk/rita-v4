@@ -16,6 +16,7 @@ The requested collaboration suite is enabled:
 4. `Deck`
 5. `Notes`
 6. `Tasks`
+7. `Talk`
 
 ## Validated State
 
@@ -96,13 +97,14 @@ V1 routing:
 1. DNS `CNAME app -> pangolin.virgil.info`
 2. Pangolin public resource targeting the `ops-brain` site
 3. backend target `http://nextcloud.workload.svc.cluster.local:8080`
+4. Pangolin backend SSL remains enabled for the working v1 path, even though the target is the in-cluster Nextcloud service on port `8080`
 
 This keeps v1 simple and avoids introducing a separate workload-local Newt/site before it is needed.
 
 ## Remaining Tech Debt
 
 1. Redis still depends on a legacy image namespace workaround
-2. the final public browser path through Pangolin should still be treated as a separate end-to-end verification step
+2. Jitsi is not yet integrated; `Talk` is live, but video-conferencing backend choice and configuration remain a separate step
 3. org/group bootstrap automation is still the next layer, not done yet
 
 ## Next Step

@@ -92,7 +92,7 @@ Current first-wave platform state is now:
 2. Flux healthy
 3. ESO installed and bridged to 1Password
 4. `platform-postgres` live on `platform`
-5. next real app target can move to `Leantime`
+5. the next real app target moved to `Nextcloud`; `Leantime` is now intentionally deferred
 
 ## Freshness
 

@@ -2,12 +2,15 @@
 Status: DRAFT
 Date: 2026-03-02
 
+Deprecated app note:
+`Leantime` is no longer an active near-term target. The current collaboration direction is the live `Nextcloud` suite in `docs/plans/0220-nextcloud-first-collaboration-suite.md`.
+
 ## Goal
 Reduce avoidable trial-and-error by:
 1. narrowing the self-hosted chat/collaboration choice down to one likely default
 2. sketching one deployment shape that can support:
 - chat
-- Leantime
+- Leantime (deprecated)
 - Jellyfin
 - PeerTube
 - n8n
@@ -165,7 +168,7 @@ Why:
 2. it should not live on `ops-brain`
 3. it is a real workload, not a platform primitive
 
-### 2. Leantime
+### 2. Leantime (deprecated)
 Suggested lane:
 1. deploy on `workload`
 
@@ -255,7 +258,7 @@ Runs on `platform`:
 ### Workload lane
 Runs on `workload`:
 1. chat platform
-2. Leantime
+2. Leantime (deprecated)
 3. Jellyfin
 4. PeerTube
 5. other friend-facing and app-facing workloads
@@ -275,12 +278,12 @@ If you want the shortest path with the least future regret:
 1. `platform-postgres` first
 2. choose one chat platform, default `Zulip`
 3. deploy that chat platform on `workload`
-4. deploy one simpler off-the-shelf app next, likely `Leantime`
+4. deploy one simpler off-the-shelf app next, but `Leantime` is no longer the recommended path
 5. defer `PeerTube` until you are ready for heavier state and federation concerns
 6. defer `Gitea` until the transition from platform-hardening into active app development
 
 ## Specific Product Notes
-### Leantime
+### Leantime (deprecated)
 Official Docker guidance points to:
 1. official Docker image
 2. official Docker Compose
@@ -331,7 +334,7 @@ Choose one:
 If no contrary requirement appears, the current recommendation is:
 1. `Zulip` for chat
 2. `platform-postgres` as the next shared primitive
-3. `Leantime` as an early off-the-shelf workload
+3. `Leantime` was the earlier off-the-shelf workload candidate, but the repo now prefers `Nextcloud`
 
 ## Sources
 1. [Zulip self-hosting](https://zulip.com/self-hosting/)

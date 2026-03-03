@@ -28,6 +28,7 @@ APPS=(
   notes
   tasks
   collectives
+  spreed
 )
 
 echo "[INFO] Using kubeconfig: ${KUBECONFIG}"

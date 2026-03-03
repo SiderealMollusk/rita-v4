@@ -73,8 +73,29 @@ Validated navigation model: 2026-02-28
 - Vocabulary/reference rules: `docs/vocabulary.md`
 - Freshness/reference rules: `docs/freshness.md`
 - Durable machine-onboarding contract: `docs/adding-a-machine.md`
+- Nextcloud agent-thinking notes: `docs/nextcloud-agents/`
+- Product requirements and concept docs: `docs/prd/`
+- Product domain spec: `docs/prd/domain/`
+- Product subsystem stubs: `docs/prd/subsystems/`
+- Lightweight requirements sketches: `docs/requirements/`
+- Numbered platform ARDs:
+  - `docs/requirements/platform/0001-canonical-sources-of-truth.md`
+  - `docs/requirements/platform/0002-topology-and-lanes.md`
+  - `docs/requirements/platform/0003-cluster-and-shared-services.md`
+  - `docs/requirements/platform/0004-exposure-and-edge-model.md`
+  - `docs/requirements/platform/0005-runbooks-and-operator-boundaries.md`
+  - `docs/requirements/product/0001-product-thesis-and-shape.md`
+  - `docs/requirements/product/0002-front-office-and-machine-core.md`
+  - `docs/requirements/product/0003-core-entities.md`
+  - `docs/requirements/product/0004-management-and-memory-model.md`
+  - `docs/requirements/product/0005-tentpoles-and-constraints.md`
 - Current first-wave app platform state: `docs/progress_log/0450-platform-postgres-live-with-image-workaround.md`
 - Current Nextcloud live state: `docs/progress_log/0470-nextcloud-live-and-bootstrapped.md`
+- Current ARD sketch anchors:
+  - `docs/progress_log/0480-ard-platform-and-product-sketches-added.md`
+  - `docs/progress_log/0490-platform-ard-refactored-into-numbered-sots.md`
+  - `docs/progress_log/0500-ard-renamed-to-requirements.md`
+  - `docs/progress_log/0510-product-requirements-refactored-into-numbered-docs.md`
 - Host/operator-boundary runbooks: `scripts/2-ops/host/`
 - VPS runbook scripts: `scripts/2-ops/vps/`
 - Ops-brain runbook scripts: `scripts/2-ops/ops-brain/`

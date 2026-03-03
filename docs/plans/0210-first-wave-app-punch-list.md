@@ -4,11 +4,12 @@ Date: 2026-03-02
 Latest validated progress: `docs/progress_log/0450-platform-postgres-live-with-image-workaround.md`
 
 Superseded by: `docs/plans/0220-nextcloud-first-collaboration-suite.md`
+Deprecated direction: `Leantime` is no longer an active first-wave target and should be treated as intentionally deferred in favor of the live `Nextcloud` suite.
 
 ## Goal
 Turn the now-working three-node internal cluster into a usable app platform by executing the first intentionally ordered app wave:
 1. `platform-postgres`
-2. `Leantime`
+2. `Leantime` (deprecated)
 3. `Zulip`
 4. `n8n`
 5. document `Jellyfin` as deferred
@@ -46,8 +47,8 @@ These are treated as decided inputs for this phase:
 ### 1. `platform-postgres`
 This creates the first shared stateful primitive without immediately forcing app-facing UX decisions.
 
-### 2. `Leantime`
-This is a real user-facing app the user already wants, but it does not depend on the Postgres decision.
+### 2. `Leantime` (deprecated)
+This was the earlier first public work-management candidate, but it is now deprecated in favor of using `Nextcloud` as the collaboration/workspace center.
 
 ### 3. `Zulip`
 This is the chosen default chat/collaboration candidate and the first app likely to create visible user/account pressure.
@@ -65,7 +66,7 @@ These are deliberately deferred because:
 ### In Scope
 1. install and bridge External Secrets on the internal cluster
 1. deploy `platform-postgres`
-2. deploy `Leantime`
+2. `Leantime` is no longer part of the active path
 3. deploy `Zulip`
 4. deploy `n8n` as a private service
 5. document the deferred state for `Jellyfin` and `PeerTube`
@@ -126,9 +127,9 @@ Completed with a temporary image-source workaround.
 3. service reachable in-cluster
 4. placement lands on `platform`
 
-## Stage 2 - `Leantime`
+## Stage 2 - `Leantime` (deprecated)
 ### Target
-Deploy Leantime as the first public work-management app on `workload`.
+This stage is intentionally not being executed. `Nextcloud` replaced `Leantime` as the first collaboration/work-management surface.
 
 ### Data Shape
 1. app deployment on `workload`
@@ -210,7 +211,7 @@ Document as deferred because:
 ## Success Criteria
 This phase is successful when:
 1. `platform-postgres` is healthy on `platform`
-2. `Leantime` is healthy and public on `workload`
+2. `Leantime` remains deferred and is not part of the active platform path
 3. `Zulip` is healthy and public on `workload`
 4. `n8n` is healthy and private
 5. `Jellyfin` and `PeerTube` are explicitly deferred, not half-started
