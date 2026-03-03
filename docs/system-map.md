@@ -74,7 +74,7 @@ Validated navigation model: 2026-02-28
 - Freshness/reference rules: `docs/freshness.md`
 - Durable machine-onboarding contract: `docs/adding-a-machine.md`
 - Current first-wave app platform state: `docs/progress_log/0450-platform-postgres-live-with-image-workaround.md`
-- Current Nextcloud scaffolding state: `docs/progress_log/0460-nextcloud-gitops-scaffolded.md`
+- Current Nextcloud live state: `docs/progress_log/0470-nextcloud-live-and-bootstrapped.md`
 - Host/operator-boundary runbooks: `scripts/2-ops/host/`
 - VPS runbook scripts: `scripts/2-ops/vps/`
 - Ops-brain runbook scripts: `scripts/2-ops/ops-brain/`

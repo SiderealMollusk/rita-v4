@@ -28,6 +28,15 @@ Deferred from the earlier first-wave sequence:
 4. `Jellyfin`
 5. `PeerTube`
 
+## Current State
+
+As of `0470`:
+1. the base Nextcloud deployment is live
+2. Redis is live
+3. external Postgres is live and in use
+4. the target collaboration apps are enabled
+5. this plan now governs follow-on automation and hardening, not first bring-up
+
 ## Why This Pivot Is Coherent
 
 The new operating assumption is:

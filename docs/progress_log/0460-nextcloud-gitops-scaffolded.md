@@ -18,21 +18,14 @@ This includes:
    - bootstrapping the Nextcloud database on `platform-postgres`
    - enabling the desired collaboration app bundle with `occ`
 
-## Important Boundary
+## Freshness
 
-This scaffold is **not yet activated** in the live cluster root.
+This note records the scaffold stage only.
 
-Safe-to-merge-now pieces:
-1. `ops/gitops/workload/namespaces/`
-2. `ops/gitops/workload/sources/`
+The live deployment state has advanced beyond it.
 
-Prepared-but-not-rooted-yet pieces:
-1. `ops/gitops/workload/apps/nextcloud-redis/`
-2. `ops/gitops/workload/apps/nextcloud/`
-
-This keeps the live cluster stable while the remaining activation decisions are made:
-1. 1Password contract finalization
-2. app bring-up order
+See:
+1. `docs/progress_log/0470-nextcloud-live-and-bootstrapped.md`
 
 ## Canonical Secret Contract
 
@@ -68,9 +61,8 @@ The scaffolding already bakes in the major decisions from the Nextcloud research
 
 ## Remaining Tech Debt / Unknowns
 
-1. the app lane is not yet activated in the live root
-2. `Collectives` dependency behavior still needs live validation after bring-up
-3. org-provisioning automation is still a later layer; only DB bootstrap and suite enablement are scaffolded so far
+1. `Collectives` dependency behavior had not yet been live-validated at scaffold time
+2. org-provisioning automation is still a later layer; only DB bootstrap and suite enablement were scaffolded here
 
 ## Files
 

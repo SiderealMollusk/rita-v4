@@ -29,7 +29,7 @@ db_password="$(printf '%s' "${db_password_b64}" | base64 -d)"
 
 kubectl exec -n platform statefulset/platform-postgres -- bash -lc "
 export PGPASSWORD='${platform_password}'
-/opt/bitnami/postgresql/bin/psql -U postgres -d postgres <<'SQL'
+/opt/bitnami/postgresql/bin/psql -v ON_ERROR_STOP=1 -U postgres -d postgres <<'SQL'
 DO \$\$
 BEGIN
   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '${db_user}') THEN
@@ -39,17 +39,13 @@ BEGIN
   END IF;
 END
 \$\$;
-
-DO \$\$
-BEGIN
-  IF NOT EXISTS (SELECT FROM pg_database WHERE datname = '${db_name}') THEN
-    EXECUTE format('CREATE DATABASE %I OWNER %I', '${db_name}', '${db_user}');
-  END IF;
-END
-\$\$;
-
-GRANT ALL PRIVILEGES ON DATABASE \"${db_name}\" TO \"${db_user}\";
 SQL
+
+if ! /opt/bitnami/postgresql/bin/psql -tAc \"SELECT 1 FROM pg_database WHERE datname='${db_name}'\" -U postgres -d postgres | grep -q 1; then
+  /opt/bitnami/postgresql/bin/createdb -U postgres -O '${db_user}' '${db_name}'
+fi
+
+/opt/bitnami/postgresql/bin/psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c \"GRANT ALL PRIVILEGES ON DATABASE \\\"${db_name}\\\" TO \\\"${db_user}\\\";\"
 "
 
 echo "[INFO] Nextcloud database bootstrap completed"

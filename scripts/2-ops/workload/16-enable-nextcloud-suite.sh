@@ -35,6 +35,23 @@ echo "[INFO] Enabling Nextcloud collaboration suite apps on ${NAMESPACE}/${DEPLO
 
 kubectl rollout status deployment/"${DEPLOYMENT}" -n "${NAMESPACE}" --timeout=10m
 
+install_status="$(kubectl exec -n "${NAMESPACE}" deployment/"${DEPLOYMENT}" -- bash -lc "php occ status --output=json_pretty 2>/dev/null || php occ status" || true)"
+echo "${install_status}"
+
+if ! grep -q '"installed": true' <<<"${install_status}" && ! grep -q 'installed: true' <<<"${install_status}"; then
+  echo "[INFO] Nextcloud is not installed yet; running maintenance:install with the deployment environment"
+  kubectl exec -n "${NAMESPACE}" deployment/"${DEPLOYMENT}" -- bash -lc '
+    php occ maintenance:install -n \
+      --admin-user "$NEXTCLOUD_ADMIN_USER" \
+      --admin-pass "$NEXTCLOUD_ADMIN_PASSWORD" \
+      --database pgsql \
+      --database-name "$POSTGRES_DB" \
+      --database-user "$POSTGRES_USER" \
+      --database-pass "$POSTGRES_PASSWORD" \
+      --database-host "$POSTGRES_HOST"
+  '
+fi
+
 for app in "${APPS[@]}"; do
   echo "[INFO] Installing/enabling app: ${app}"
   kubectl exec -n "${NAMESPACE}" deployment/"${DEPLOYMENT}" -- bash -lc \
