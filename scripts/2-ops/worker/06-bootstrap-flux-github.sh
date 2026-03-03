@@ -66,7 +66,7 @@ OPS_BRAIN_USER="$(runbook_inventory_get_field "$OPS_BRAIN_INV" "ops-brain" "ansi
 
 runbook_refresh_known_hosts_from_inventory "$OPS_BRAIN_INV"
 
-LOCAL_INTERNAL_KUBECONFIG="${HOME}/.kube/config-rita-ops-brain"
+LOCAL_INTERNAL_KUBECONFIG="${KUBECONFIG_INTERNAL:-${HOME}/.kube/config-rita-ops-brain}"
 if ! kubectl get nodes --request-timeout=10s >/dev/null 2>&1; then
   echo "[INFO] Local kubectl is not currently pointed at the internal cluster"
   echo "[INFO] Refreshing canonical ops-brain kubeconfig before copy"
