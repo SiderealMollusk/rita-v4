@@ -4,6 +4,9 @@ resources:
   - flux-system
   - ../../platform/namespaces
   - ../../platform/sources
+  - ../../workload/namespaces
+  - ../../workload/sources
+  - ../../workload/apps
   - ../../platform/apps/platform-postgres
   - ../../platform/observability
   - ../../platform/backup-state

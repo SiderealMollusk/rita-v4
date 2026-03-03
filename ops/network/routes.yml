@@ -41,3 +41,10 @@ routes:
     ports:
       - 80
     notes: "Pangolin-routed Uptime Kuma resource targeting the ops-brain monitoring cluster."
+  - name: "workload-nextcloud"
+    fqdn: "app.virgil.info"
+    backend: "workload"
+    exposure: "pangolin"
+    ports:
+      - 80
+    notes: "Planned Pangolin-routed Nextcloud collaboration suite on the workload lane."

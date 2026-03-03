@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nextcloud-redis
+  namespace: workload
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: redis
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+      version: "21.*"
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    architecture: standalone
+    fullnameOverride: nextcloud-redis
+    auth:
+      enabled: true
+      existingSecret: nextcloud-redis-auth
+      existingSecretPasswordKey: redis-password
+    master:
+      persistence:
+        enabled: true
+        storageClass: local-path
+        size: 8Gi
+      nodeSelector:
+        rita.role: workload
+      podLabels:
+        rita.service/name: nextcloud-redis
+        rita.service/tier: cache
+        rita.observability/logs: "true"
+        rita.backup/stateful: "true"
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 1Gi

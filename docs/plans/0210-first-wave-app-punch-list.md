@@ -1,6 +1,9 @@
 # 0210 - First Wave App Punch List
-Status: ACTIVE
+Status: SUPERSEDED
 Date: 2026-03-02
+Latest validated progress: `docs/progress_log/0450-platform-postgres-live-with-image-workaround.md`
+
+Superseded by: `docs/plans/0220-nextcloud-first-collaboration-suite.md`
 
 ## Goal
 Turn the now-working three-node internal cluster into a usable app platform by executing the first intentionally ordered app wave:
@@ -101,6 +104,9 @@ Without ESO, the shared Postgres path is blocked before Helm even matters.
 ## Stage 1 - `platform-postgres`
 ### Target
 Stand up one shared Postgres service on `platform`.
+
+### Status
+Completed with a temporary image-source workaround.
 
 ### Questions To Resolve
 1. chart/operator choice

@@ -73,7 +73,8 @@ Validated navigation model: 2026-02-28
 - Vocabulary/reference rules: `docs/vocabulary.md`
 - Freshness/reference rules: `docs/freshness.md`
 - Durable machine-onboarding contract: `docs/adding-a-machine.md`
-- Current workload onboarding state: `docs/progress_log/0430-workload-node-joined-and-api-policy-extended.md`
+- Current first-wave app platform state: `docs/progress_log/0450-platform-postgres-live-with-image-workaround.md`
+- Current Nextcloud scaffolding state: `docs/progress_log/0460-nextcloud-gitops-scaffolded.md`
 - Host/operator-boundary runbooks: `scripts/2-ops/host/`
 - VPS runbook scripts: `scripts/2-ops/vps/`
 - Ops-brain runbook scripts: `scripts/2-ops/ops-brain/`
@@ -85,6 +86,7 @@ Validated navigation model: 2026-02-28
 - Human reset playbook: `docs/reset-vps.md`
 - Current platform architecture plan: `docs/plans/0160-platform-flux-gitea-and-worker-expansion.md`
 - Current platform execution plan: `docs/plans/0170-platform-worker-execution-plan.md`
+- Current collaboration-suite plan: `docs/plans/0220-nextcloud-first-collaboration-suite.md`
 - Earlier sequencing plan: `docs/plans/0110-ops-brain-platform-workload-sequencing.md`
 - Detailed ops-brain plan: `docs/plans/0120-ops-brain-k3s-monitoring-stack.md`
 - Detailed Pangolin CLI / access plan: `docs/plans/0130-pangolin-cli-route-management.md`

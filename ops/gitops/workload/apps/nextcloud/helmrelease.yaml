@@ -1,0 +1,146 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nextcloud
+  namespace: workload
+spec:
+  dependsOn:
+    - name: platform-postgres
+      namespace: platform
+    - name: nextcloud-redis
+      namespace: workload
+  interval: 30m
+  chart:
+    spec:
+      chart: nextcloud
+      sourceRef:
+        kind: HelmRepository
+        name: nextcloud-charts
+        namespace: flux-system
+      version: "8.9.*"
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: nextcloud
+    replicaCount: 1
+    image:
+      repository: nextcloud
+      flavor: apache
+      pullPolicy: IfNotPresent
+    nginx:
+      enabled: false
+    phpClientHttpsFix:
+      enabled: true
+      protocol: https
+    nextcloud:
+      host: app.virgil.info
+      datadir: /var/www/html/data
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-admin-secret
+        usernameKey: username
+        passwordKey: password
+      defaultConfigs:
+        redis.config.php: false
+      configs:
+        rita-proxy.config.php: |
+          <?php
+          $CONFIG = array(
+            'trusted_proxies' => array('10.42.0.0/16', '10.43.0.0/16'),
+            'overwriteprotocol' => 'https',
+            'overwritehost' => 'app.virgil.info',
+            'default_phone_region' => 'US',
+          );
+        rita-redis.config.php: |
+          <?php
+          $CONFIG = array(
+            'memcache.local' => '\OC\Memcache\APCu',
+            'memcache.distributed' => '\OC\Memcache\Redis',
+            'memcache.locking' => '\OC\Memcache\Redis',
+            'redis' => array(
+              'host' => getenv('REDIS_HOST'),
+              'port' => (int) getenv('REDIS_HOST_PORT'),
+              'password' => getenv('REDIS_HOST_PASSWORD'),
+            ),
+          );
+      extraEnv:
+        - name: REDIS_HOST
+          value: nextcloud-redis-master.workload.svc.cluster.local
+        - name: REDIS_HOST_PORT
+          value: "6379"
+        - name: REDIS_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-redis-auth
+              key: redis-password
+    internalDatabase:
+      enabled: false
+      name: nextcloud
+    externalDatabase:
+      enabled: true
+      type: postgresql
+      host: platform-postgres.platform.svc.cluster.local:5432
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-db-secret
+        usernameKey: db-user
+        passwordKey: db-password
+        databaseKey: db-name
+    mariadb:
+      enabled: false
+    postgresql:
+      enabled: false
+    redis:
+      enabled: false
+    cronjob:
+      enabled: true
+    persistence:
+      enabled: true
+      storageClass: local-path
+      accessMode: ReadWriteOnce
+      size: 100Gi
+    service:
+      type: ClusterIP
+      port: 8080
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 2
+        memory: 4Gi
+    postRenderers:
+      - kustomize:
+          patches:
+            - target:
+                kind: Deployment
+                name: nextcloud
+              patch: |
+                - op: add
+                  path: /spec/template/spec/nodeSelector
+                  value:
+                    rita.role: workload
+                - op: add
+                  path: /spec/template/metadata/labels/rita.service~1name
+                  value: nextcloud
+                - op: add
+                  path: /spec/template/metadata/labels/rita.service~1tier
+                  value: collaboration
+                - op: add
+                  path: /spec/template/metadata/labels/rita.observability~1logs
+                  value: "true"
+                - op: add
+                  path: /spec/template/metadata/labels/rita.backup~1stateful
+                  value: "true"
+            - target:
+                kind: CronJob
+                name: nextcloud-cron
+              patch: |
+                - op: add
+                  path: /spec/jobTemplate/spec/template/spec/nodeSelector
+                  value:
+                    rita.role: workload
