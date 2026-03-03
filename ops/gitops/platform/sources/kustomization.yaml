@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - onepassword-cluster-store.yaml
   - helmrepositories.yaml
+  - ocirepositories.yaml
