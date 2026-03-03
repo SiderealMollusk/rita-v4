@@ -6,3 +6,14 @@ metadata:
 spec:
   interval: 1h
   url: https://nextcloud.github.io/helm/
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: bitnami-redis
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: oci://registry-1.docker.io/bitnamicharts/redis
+  ref:
+    semver: "21.*"

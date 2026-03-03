@@ -11,8 +11,8 @@ This includes:
 2. a `nextcloud-redis` HelmRelease scaffold
 3. a `nextcloud` HelmRelease scaffold
 4. ExternalSecret contracts for:
-   - Nextcloud admin credentials
-   - Nextcloud database credentials
+   - Nextcloud admin password
+   - Nextcloud database password
    - Redis password
 5. host-side runbooks for:
    - bootstrapping the Nextcloud database on `platform-postgres`
@@ -31,21 +31,19 @@ Prepared-but-not-rooted-yet pieces:
 2. `ops/gitops/workload/apps/nextcloud/`
 
 This keeps the live cluster stable while the remaining activation decisions are made:
-1. 1Password item creation
+1. 1Password contract finalization
 2. app bring-up order
 
-## Canonical Secret Contracts
+## Canonical Secret Contract
 
-Prepared 1Password item/field contracts:
-1. item `nextcloud-admin`
-   - `nextcloud-username`
-   - `nextcloud-password`
-2. item `nextcloud-db`
-   - `db-name`
-   - `db-user`
-   - `db-password`
-3. item `nextcloud-redis`
-   - `redis-password`
+V1 should converge on one 1Password item:
+1. item `nextcloud-main`
+2. fields:
+   - `nextcloud-admin`
+   - `nextcloud-db`
+   - `nextcloud-redis`
+
+In-cluster secrets should be derived from that single item rather than requiring three separate 1Password items.
 
 ## Current Deployment Contract
 

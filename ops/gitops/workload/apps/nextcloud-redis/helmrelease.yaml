@@ -5,14 +5,10 @@ metadata:
   namespace: workload
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: redis
-      sourceRef:
-        kind: HelmRepository
-        name: bitnami
-        namespace: flux-system
-      version: "21.*"
+  chartRef:
+    kind: OCIRepository
+    name: bitnami-redis
+    namespace: flux-system
   install:
     remediation:
       retries: 3

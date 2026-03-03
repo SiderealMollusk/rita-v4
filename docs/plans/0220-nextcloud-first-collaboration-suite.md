@@ -199,6 +199,14 @@ Flux/Helm should create:
 6. cron enabled
 7. config snippets for proxy/cache defaults
 
+Canonical secret contract for v1:
+1. one 1Password item: `nextcloud-main`
+2. fields:
+   - `nextcloud-admin`
+   - `nextcloud-db`
+   - `nextcloud-redis`
+3. Kubernetes `ExternalSecret` resources derive app-facing secrets from that single item
+
 ### Stage B - Suite enablement bootstrap
 A no-arg runbook should:
 1. wait for Nextcloud readiness
