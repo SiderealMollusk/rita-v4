@@ -4,3 +4,4 @@ workload_k3s_role_label: "rita.role=workload"
 workload_flannel_vxlan_port: "8472"
 workload_flannel_allowed_sources:
   - "192.168.6.16"
+  - "192.168.5.182"

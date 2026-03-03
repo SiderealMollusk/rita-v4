@@ -3,6 +3,7 @@ platform_k3s_role_label: "rita.role=platform"
 platform_flannel_vxlan_port: "8472"
 platform_flannel_allowed_sources:
   - "192.168.6.16"
+  - "192.168.6.181"
 
 platform_storage_class: "local-path"
 platform_postgres_pvc_size: "20Gi"

@@ -16,6 +16,14 @@ spec:
     remediation:
       retries: 3
   values:
+    # Temporary mitigation for Bitnami's free versioned image deprecation.
+    # Revisit before expanding platform-postgres usage or hardening backups.
+    image:
+      registry: docker.io
+      repository: bitnamilegacy/postgresql
+    global:
+      security:
+        allowInsecureImages: true
     fullnameOverride: platform-postgres
     auth:
       enablePostgresUser: true
@@ -50,6 +58,9 @@ spec:
             -- not implicitly by the base service bootstrap.
     metrics:
       enabled: true
+      image:
+        registry: docker.io
+        repository: bitnamilegacy/postgres-exporter
       serviceMonitor:
         enabled: true
         namespace: monitoring
