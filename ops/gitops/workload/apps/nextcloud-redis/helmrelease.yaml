@@ -16,6 +16,12 @@ spec:
     remediation:
       retries: 3
   values:
+    image:
+      registry: docker.io
+      repository: bitnamilegacy/redis
+    global:
+      security:
+        allowInsecureImages: true
     architecture: standalone
     fullnameOverride: nextcloud-redis
     auth:
