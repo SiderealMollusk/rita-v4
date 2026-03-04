@@ -1,0 +1,13 @@
+# Public Nextcloud route for the workload lane.
+# This targets the in-cluster edge proxy so /exapps/ can route to HaRP.
+
+public-resources:
+  nextcloud:
+    name: workload nextcloud
+    protocol: http
+    full-domain: app.virgil.info
+    targets:
+      - site: __SITE_IDENTIFIER__
+        hostname: nextcloud-edge.workload.svc.cluster.local
+        method: http
+        port: 8080

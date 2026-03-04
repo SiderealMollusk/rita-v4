@@ -54,7 +54,14 @@ Current scripts:
 - reads the Pangolin site identifier from `pangolin_site_ops_brain`
 - resolves Pangolin CLI from `PATH` or `~/.local/bin/pangolin`
 
-7. `30-seed-kuma-monitors.sh`
+7. `21-apply-nextcloud-blueprint.sh`
+- applies the canonical Pangolin public resource for `app.virgil.info`
+- targets `nextcloud-edge.workload.svc.cluster.local:8080`
+- runs on the Mac host with Pangolin CLI
+- assumes Pangolin CLI is already authenticated
+- reads the Pangolin site identifier from `pangolin_site_ops_brain`
+
+8. `30-seed-kuma-monitors.sh`
 - seeds Uptime Kuma monitors from the canonical Pangolin monitoring blueprint
 - runs on the Mac host
 - uses a temporary SSH-backed tunnel to reach Kuma directly on `ops-brain`
