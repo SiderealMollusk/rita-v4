@@ -25,6 +25,7 @@ Direct-entry scripts:
 11. `17-enable-nextcloud-flow.sh`
 12. `18-register-nextcloud-appapi-daemon.sh`
 13. `19-deploy-nextcloud-flow-exapp.sh`
+14. `20-patch-nextcloud-flow-oss.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -38,3 +39,4 @@ Notes:
 9. `17-enable-nextcloud-flow.sh` is separate from the base suite bootstrap because Flow depends on AppAPI/webhook listeners plus an AppAPI deploy daemon.
 10. `18-register-nextcloud-appapi-daemon.sh` registers the AppAPI daemon non-interactively once the HaRP or Docker-backed endpoint exists.
 11. `19-deploy-nextcloud-flow-exapp.sh` deploys the Flow ExApp through the registered daemon rather than only enabling the UI-side app package.
+12. `20-patch-nextcloud-flow-oss.sh` reapplies the current Flow `1.3.1` Windmill OSS workaround after an ExApp redeploy until upstream `nextcloud/flow` fixes the initialization bug.

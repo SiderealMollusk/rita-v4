@@ -48,10 +48,16 @@ if ! grep -q "${APPAPI_DAEMON_NAME}" <<<"${daemon_list}"; then
   exit 1
 fi
 
-if occ "php occ app_api:app:list" | grep -q 'flow'; then
-  echo "[INFO] Flow already appears in AppAPI app list."
-  occ "php occ app_api:app:list"
+app_list="$(occ "php occ app_api:app:list" || true)"
+if grep -q '^flow ' <<<"${app_list}" && ! grep -q '^flow .*\[disabled\]' <<<"${app_list}"; then
+  echo "[INFO] Flow already appears enabled in AppAPI app list."
+  echo "${app_list}"
   exit 0
+fi
+
+if grep -q '^flow ' <<<"${app_list}"; then
+  echo "[INFO] Flow exists in disabled state; removing stale AppAPI registration before retry"
+  occ "php occ app_api:app:unregister flow"
 fi
 
 register_cmd="php occ app_api:app:register flow $(shell_quote "${APPAPI_DAEMON_NAME}") --wait-finish"

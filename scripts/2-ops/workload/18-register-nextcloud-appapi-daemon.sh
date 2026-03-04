@@ -27,6 +27,7 @@ APPAPI_DAEMON_NET="${APPAPI_DAEMON_NET:-}"
 APPAPI_USE_HARP="${APPAPI_USE_HARP:-1}"
 APPAPI_HARP_FRP_ADDRESS="${APPAPI_HARP_FRP_ADDRESS:-}"
 APPAPI_HARP_SHARED_KEY="${APPAPI_HARP_SHARED_KEY:-}"
+APPAPI_HARP_DOCKER_SOCKET_PORT="${APPAPI_HARP_DOCKER_SOCKET_PORT:-24001}"
 APPAPI_SET_DEFAULT="${APPAPI_SET_DEFAULT:-1}"
 APPAPI_REPLACE_EXISTING="${APPAPI_REPLACE_EXISTING:-0}"
 
@@ -83,7 +84,7 @@ if [ -n "${APPAPI_DAEMON_NET}" ]; then
 fi
 
 if [ "${APPAPI_USE_HARP}" = "1" ]; then
-  register_cmd="${register_cmd} --harp --harp_frp_address $(shell_quote "${APPAPI_HARP_FRP_ADDRESS}") --harp_shared_key $(shell_quote "${APPAPI_HARP_SHARED_KEY}")"
+  register_cmd="${register_cmd} --harp --harp_frp_address $(shell_quote "${APPAPI_HARP_FRP_ADDRESS}") --harp_shared_key $(shell_quote "${APPAPI_HARP_SHARED_KEY}") --harp_docker_socket_port $(shell_quote "${APPAPI_HARP_DOCKER_SOCKET_PORT}")"
 fi
 
 if [ "${APPAPI_SET_DEFAULT}" = "1" ]; then

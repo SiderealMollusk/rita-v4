@@ -71,6 +71,23 @@ Without that path split:
 2. Stand up the HaRP endpoint and remote Docker path.
 3. Run [18-register-nextcloud-appapi-daemon.sh](/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/18-register-nextcloud-appapi-daemon.sh) with the real daemon coordinates.
 4. Run [19-deploy-nextcloud-flow-exapp.sh](/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/19-deploy-nextcloud-flow-exapp.sh) to deploy Flow through AppAPI.
+5. If Flow `1.3.1` crashes on Windmill OSS-only endpoints, run [20-patch-nextcloud-flow-oss.sh](/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/20-patch-nextcloud-flow-oss.sh) until the upstream Flow image ships a fix.
+
+## Known Flow Regression
+
+Current live testing on March 3-4, 2026 shows Flow `1.3.1` assumes Windmill endpoints that are not implemented in OSS:
+1. `POST /api/users/setpassword`
+2. `POST /api/w/nextcloud/workspaces/edit_auto_invite`
+
+Observed effect:
+1. the ExApp container is created correctly
+2. but startup aborts during `initialize_windmill()`
+3. AppAPI then disables the Flow ExApp because the runtime never stabilizes
+
+Current repo stance:
+1. keep the AppAPI / HaRP / Docker architecture
+2. treat this as an upstream Flow bug, not an installation-architecture failure
+3. use the patch runbook above as a temporary workaround
 
 ## Required Follow-On Implementation
 
