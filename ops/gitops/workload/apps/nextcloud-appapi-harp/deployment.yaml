@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-appapi-harp
+  labels:
+    app.kubernetes.io/name: nextcloud-appapi-harp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nextcloud-appapi-harp
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nextcloud-appapi-harp
+        rita.service/name: nextcloud-appapi-harp
+        rita.service/tier: collaboration
+    spec:
+      nodeSelector:
+        rita.role: workload
+      containers:
+        - name: appapi-harp
+          image: ghcr.io/nextcloud/nextcloud-appapi-harp:release
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: HP_SHARED_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-appapi-harp-shared-key
+                  key: shared-key
+            - name: NC_INSTANCE_URL
+              value: http://nextcloud.workload.svc.cluster.local:8080
+            - name: HP_EXAPPS_ADDRESS
+              value: 0.0.0.0:8780
+            - name: HP_FRP_ADDRESS
+              value: 0.0.0.0:8782
+            - name: HP_VERBOSE_START
+              value: "1"
+          ports:
+            - name: http
+              containerPort: 8780
+            - name: frp
+              containerPort: 8782
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

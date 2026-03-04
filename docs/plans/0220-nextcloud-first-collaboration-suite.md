@@ -21,6 +21,7 @@ Target application surface:
 6. `Notes`
 7. `Tasks`
 8. `Talk`
+9. `Flow` as a follow-on ExApp-backed automation layer
 
 Deferred from the earlier first-wave sequence:
 1. `Leantime`
@@ -37,6 +38,7 @@ As of `0470`:
 3. external Postgres is live and in use
 4. the target collaboration apps are enabled, including `Talk`
 5. this plan now governs follow-on automation and hardening, not first bring-up
+6. `Flow` should be treated as a separate enablement step because it requires AppAPI and a deploy daemon, not just a plain `occ app:install`
 
 ## Why This Pivot Is Coherent
 
@@ -231,6 +233,29 @@ A no-arg runbook should:
    - `collectives`
    - dependency apps as needed
 4. verify enabled app list
+
+### Stage B2 - Flow enablement bootstrap
+`Flow` does not belong in the base suite bootstrap because it is an ExApp wrapper around Windmill.
+
+The separate Flow runbook should:
+1. ensure `app_api` is enabled
+2. ensure `webhook_listeners` is enabled
+3. install/enable `flow`
+4. print the current `app_api:daemon:list` state
+5. stop short of pretending Flow is operational when no deploy daemon has been registered yet
+
+### Stage B3 - ExApp daemon and reverse-proxy layer
+ExApps do not become usable just because the app package is enabled inside Nextcloud.
+
+For this repo, the missing layer is:
+1. an AppAPI deploy daemon, preferably `HaRP`
+2. a Docker-capable workload host for the actual ExApp containers
+3. public routing for `https://app.virgil.info/exapps/...` to the daemon instead of the Nextcloud pod
+
+Canonical operator flow:
+1. install/enable the Nextcloud-side app package
+2. register the AppAPI daemon
+3. deploy the ExApp through that daemon
 
 ### Stage C - “Create org” automation
 This is the thing you actually want.

@@ -47,4 +47,4 @@ routes:
     exposure: "pangolin"
     ports:
       - 80
-    notes: "Planned Pangolin-routed Nextcloud collaboration suite on the workload lane."
+    notes: "Pangolin should target nextcloud-edge.workload.svc.cluster.local:8080 so /exapps/ routes to HaRP while all other paths continue to Nextcloud."

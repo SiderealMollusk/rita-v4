@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud-edge
+  labels:
+    app.kubernetes.io/name: nextcloud-edge
+spec:
+  selector:
+    app.kubernetes.io/name: nextcloud-edge
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
