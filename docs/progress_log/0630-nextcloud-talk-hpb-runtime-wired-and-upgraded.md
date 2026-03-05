@@ -20,6 +20,7 @@ Current checkpoint:
 - [25-configure-nextcloud-talk-runtime.sh](/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/25-configure-nextcloud-talk-runtime.sh)
 - [26-configure-nextcloud-talk-runtime.sh](/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/26-configure-nextcloud-talk-runtime.sh)
 - [27-verify-nextcloud-talk-runtime.sh](/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/27-verify-nextcloud-talk-runtime.sh)
+- [28-seed-nextcloud-talk-signaling-secret-op.sh](/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/28-seed-nextcloud-talk-signaling-secret-op.sh)
 
 3. Documented workload runbook entry points:
 - [README.md](/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/README.md)
@@ -41,6 +42,7 @@ Current checkpoint:
 
 ## Remaining Work
 
-1. Move Talk signaling secret from plaintext YAML to 1Password reference (`secret_op_ref`) and keep runtime file non-secret.
-2. Add TURN server configuration for production-grade NAT traversal.
-3. Confirm admin Overview HPB warning state after full signaling version alignment check on `talk-hpb-vm`.
+1. Talk signaling runtime file has been switched to OP reference (`secret_op_ref`) and plaintext secret removed from repo.
+2. Ensure OP item is present with canonical path `op://5vr4hef2746tpplvjx424xafvu/nextcloud-talk-runtime/password`.
+3. Add TURN server configuration for production-grade NAT traversal.
+4. Confirm admin Overview HPB warning state after full signaling version alignment check on `talk-hpb-vm`.

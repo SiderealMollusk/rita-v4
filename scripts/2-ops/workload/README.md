@@ -38,6 +38,7 @@ Direct-entry scripts:
 24. `25-configure-nextcloud-talk-runtime.sh`
 25. `26-configure-nextcloud-talk-runtime.sh`
 26. `27-verify-nextcloud-talk-runtime.sh`
+27. `28-seed-nextcloud-talk-signaling-secret-op.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -62,3 +63,5 @@ Notes:
 20. Nextcloud app policy is split into `easy/core` and `experimental` tiers in `ops/ansible/group_vars/nextcloud.yml`; install playbook `33` enforces this desired app state.
 21. `24-rotate-nextcloud-virgil-password.sh` is the no-arg wrapper for item `virgil` and enforces OP username match before applying password.
 22. Talk runtime desired state is tracked in `ops/nextcloud/talk-runtime.yaml`; use `26-configure-nextcloud-talk-runtime.sh` to apply and `27-verify-nextcloud-talk-runtime.sh` to verify.
+23. Talk signaling secret is sourced from 1Password via `op://5vr4hef2746tpplvjx424xafvu/nextcloud-talk-runtime/password` (item: `nextcloud-talk-runtime`, field: `password`).
+24. `28-seed-nextcloud-talk-signaling-secret-op.sh` backfills/updates that OP item from live `occ talk:signaling:list` output so runtime config can stay secret-free in git.
