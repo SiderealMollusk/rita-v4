@@ -17,6 +17,7 @@ NEXTCLOUD_USER=""
 NEXTCLOUD_OCC_PATH="/var/www/nextcloud/occ"
 CREATE_IF_MISSING="false"
 ENSURE_ADMIN_GROUP="false"
+REQUIRE_OP_USERNAME_MATCH="false"
 
 usage() {
   cat <<'EOF'
@@ -34,6 +35,7 @@ Options:
   --occ-path <path>            Remote occ path (default: /var/www/nextcloud/occ)
   --create-if-missing          Create the Nextcloud user if missing
   --ensure-admin               Ensure user is a member of Nextcloud admin group
+  --require-op-username-match  Require OP username field to exactly match --nextcloud-user
   --help                       Show this help
 EOF
 }
@@ -78,6 +80,10 @@ while [ "$#" -gt 0 ]; do
       ;;
     --ensure-admin)
       ENSURE_ADMIN_GROUP="true"
+      shift
+      ;;
+    --require-op-username-match)
+      REQUIRE_OP_USERNAME_MATCH="true"
       shift
       ;;
     --help|-h)
@@ -136,6 +142,11 @@ fi
 
 [ -n "$NEXTCLOUD_USER" ] || runbook_fail "resolved Nextcloud username is empty"
 
+if [ "$REQUIRE_OP_USERNAME_MATCH" = "true" ]; then
+  [ -n "$OP_USER" ] || runbook_fail "--require-op-username-match set but OP username field '$OP_USERNAME_FIELD' is empty"
+  [ "$OP_USER" = "$NEXTCLOUD_USER" ] || runbook_fail "OP username '$OP_USER' does not match nextcloud user '$NEXTCLOUD_USER'"
+fi
+
 USER_B64="$(printf '%s' "$NEXTCLOUD_USER" | base64 | tr -d '\n')"
 PASS_B64="$(printf '%s' "$OP_PASS" | base64 | tr -d '\n')"
 
@@ -143,6 +154,7 @@ echo "[INFO] Rotating password on Nextcloud host alias: $HOST_ALIAS"
 echo "[INFO] Nextcloud user: $NEXTCLOUD_USER"
 echo "[INFO] create-if-missing: $CREATE_IF_MISSING"
 echo "[INFO] ensure-admin: $ENSURE_ADMIN_GROUP"
+echo "[INFO] require-op-username-match: $REQUIRE_OP_USERNAME_MATCH"
 
 ansible -i "$INVENTORY_PATH" "$HOST_ALIAS" -b -m shell -a "set -eu
 NC_USER=\"\$(printf '%s' '$USER_B64' | base64 -d)\"

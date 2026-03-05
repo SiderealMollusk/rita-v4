@@ -34,6 +34,7 @@ Direct-entry scripts:
 20. `21-wire-vm-newt-connectors.sh`
 21. `22-rotate-nextcloud-user-password.sh`
 22. `23-rotate-nextcloud-virgil-admin-password.sh`
+23. `24-rotate-nextcloud-virgil-password.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -56,3 +57,4 @@ Notes:
 18. `23-rotate-nextcloud-virgil-admin-password.sh` is the no-arg wrapper for the canonical `nextcloud-main-users` vault item `virgil-admin`.
 19. Nextcloud official-instance defaults now come from `ops/nextcloud/instances.yaml` so operator flows can keep one technical pointer while still tracking legacy instances.
 20. Nextcloud app policy is split into `easy/core` and `experimental` tiers in `ops/ansible/group_vars/nextcloud.yml`; install playbook `33` enforces this desired app state.
+21. `24-rotate-nextcloud-virgil-password.sh` is the no-arg wrapper for item `virgil` and enforces OP username match before applying password.
