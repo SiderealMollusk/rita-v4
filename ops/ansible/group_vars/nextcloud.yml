@@ -8,7 +8,14 @@ nextcloud_trusted_domains:
   - "{{ nextcloud_domain }}"
   - "app.virgil.info"
 nextcloud_trusted_proxy: "{{ lookup('env', 'NEXTCLOUD_TRUSTED_PROXY') | default('', true) }}"
+nextcloud_trusted_proxies:
+  - "127.0.0.1"
+  - "::1"
+nextcloud_forwarded_for_headers:
+  - "HTTP_X_FORWARDED_FOR"
 nextcloud_overwrite_protocol: "{{ lookup('env', 'NEXTCLOUD_OVERWRITE_PROTOCOL') | default('https', true) }}"
+nextcloud_maintenance_window_start: "3"
+nextcloud_default_phone_region: "US"
 nextcloud_admin_user: "{{ lookup('env', 'NEXTCLOUD_ADMIN_USER') }}"
 nextcloud_admin_password: "{{ lookup('env', 'NEXTCLOUD_ADMIN_PASSWORD') }}"
 nextcloud_db_name: "{{ lookup('env', 'NEXTCLOUD_DB_NAME') | default('nextcloud', true) }}"
@@ -56,11 +63,13 @@ nextcloud_system_packages:
   - python3-psycopg2
 
 nextcloud_apcu_shm_size: "128M"
+nextcloud_php_memory_limit: "512M"
 nextcloud_opcache_memory_consumption: "128"
 nextcloud_opcache_interned_strings_buffer: "16"
 nextcloud_opcache_max_accelerated_files: "10000"
 nextcloud_opcache_save_comments: "1"
 nextcloud_opcache_revalidate_freq: "60"
+nextcloud_hsts_max_age: "15552000"
 
 # App policy:
 # - easy/core apps are always enforced

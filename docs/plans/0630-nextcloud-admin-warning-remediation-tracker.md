@@ -2,6 +2,11 @@
 
 Date: 2026-03-05
 
+## Deprecation
+
+Deprecated. Use the canonical combined plan:
+1. [0650-nextcloud-combined-upgrade-and-reliability-plan.md](/Users/virgil/Dev/rita-v4/docs/plans/0650-nextcloud-combined-upgrade-and-reliability-plan.md)
+
 ## Scope
 
 This document tracks active warnings shown in Nextcloud Administration -> Overview for the official instance (`cloud.virgil.info`).
@@ -56,6 +61,23 @@ mimetype repair, missing DB indices.
 
 4. Enable optional capability layers:
 2FA provider, Client Push, Talk HPB, AppAPI deploy daemon, SMTP.
+
+## Symptom Correlation (Observed)
+
+1. Android Talk calls can connect media while ring state continues indefinitely.
+2. Current runtime has no external Talk signaling/STUN/TURN configured:
+   - `occ talk:signaling:list` => empty
+   - `occ talk:stun:list` => empty
+   - `occ talk:turn:list` => empty
+3. `notify_push` is not installed, which aligns with stale ringing/presence-notification state.
+
+## Auth Verification Note
+
+Do not use plain `GET` on `/remote.php/dav/files/<user>/` as a password validity check.
+
+Use WebDAV `PROPFIND`:
+1. `207` = valid credentials
+2. `401` = invalid credentials
 
 ## Notes
 

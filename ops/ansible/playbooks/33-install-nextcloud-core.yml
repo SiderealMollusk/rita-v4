@@ -53,6 +53,18 @@
         nextcloud_php_fpm_conf_dir: "/etc/php/{{ nextcloud_php_version_cmd.stdout }}/fpm/conf.d"
         nextcloud_php_cli_conf_dir: "/etc/php/{{ nextcloud_php_version_cmd.stdout }}/cli/conf.d"
         nextcloud_db_password_sql_literal: "{{ nextcloud_db_password | replace(\"'\", \"''\") }}"
+        nextcloud_effective_trusted_proxies: >-
+          {{
+            (
+              nextcloud_trusted_proxies | default([])
+            )
+            +
+            (
+              [nextcloud_trusted_proxy]
+              if (nextcloud_trusted_proxy | default('') | length > 0)
+              else []
+            )
+          }}
 
     - name: Ensure core services enabled
       ansible.builtin.service:
@@ -313,7 +325,7 @@
       args:
         chdir: "{{ nextcloud_web_root }}"
 
-    - name: Set Nextcloud trusted proxy when provided
+    - name: Set Nextcloud trusted proxies
       ansible.builtin.command:
         argv:
           - sudo
@@ -323,11 +335,31 @@
           - occ
           - config:system:set
           - trusted_proxies
-          - "0"
-          - --value={{ nextcloud_trusted_proxy }}
+          - "{{ index | string }}"
+          - --value={{ item }}
       args:
         chdir: "{{ nextcloud_web_root }}"
-      when: nextcloud_trusted_proxy | length > 0
+      loop: "{{ nextcloud_effective_trusted_proxies | unique }}"
+      loop_control:
+        index_var: index
+
+    - name: Set Nextcloud forwarded_for_headers
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - forwarded_for_headers
+          - "{{ index | string }}"
+          - --value={{ item }}
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      loop: "{{ nextcloud_forwarded_for_headers | default(['HTTP_X_FORWARDED_FOR']) }}"
+      loop_control:
+        index_var: index
 
     - name: Enable APCu local cache
       ansible.builtin.command:
@@ -413,6 +445,37 @@
           - background:cron
       args:
         chdir: "{{ nextcloud_web_root }}"
+
+    - name: Set Nextcloud maintenance window start
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - maintenance_window_start
+          - --value={{ nextcloud_maintenance_window_start }}
+          - --type=integer
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      when: nextcloud_maintenance_window_start | default('') | string | length > 0
+
+    - name: Set Nextcloud default phone region
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - default_phone_region
+          - --value={{ nextcloud_default_phone_region }}
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      when: nextcloud_default_phone_region | default('') | string | length > 0
 
     - name: Enable required Nextcloud apps
       ansible.builtin.command:

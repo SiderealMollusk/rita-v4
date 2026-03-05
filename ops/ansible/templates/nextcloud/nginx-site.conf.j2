@@ -25,6 +25,7 @@ server {
     add_header X-Permitted-Cross-Domain-Policies "none"              always;
     add_header X-Robots-Tag                      "noindex, nofollow" always;
     add_header X-XSS-Protection                  "1; mode=block"     always;
+    add_header Strict-Transport-Security         "max-age={{ nextcloud_hsts_max_age }}; includeSubDomains" always;
 
     index index.php index.html /index.php$request_uri;
 
@@ -76,7 +77,20 @@ server {
         fastcgi_read_timeout 300;
     }
 
-    location ~ \.(?:css|js|mjs|svg|gif|png|jpg|ico|wasm|tflite|map|ogg|flac)$ {
+    location ~ \.mjs$ {
+        types {
+            application/javascript mjs;
+        }
+        try_files $uri /index.php$request_uri;
+        expires 6M;
+        access_log off;
+    }
+
+    location ~ \.(?:css|js|svg|gif|png|jpg|ico|wasm|tflite|map|ogg|flac)$ {
+        types {
+            text/css css;
+            application/javascript js;
+        }
         try_files $uri /index.php$request_uri;
         expires 6M;
         access_log off;
@@ -90,5 +104,13 @@ server {
 
     location /remote {
         return 301 /remote.php$request_uri;
+    }
+
+    location = /ocs-provider {
+        return 301 /ocs-provider/;
+    }
+
+    location = /ocs-provider/ {
+        rewrite ^ /ocs-provider/index.php last;
     }
 }

@@ -41,7 +41,7 @@ Current scripts:
 - extracts and stores:
   - `endpoint`
   - `identifier`
-  - `id`
+  - `newt_id`
   - `secret`
 
 5. `11-install-pangolin-cli.sh`
@@ -72,7 +72,7 @@ Current scripts:
 - single-site credential registration for the canonical `ops_brain` site
 - writes or updates the canonical 1Password secure note from `ops_brain.yml`
 - requires operator 1Password human-session auth (not service-account mode)
-- validates pasted Helm snippet endpoint/id/secret against repo endpoint
+- validates pasted Helm snippet endpoint/newt_id/secret against repo endpoint
 
 10. `25-register-pangolin-sites.sh`
 - batch wrapper for registering multiple Pangolin site credential notes
