@@ -114,6 +114,12 @@ Current scripts:
 - reads Kuma admin credentials from `kuma_ops_brain_admin` in 1Password
 - creates the 1Password login item if it is missing and you provide credentials interactively
 
+16. `31-apply-n8n-blueprint.sh`
+- applies the canonical Pangolin public resource for `n8n.virgil.info`
+- targets `10.43.171.251:5678` via the `n8n-vm` site identifier
+- reads OP item/title from `ops/pangolin/sites/required-sites.yaml` slug `n8n_vm`
+- expects Pangolin CLI host session auth to already be active
+
 Notes:
 1. site creation/reconciliation is now handled by `27-reconcile-pangolin-sites.sh` from canonical required-site records.
 2. service-account mode is acceptable for read-only host tasks that only need to resolve secrets or identifiers; human-session mode is required for any 1Password write/update flow.

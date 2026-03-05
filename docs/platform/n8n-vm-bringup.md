@@ -108,8 +108,16 @@ Verification contract:
 If `n8n` must be routed via Pangolin:
 1. add `n8n-vm` record in `ops/pangolin/sites/required-sites.yaml` with `connector_mode: vm`
 2. ensure corresponding OP item exists with endpoint/newt_id/secret
-3. run `scripts/2-ops/workload/21-wire-vm-newt-connectors.sh`
-4. verify connector service active on `n8n-vm`
+3. run `scripts/2-ops/host/27-reconcile-pangolin-sites.sh` to create/reconcile site + OP item
+4. run `scripts/2-ops/workload/21-wire-vm-newt-connectors.sh`
+5. run `scripts/2-ops/host/31-apply-n8n-blueprint.sh` to expose `n8n.virgil.info`
+6. verify connector service active on `n8n-vm`
+
+### 8) End-to-end no-arg chain
+For a deterministic rebuild + publish run, use:
+1. `scripts/2-ops/workload/39-bring-up-n8n-vm-k8s-pangolin.sh`
+
+This chain intentionally keeps secure-cookie mode and publishes n8n through Pangolin HTTPS rather than local insecure access patterns.
 
 ### 8) Update runbook index and log outcome
 1. add new script entries to `scripts/2-ops/workload/README.md`

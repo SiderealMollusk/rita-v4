@@ -74,7 +74,14 @@ while IFS=$'\t' read -r slug display_name host_alias inventory_file connector_mo
   "pangolin_newt_secret": "$newt_secret"
 }
 EOF
-  if ! ansible-playbook -i "$inventory_path" "$PLAYBOOK" --limit "$host_alias" -e "@$tmp_vars" "${FAST_FAIL_ARGS[@]}"; then
+  if [ "${NEWT_FAST_FAIL:-0}" = "1" ]; then
+    ansible_rc=0
+    ansible-playbook -i "$inventory_path" "$PLAYBOOK" --limit "$host_alias" -e "@$tmp_vars" "${FAST_FAIL_ARGS[@]}" || ansible_rc=$?
+  else
+    ansible_rc=0
+    ansible-playbook -i "$inventory_path" "$PLAYBOOK" --limit "$host_alias" -e "@$tmp_vars" || ansible_rc=$?
+  fi
+  if [ "$ansible_rc" -ne 0 ]; then
     echo "[FAIL] Newt wiring failed for ${slug} (${host_alias})"
     failed_count=$((failed_count + 1))
   fi

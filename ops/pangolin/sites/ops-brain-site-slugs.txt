@@ -3,3 +3,4 @@
 ops_brain
 nextcloud_core
 nextcloud_vm
+n8n_vm

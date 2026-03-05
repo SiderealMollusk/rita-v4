@@ -73,6 +73,8 @@ Direct-entry scripts:
 34. `35-snapshot-nextcloud-pair.sh`
 35. `36-rollback-nextcloud-pair.sh`
 36. `37-prune-nextcloud-snapshots.sh`
+37. `38-configure-nextcloud-main-users.sh`
+38. `39-bring-up-n8n-vm-k8s-pangolin.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -107,15 +109,18 @@ Notes:
 - `19-deploy-nextcloud-flow-exapp.sh` runs `34` by default.
 - `20-patch-nextcloud-flow-oss.sh` runs `34` by default.
 - Set `APPAPI_POST_VERIFY=0` or `FLOW_POST_VERIFY=0` only for deliberate break-glass debugging.
-29. Pre-change snapshots are automatic by default for risky Nextcloud scripts:
+29. Pre-change snapshots are automatic in `critical` mode for high-risk Nextcloud scripts:
 - `12-install-nextcloud-core.sh`
-- `17-enable-nextcloud-flow.sh`
+- `16-enable-nextcloud-suite.sh`
 - `18-register-nextcloud-appapi-daemon.sh`
 - `19-deploy-nextcloud-flow-exapp.sh`
 - `20-patch-nextcloud-flow-oss.sh`
 - `26-configure-nextcloud-talk-runtime.sh`
-- Disable only for deliberate break-glass debugging with `NEXTCLOUD_AUTO_SNAPSHOT_PRE=0`.
+- Toggle with `NEXTCLOUD_SNAPSHOT_MODE=critical|off` (default: `critical`).
+- Legacy flag `NEXTCLOUD_AUTO_SNAPSHOT_PRE=0|1` is still honored for compatibility.
 30. Snapshot utility scripts:
 - `35-snapshot-nextcloud-pair.sh` creates coordinated snapshots for VM IDs `9301` and `9302`.
 - `36-rollback-nextcloud-pair.sh` rolls both VMs back to the same tag (`NEXTCLOUD_ROLLBACK_CONFIRM=rollback-nextcloud-pair` required).
 - `37-prune-nextcloud-snapshots.sh` applies retention pruning (`NEXTCLOUD_PRUNE_CONFIRM=prune-nextcloud-snapshots` required).
+31. Nextcloud main user SoT is now tracked in `ops/nextcloud/main-users.yaml` (vault ID, item mapping, and role intent), and applied via `38-configure-nextcloud-main-users.sh`.
+32. `39-bring-up-n8n-vm-k8s-pangolin.sh` is the canonical full chain for n8n: VM rebuild, k3s join/label/verify, ESO+n8n runtime reconcile, Pangolin site reconcile, VM Newt connector wiring, n8n resource apply, and end-state verification.

@@ -1,6 +1,6 @@
-# Ops-Brain Pangolin Blueprints
+# Pangolin Blueprint Manifests
 
-This directory is the canonical home for Pangolin resource declarations that target the `ops-brain` site.
+This directory is the canonical home for Pangolin resource declarations owned by this repo lane.
 
 ## Scope
 These files define Pangolin resource exposure, not site bootstrap.
@@ -8,7 +8,7 @@ These files define Pangolin resource exposure, not site bootstrap.
 Use them for:
 1. public resource declarations
 2. private resource declarations
-3. target mappings to the `ops-brain` site
+3. target mappings to the expected site identifier for each resource
 
 Do not use them for:
 1. site creation
@@ -21,6 +21,8 @@ Validated Newt-reachable cluster targets:
    - `ops-brain-kube-prometheus-grafana.monitoring.svc.cluster.local:80`
 2. Prometheus:
    - `ops-brain-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090`
+3. n8n:
+   - `10.43.171.251:5678` (routed through `n8n-vm` connector)
 
 ## Freshness
 Start with:

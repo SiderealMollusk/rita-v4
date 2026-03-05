@@ -19,7 +19,14 @@ FLOW_CONTAINER_NAME="${FLOW_CONTAINER_NAME:-nc_app_flow}"
 FLOW_PATCH_WAIT_SECONDS="${FLOW_PATCH_WAIT_SECONDS:-12}"
 FLOW_REENABLE_EXAPP="${FLOW_REENABLE_EXAPP:-1}"
 FLOW_POST_VERIFY="${FLOW_POST_VERIFY:-1}"
-NEXTCLOUD_AUTO_SNAPSHOT_PRE="${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-1}"
+NEXTCLOUD_SNAPSHOT_MODE="${NEXTCLOUD_SNAPSHOT_MODE:-critical}"
+if [ -n "${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-}" ]; then
+  if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+    NEXTCLOUD_SNAPSHOT_MODE="critical"
+  else
+    NEXTCLOUD_SNAPSHOT_MODE="off"
+  fi
+fi
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
@@ -47,7 +54,7 @@ IFS=$'\t' read -r OFFICIAL_MODE OFFICIAL_INV_REL OFFICIAL_HOST_ALIAS <<<"${insta
 [ -n "${HOST_ALIAS}" ] || runbook_fail "host alias resolved empty"
 runbook_require_cmd ansible
 
-if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+if [ "${NEXTCLOUD_SNAPSHOT_MODE}" = "critical" ]; then
   echo "[INFO] Creating pre-change Nextcloud VM pair snapshot"
   NEXTCLOUD_SNAPSHOT_CHANGE_ID="20-patch-nextcloud-flow-oss" \
     "${REPO_ROOT}/scripts/2-ops/workload/35-snapshot-nextcloud-pair.sh"

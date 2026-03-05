@@ -9,6 +9,7 @@ metadata:
     rita.observability/probe: "http"
 spec:
   type: ClusterIP
+  clusterIP: 10.43.171.251
   selector:
     app.kubernetes.io/name: n8n
   ports:

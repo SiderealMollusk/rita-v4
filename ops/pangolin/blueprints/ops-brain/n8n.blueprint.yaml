@@ -1,0 +1,15 @@
+# Public n8n route for the platform lane.
+# This targets the n8n service ClusterIP through the n8n-vm Newt connector.
+
+public-resources:
+  n8n:
+    name: platform n8n
+    protocol: http
+    full-domain: n8n.virgil.info
+    auth:
+      sso-enabled: true
+    targets:
+      - site: __SITE_IDENTIFIER__
+        hostname: 10.43.171.251
+        method: http
+        port: 5678

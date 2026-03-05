@@ -9,6 +9,14 @@ source "${REPO_ROOT}/scripts/lib/runbook.sh"
 
 runbook_source_labrc "${REPO_ROOT}"
 runbook_export_default_kubeconfig
+NEXTCLOUD_SNAPSHOT_MODE="${NEXTCLOUD_SNAPSHOT_MODE:-critical}"
+if [ -n "${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-}" ]; then
+  if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+    NEXTCLOUD_SNAPSHOT_MODE="critical"
+  else
+    NEXTCLOUD_SNAPSHOT_MODE="off"
+  fi
+fi
 
 NAMESPACE="${NEXTCLOUD_NAMESPACE:-workload}"
 DEPLOYMENT="${NEXTCLOUD_DEPLOYMENT:-nextcloud}"
@@ -29,6 +37,12 @@ APPS=(
 
 echo "[INFO] Using kubeconfig: ${KUBECONFIG}"
 echo "[INFO] Enabling Nextcloud collaboration suite apps on ${NAMESPACE}/${DEPLOYMENT}"
+
+if [ "${NEXTCLOUD_SNAPSHOT_MODE}" = "critical" ]; then
+  echo "[INFO] Creating pre-change Nextcloud VM pair snapshot"
+  NEXTCLOUD_SNAPSHOT_CHANGE_ID="16-enable-nextcloud-suite" \
+    "${REPO_ROOT}/scripts/2-ops/workload/35-snapshot-nextcloud-pair.sh"
+fi
 
 kubectl rollout status deployment/"${DEPLOYMENT}" -n "${NAMESPACE}" --timeout=10m
 

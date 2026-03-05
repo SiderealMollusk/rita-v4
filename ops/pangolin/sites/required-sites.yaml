@@ -31,5 +31,16 @@
     "op_item_title": "pangolin_site_talk_hpb_vm",
     "rebuild_policy": "rotate",
     "managed_mode": "managed"
+  },
+  {
+    "slug": "n8n_vm",
+    "display_name": "n8n-vm",
+    "host_alias": "n8n-vm",
+    "inventory_file": "ops/ansible/inventory/n8n.ini",
+    "connector_mode": "vm",
+    "newt_enabled": true,
+    "op_item_title": "pangolin_site_n8n_vm",
+    "rebuild_policy": "rotate",
+    "managed_mode": "managed"
   }
 ]

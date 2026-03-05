@@ -1,0 +1,34 @@
+{
+  "vault_id": "sf7a6ejbujriiv6eyicexsp4yi",
+  "inventory_file": "ops/ansible/inventory/nextcloud.ini",
+  "host_alias": "nextcloud-vm",
+  "occ_path": "/var/www/nextcloud/occ",
+  "op_username_field": "username",
+  "op_password_field": "password",
+  "users": [
+    {
+      "item_title": "virgil-admin",
+      "nextcloud_user": "virgil-admin",
+      "role": "admin",
+      "create_if_missing": true,
+      "require_op_username_match": true,
+      "enabled": true
+    },
+    {
+      "item_title": "virgil",
+      "nextcloud_user": "virgil",
+      "role": "user",
+      "create_if_missing": true,
+      "require_op_username_match": true,
+      "enabled": true
+    },
+    {
+      "item_title": "quell",
+      "nextcloud_user": "quell",
+      "role": "user",
+      "create_if_missing": true,
+      "require_op_username_match": true,
+      "enabled": true
+    }
+  ]
+}

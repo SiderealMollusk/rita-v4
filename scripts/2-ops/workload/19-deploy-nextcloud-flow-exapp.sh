@@ -19,7 +19,14 @@ FLOW_EXTERNAL_DATABASE="${FLOW_EXTERNAL_DATABASE:-}"
 FLOW_RUST_LOG="${FLOW_RUST_LOG:-}"
 FLOW_PURGE_DATA="${FLOW_PURGE_DATA:-1}"
 FLOW_POST_VERIFY="${FLOW_POST_VERIFY:-1}"
-NEXTCLOUD_AUTO_SNAPSHOT_PRE="${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-1}"
+NEXTCLOUD_SNAPSHOT_MODE="${NEXTCLOUD_SNAPSHOT_MODE:-critical}"
+if [ -n "${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-}" ]; then
+  if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+    NEXTCLOUD_SNAPSHOT_MODE="critical"
+  else
+    NEXTCLOUD_SNAPSHOT_MODE="off"
+  fi
+fi
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -85,7 +92,7 @@ if grep -q '^flow ' <<<"${app_list}" && ! grep -q '^flow .*\[disabled\]' <<<"${a
   exit 0
 fi
 
-if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+if [ "${NEXTCLOUD_SNAPSHOT_MODE}" = "critical" ]; then
   echo "[INFO] Creating pre-change Nextcloud VM pair snapshot"
   NEXTCLOUD_SNAPSHOT_CHANGE_ID="19-deploy-nextcloud-flow-exapp" \
     "${REPO_ROOT}/scripts/2-ops/workload/35-snapshot-nextcloud-pair.sh"

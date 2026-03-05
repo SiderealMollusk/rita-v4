@@ -23,7 +23,7 @@ Usage:
   35-snapshot-nextcloud-pair.sh [options]
 
 Options:
-  --tag <tag>              Explicit snapshot tag (default: pre-<change-id>-<timestamp>)
+  --tag <tag>              Explicit snapshot tag (max 40 chars)
   --change-id <id>         Change id used in auto tag/description
   --description <text>     Snapshot description
   --pve-host <ip-or-host>  Proxmox host (default: 192.168.6.11)
@@ -54,11 +54,24 @@ done
 [ -n "$PVE_HOST" ] || runbook_fail "pve host is required"
 [ -n "$CHANGE_ID" ] || runbook_fail "change id is required"
 
+sanitize_token() {
+  local value="$1"
+  value="$(printf "%s" "$value" | tr -cs 'A-Za-z0-9._-' '-')"
+  value="${value#-}"
+  value="${value%-}"
+  printf "%s" "$value"
+}
+
 if [ -z "$TAG" ]; then
-  stamp="$(date +%Y%m%d-%H%M%S)"
-  TAG="pre-${CHANGE_ID}-${stamp}"
+  stamp="$(date +%y%m%d%H%M%S)"
+  short_change="$(sanitize_token "$CHANGE_ID")"
+  [ -n "$short_change" ] || short_change="manual"
+  short_change="${short_change:0:25}"
+  TAG="p-${short_change}-${stamp}"
 fi
-TAG="${TAG// /-}"
+TAG="$(sanitize_token "$TAG")"
+[ -n "$TAG" ] || runbook_fail "snapshot tag resolved empty after sanitization"
+[ "${#TAG}" -le 40 ] || runbook_fail "snapshot tag '${TAG}' exceeds Proxmox 40-char limit"
 
 if [ -z "$DESCRIPTION" ]; then
   DESCRIPTION="pre-change snapshot for ${CHANGE_ID}"

@@ -59,6 +59,14 @@ spec:
               value: "5678"
             - name: N8N_LISTEN_ADDRESS
               value: 0.0.0.0
+            - name: N8N_HOST
+              value: n8n.virgil.info
+            - name: N8N_PROTOCOL
+              value: https
+            - name: N8N_SECURE_COOKIE
+              value: "true"
+            - name: WEBHOOK_URL
+              value: https://n8n.virgil.info/
             - name: N8N_RUNNERS_ENABLED
               value: "true"
             - name: N8N_METRICS

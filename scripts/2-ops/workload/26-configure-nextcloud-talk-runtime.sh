@@ -16,7 +16,14 @@ LOGIC_SCRIPT="$REPO_ROOT/scripts/2-ops/workload/25-configure-nextcloud-talk-runt
 [ -x "$LOGIC_SCRIPT" ] || runbook_fail "missing logic script: $LOGIC_SCRIPT"
 
 runbook_require_cmd python3
-NEXTCLOUD_AUTO_SNAPSHOT_PRE="${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-1}"
+NEXTCLOUD_SNAPSHOT_MODE="${NEXTCLOUD_SNAPSHOT_MODE:-critical}"
+if [ -n "${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-}" ]; then
+  if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+    NEXTCLOUD_SNAPSHOT_MODE="critical"
+  else
+    NEXTCLOUD_SNAPSHOT_MODE="off"
+  fi
+fi
 
 OP_REF_COUNT="$(python3 - "$CONFIG_FILE" <<'PY'
 import json
@@ -102,7 +109,7 @@ SIGNALING_SECRET_OP_REF="$(printf '%s\n' "$PARSED" | sed -n 's/^SIGNALING_SECRET
 INVENTORY_PATH="$REPO_ROOT/$INVENTORY_REL"
 [ -f "$INVENTORY_PATH" ] || runbook_fail "inventory path missing: $INVENTORY_PATH"
 
-if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+if [ "${NEXTCLOUD_SNAPSHOT_MODE}" = "critical" ]; then
   echo "[INFO] Creating pre-change Nextcloud VM pair snapshot"
   NEXTCLOUD_SNAPSHOT_CHANGE_ID="26-configure-nextcloud-talk-runtime" \
     "${REPO_ROOT}/scripts/2-ops/workload/35-snapshot-nextcloud-pair.sh"

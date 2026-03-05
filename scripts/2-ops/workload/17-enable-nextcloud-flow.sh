@@ -13,7 +13,6 @@ INSTANCES_FILE="${REPO_ROOT}/ops/nextcloud/instances.yaml"
 INVENTORY_PATH=""
 HOST_ALIAS=""
 OCC_PATH="${NEXTCLOUD_OCC_PATH:-/var/www/nextcloud/occ}"
-NEXTCLOUD_AUTO_SNAPSHOT_PRE="${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-1}"
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -62,12 +61,6 @@ occ() {
 }
 
 echo "[INFO] Enabling Flow prerequisites on ${HOST_ALIAS}"
-
-if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
-  echo "[INFO] Creating pre-change Nextcloud VM pair snapshot"
-  NEXTCLOUD_SNAPSHOT_CHANGE_ID="17-enable-nextcloud-flow" \
-    "${REPO_ROOT}/scripts/2-ops/workload/35-snapshot-nextcloud-pair.sh"
-fi
 
 for app in app_api webhook_listeners; do
   echo "[INFO] Installing/enabling app: ${app}"

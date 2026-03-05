@@ -55,3 +55,10 @@ routes:
     ports:
       - 80
     notes: "Temporary validation route for the dedicated nextcloud-core VM at 192.168.6.183:80 before decommissioning the older app.virgil.info path."
+  - name: "workload-n8n"
+    fqdn: "n8n.virgil.info"
+    backend: "n8n-vm"
+    exposure: "pangolin"
+    ports:
+      - 5678
+    notes: "Pangolin-routed n8n route via n8n-vm Newt connector, targeting the platform n8n service ClusterIP 10.43.171.251:5678."

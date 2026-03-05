@@ -24,7 +24,14 @@ APPAPI_SET_DEFAULT="${APPAPI_SET_DEFAULT:-1}"
 APPAPI_REPLACE_EXISTING="${APPAPI_REPLACE_EXISTING:-0}"
 APPAPI_PREPARE_DOCKER_LOCAL="${APPAPI_PREPARE_DOCKER_LOCAL:-0}"
 APPAPI_POST_VERIFY="${APPAPI_POST_VERIFY:-1}"
-NEXTCLOUD_AUTO_SNAPSHOT_PRE="${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-1}"
+NEXTCLOUD_SNAPSHOT_MODE="${NEXTCLOUD_SNAPSHOT_MODE:-critical}"
+if [ -n "${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-}" ]; then
+  if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+    NEXTCLOUD_SNAPSHOT_MODE="critical"
+  else
+    NEXTCLOUD_SNAPSHOT_MODE="off"
+  fi
+fi
 
 usage() {
   cat <<'EOF'
@@ -129,7 +136,7 @@ IFS=$'\t' read -r OFFICIAL_MODE OFFICIAL_INV_REL OFFICIAL_HOST_ALIAS OFFICIAL_DO
 
 runbook_require_cmd ansible
 
-if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+if [ "${NEXTCLOUD_SNAPSHOT_MODE}" = "critical" ]; then
   echo "[INFO] Creating pre-change Nextcloud VM pair snapshot"
   NEXTCLOUD_SNAPSHOT_CHANGE_ID="18-register-nextcloud-appapi-daemon" \
     "${REPO_ROOT}/scripts/2-ops/workload/35-snapshot-nextcloud-pair.sh"

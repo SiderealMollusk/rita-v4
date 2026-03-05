@@ -38,14 +38,7 @@ Copy this block:
 
 ## Active Work
 
-### Agent: codex
-- Status: incomplete
-- Started: 2026-03-04 09:00 PST
-- Scope: Bring up `n8n` on the main worker via the platform GitOps lane
-- Files: `ops/gitops/platform/apps/n8n/`, `ops/gitops/clusters/internal/kustomization.yaml`, `ops/gitops/platform/observability/targets.tsv`, `ops/gitops/platform/backup-state/services.tsv`, `scripts/2-ops/host/22-bootstrap-n8n-db.sh`
-- Blockers: `ops-brain` / cluster API unreachable from the Mac host; `192.168.6.16:6443` and SSH both returned host-down during live validation
-- Notes: Repo scaffolding is in place, ExternalSecret now matches the single `n8n-secrets` 1Password item, and local render/syntax checks passed. Live reconcile and DB bootstrap did not complete.
-- Next step: Resume cluster-side bring-up once `ops-brain` is reachable again
+None currently.
 
 ## Recent Handoffs
 
@@ -59,3 +52,12 @@ Move finished or paused entries here with their final state and next action.
 - Blockers: none
 - Notes: Added freshness stamps, created a dedicated `n8n` VM bring-up runbook, and logged an incomplete progress note signed `background agent`.
 - Next step: Implement the referenced `n8n-vm` rebuild/bootstrap/install/verify wrappers and playbooks.
+
+### Agent: codex
+- Status: incomplete
+- Started: 2026-03-05 09:05 PST
+- Scope: Execute plan 0690 (`n8n` VM nuke-and-pave), then codify full VM-site + Pangolin-resource automation chain
+- Files: `ops/gitops/platform/apps/n8n/*`, `ops/pangolin/sites/required-sites.yaml`, `ops/pangolin/blueprints/ops-brain/n8n.blueprint.yaml`, `scripts/2-ops/host/31-apply-n8n-blueprint.sh`, `scripts/2-ops/workload/39-bring-up-n8n-vm-k8s-pangolin.sh`, `docs/platform/n8n-vm-bringup.md`
+- Blockers: none during runtime execution; pending multi-agent git packaging
+- Notes: Added canonical `n8n_vm` required-site record, added n8n Pangolin blueprint + host apply wrapper, and added a no-arg end-to-end chain script that includes site reconcile, VM Newt wiring, and n8n resource apply.
+- Next step: run host-side Pangolin apply/verify on live infra and confirm `https://n8n.virgil.info` is healthy.
