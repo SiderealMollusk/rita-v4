@@ -1,6 +1,6 @@
 ---
 - name: Label internal cluster nodes
-  hosts: ops_brain
+  hosts: observatory
   become: true
   gather_facts: true
 

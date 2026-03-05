@@ -7,7 +7,7 @@ Status: ✅ COMPLETE
 The next platform direction is now explicit.
 
 The lab will:
-1. keep `ops-brain` as the single current k3s control plane and monitoring home
+1. keep `observatory` as the single current k3s control plane and monitoring home
 2. rebuild the NUC as a clean `platform` worker VM
 3. use `Flux` instead of `Argo CD`
 4. deploy `Gitea` on-cluster
@@ -19,7 +19,7 @@ This replaces the earlier vague `Argo CD + Zot + CI/CD box` direction with a mor
 ## Decisions Locked
 1. no second independent cluster on the NUC yet
 2. one internal cluster remains simpler than splitting GitOps and platform services across multiple small clusters
-3. `ops-brain` is now the accepted quarantine zone for bootstrap-edge and hand-rolled work
+3. `observatory` is now the accepted quarantine zone for bootstrap-edge and hand-rolled work
 4. the NUC and later worker capacity should represent the cleaner declarative lane
 5. `Gitea` should use `Postgres`, not SQLite
 6. a single shared Postgres instance is acceptable initially if isolation is enforced by separate databases, roles, and secrets
@@ -37,7 +37,7 @@ This replaces the earlier vague `Argo CD + Zot + CI/CD box` direction with a mor
 ## Why This Matters
 This gives the repo a cleaner operating split:
 
-1. `ops-brain`
+1. `observatory`
 - monitoring
 - control plane
 - operator edge

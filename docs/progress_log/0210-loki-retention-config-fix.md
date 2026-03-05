@@ -1,6 +1,6 @@
 # 0210 Loki Retention Config Fix
 
-As of this update, the `ops-brain` monitoring stack had a concrete Loki config error, not a generic startup failure.
+As of this update, the `observatory` monitoring stack had a concrete Loki config error, not a generic startup failure.
 
 ## Root cause
 
@@ -24,7 +24,7 @@ This matches the current local-filesystem, single-binary deployment shape.
 
 If Loki had already been installed with the broken config, the fastest recovery path is:
 
-1. uninstall the `ops-brain-loki` release
+1. uninstall the `observatory-loki` release
 2. rerun the monitoring install script
 
 Treat the values file as more authoritative than this note if the chart behavior changes later.

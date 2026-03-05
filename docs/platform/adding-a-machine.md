@@ -27,7 +27,7 @@ It is not for:
 ### Physical host
 Examples:
 - `platform-nuc`
-- `ops-brain`
+- `observatory`
 - `main-vps`
 
 Required updates:
@@ -111,17 +111,17 @@ If multiple machines of the same class need the same rule, it belongs here.
 When adding or changing cluster nodes, update the canonical allowlists first.
 
 Current relevant vars:
-- `ops/ansible/group_vars/ops_brain.yml`
-  - `ops_brain_k3s_api_allowed_sources`
-  - `ops_brain_flannel_allowed_sources`
+- `ops/ansible/group_vars/observatory.yml`
+  - `observatory_k3s_api_allowed_sources`
+  - `observatory_flannel_allowed_sources`
 - `ops/ansible/group_vars/platform.yml`
   - `platform_flannel_allowed_sources`
 
 Meaning:
-- `ops_brain_k3s_api_allowed_sources`
-  controls who may reach `ops-brain` on `6443/tcp`
-- `ops_brain_flannel_allowed_sources`
-  controls which worker nodes may send Flannel VXLAN traffic to `ops-brain`
+- `observatory_k3s_api_allowed_sources`
+  controls who may reach `observatory` on `6443/tcp`
+- `observatory_flannel_allowed_sources`
+  controls which worker nodes may send Flannel VXLAN traffic to `observatory`
 - `platform_flannel_allowed_sources`
   controls which control-plane nodes may send Flannel VXLAN traffic to `platform`
 
@@ -131,8 +131,8 @@ If a machine participates in pod networking, do not skip the Flannel allowlist u
 Apply the machine state by rerunning the canonical wrappers, not by hand-editing the host.
 
 Current paths:
-- `scripts/2-ops/ops-brain/02-bootstrap-host.sh`
-- `scripts/2-ops/ops-brain/08-sync-kubeconfig.sh`
+- `scripts/2-ops/observatory/02-bootstrap-host.sh`
+- `scripts/2-ops/observatory/08-sync-kubeconfig.sh`
 - `scripts/2-ops/worker/02-bootstrap-host.sh`
 - `scripts/2-ops/worker/03-install-k3s-agent.sh`
 - `scripts/2-ops/worker/04-label-nodes.sh`
@@ -154,9 +154,9 @@ To add a new internal worker-like machine, update at least:
 1. `ops/ansible/inventory/platform.ini` or another role inventory
 2. `ops/ansible/inventory/internal-cluster.ini`
 3. `ops/ansible/group_vars/internal_cluster.yml`
-4. `ops/ansible/group_vars/ops_brain.yml`
+4. `ops/ansible/group_vars/observatory.yml`
 5. the machine-specific `host_vars` if needed
-6. the relevant runbooks under `scripts/2-ops/worker/` and `scripts/2-ops/ops-brain/`
+6. the relevant runbooks under `scripts/2-ops/worker/` and `scripts/2-ops/observatory/`
 
 Then apply:
 1. host bootstrap

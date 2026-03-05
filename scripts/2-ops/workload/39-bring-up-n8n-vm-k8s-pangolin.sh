@@ -37,7 +37,7 @@ run_step "scripts/2-ops/workload/32-label-n8n-node.sh"
 run_step "scripts/2-ops/workload/33-verify-n8n-node.sh"
 
 # Secret substrate + n8n app state
-run_step "scripts/2-ops/ops-brain/14-apply-secret-bridge.sh"
+run_step "scripts/2-ops/observatory/14-apply-secret-bridge.sh"
 kubectl apply -f "$REPO_ROOT/ops/gitops/platform/apps/platform-postgres/postgres-auth-externalsecret.yaml"
 kubectl apply -k "$REPO_ROOT/ops/gitops/platform/apps/n8n"
 kubectl wait externalsecret/platform-postgres-auth -n platform --for='jsonpath={.status.conditions[0].status}'=True --timeout=180s || true

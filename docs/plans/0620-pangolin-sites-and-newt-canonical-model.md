@@ -149,7 +149,7 @@ Checks:
 ## Initial Scope
 
 Start with:
-1. `ops_brain`
+1. `observatory`
 2. `nextcloud_vm`
 3. `talk_hpb_vm`
 

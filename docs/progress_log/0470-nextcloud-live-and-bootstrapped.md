@@ -95,7 +95,7 @@ V1 public host:
 
 V1 routing:
 1. DNS `CNAME app -> pangolin.virgil.info`
-2. Pangolin public resource targeting the `ops-brain` site
+2. Pangolin public resource targeting the `observatory` site
 3. backend target `http://nextcloud.workload.svc.cluster.local:8080`
 4. Pangolin backend SSL remains enabled for the working v1 path, even though the target is the in-cluster Nextcloud service on port `8080`
 

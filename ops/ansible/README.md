@@ -5,15 +5,15 @@ This repo uses Ansible as the single source of truth for host identity and deplo
 ## Current Inventory
 - `inventory/vps.ini`: current VPS hosts.
 - `inventory/proxmox.ini`: Proxmox substrates and guest identities.
-- `inventory/ops-brain.ini`: current control-plane laptop.
+- `inventory/observatory.ini`: current control-plane laptop.
 - `inventory/platform.ini`: platform worker VM only.
 - `inventory/workload.ini`: workload worker VM only.
 - `inventory/nextcloud.ini`: dedicated `nextcloud-core` VM.
 - `inventory/talk-hpb.ini`: dedicated `nextcloud-talk-hpb` VM.
-- `inventory/workload-cluster.ini`: ops-brain + workload worker cluster operations.
-- `inventory/internal-cluster.ini`: combined `ops-brain` + `platform` cluster operations.
+- `inventory/workload-cluster.ini`: observatory + workload worker cluster operations.
+- `inventory/internal-cluster.ini`: combined `observatory` + `platform` cluster operations.
 - `group_vars/vps.yml`: vars shared by the `[vps]` group and reusable in templates/manifests.
-- `group_vars/ops_brain.yml`: vars shared by the control-plane lane.
+- `group_vars/observatory.yml`: vars shared by the control-plane lane.
 - `group_vars/platform.yml`: vars shared by the platform worker lane.
 - `group_vars/workload.yml`: vars shared by the workload worker lane.
 - `group_vars/nextcloud.yml`: vars shared by the dedicated `nextcloud-core` lane.
@@ -35,7 +35,7 @@ scripts/2-ops/vps/01-ansible-ping.sh
 
 Internal cluster wrappers:
 ```bash
-scripts/2-ops/ops-brain/01-ansible-ping.sh
+scripts/2-ops/observatory/01-ansible-ping.sh
 scripts/2-ops/worker/01-ansible-ping.sh
 scripts/2-ops/worker/03-install-k3s-agent.sh
 ```

@@ -11,9 +11,9 @@ runbook_require_host_terminal
 
 PANGOLIN_BIN="$(runbook_require_pangolin_cli)"
 
-GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/ops_brain.yml"
+GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
 REQUIRED_SITES_FILE="$REPO_ROOT/ops/pangolin/sites/required-sites.yaml"
-BLUEPRINT_FILE="$REPO_ROOT/ops/pangolin/blueprints/ops-brain/n8n.blueprint.yaml"
+BLUEPRINT_FILE="$REPO_ROOT/ops/pangolin/blueprints/observatory/n8n.blueprint.yaml"
 BLUEPRINT_NAME="workload-n8n"
 TMP_BLUEPRINT="$(mktemp /tmp/workload-n8n.blueprint.XXXXXX)"
 

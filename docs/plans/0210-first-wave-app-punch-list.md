@@ -23,7 +23,7 @@ These are treated as decided inputs for this phase:
 2. `Leantime` runs on `workload`
 3. `Zulip` runs on `workload`
 4. `n8n` runs on `workload` only if a later reason appears; for this phase it is treated as private and can remain platform-adjacent
-5. `ops-brain` is not a general app lane
+5. `observatory` is not a general app lane
 6. `platform` is not the default general app lane
 7. `workload` is the intended default home for general workloads
 
@@ -113,7 +113,7 @@ Completed with a temporary image-source workaround.
 1. chart/operator choice
 2. secret contract
 3. database/user creation contract
-4. placement rules so it stays off `ops-brain`
+4. placement rules so it stays off `observatory`
 
 ### Deliverables
 1. GitOps manifests for `platform-postgres`
@@ -193,7 +193,7 @@ Document as deferred because:
 3. federation/domain/storage choices are not worth front-loading yet
 
 ## Placement Guardrails
-1. no general workloads on `ops-brain`
+1. no general workloads on `observatory`
 2. do not treat `platform` as overflow app capacity by default
 3. place general apps on `workload`
 4. keep `platform` for platform primitives and platform-adjacent services

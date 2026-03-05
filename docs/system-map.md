@@ -3,6 +3,9 @@
 This is the single navigation doc for operational truth.
 It intentionally links to source files instead of duplicating values.
 
+#### Deprecated Name
+[Deprecated name: `ops-brain`. Use `observatory`.]
+
 Use the latest relevant progress note in `docs/progress_log/` as the practical timestamp for how current the linked summaries are.
 
 Reading order for uncertain state:
@@ -29,7 +32,7 @@ Validated navigation model: 2026-02-28
 - Current files:
   - `ops/ansible/inventory/proxmox.ini`
   - `ops/ansible/inventory/vps.ini`
-  - `ops/ansible/inventory/ops-brain.ini`
+  - `ops/ansible/inventory/observatory.ini`
   - `ops/ansible/inventory/platform.ini`
   - `ops/ansible/inventory/workload.ini`
   - `ops/ansible/inventory/nextcloud.ini`
@@ -41,7 +44,7 @@ Validated navigation model: 2026-02-28
 - Source of truth: `ops/ansible/group_vars/`
 - Current files:
   - `ops/ansible/group_vars/vps.yml`
-  - `ops/ansible/group_vars/ops_brain.yml`
+  - `ops/ansible/group_vars/observatory.yml`
   - `ops/ansible/group_vars/platform.yml`
   - `ops/ansible/group_vars/workload.yml`
   - `ops/ansible/group_vars/internal_cluster.yml`
@@ -68,7 +71,7 @@ Validated navigation model: 2026-02-28
 - Public edge runtime:
   - Scripts: `scripts/2-ops/vps/`
 - Internal ops cluster:
-  - Scripts: `scripts/2-ops/ops-brain/` and `scripts/2-ops/worker/`
+  - Scripts: `scripts/2-ops/observatory/` and `scripts/2-ops/worker/`
   - GitOps tree: `ops/gitops/clusters/internal/`
 
 ## Secrets (references only; never values)
@@ -107,7 +110,7 @@ Validated navigation model: 2026-02-28
   - `docs/progress_log/0510-product-requirements-refactored-into-numbered-docs.md`
 - Host/operator-boundary runbooks: `scripts/2-ops/host/`
 - VPS runbook scripts: `scripts/2-ops/vps/`
-- Ops-brain runbook scripts: `scripts/2-ops/ops-brain/`
+- Ops-brain runbook scripts: `scripts/2-ops/observatory/`
 - Platform worker runbook scripts: `scripts/2-ops/worker/`
 - Workload worker runbook scripts: `scripts/2-ops/workload/`
 - NUC/Proxmox runbook scripts: `scripts/2-ops/nuc/`
@@ -117,10 +120,10 @@ Validated navigation model: 2026-02-28
 - Current platform architecture plan: `docs/plans/0160-platform-flux-gitea-and-worker-expansion.md`
 - Current platform execution plan: `docs/plans/0170-platform-worker-execution-plan.md`
 - Current collaboration-suite plan: `docs/plans/0220-nextcloud-first-collaboration-suite.md`
-- Earlier sequencing plan: `docs/plans/0110-ops-brain-platform-workload-sequencing.md`
-- Detailed ops-brain plan: `docs/plans/0120-ops-brain-k3s-monitoring-stack.md`
+- Earlier sequencing plan: `docs/plans/0110-observatory-platform-workload-sequencing.md`
+- Detailed observatory plan: `docs/plans/0120-observatory-k3s-monitoring-stack.md`
 - Detailed Pangolin CLI / access plan: `docs/plans/0130-pangolin-cli-route-management.md`
-- Pangolin resource layer plan: `docs/plans/0150-pangolin-resource-management-for-ops-brain.md`
+- Pangolin resource layer plan: `docs/plans/0150-pangolin-resource-management-for-observatory.md`
 - Additional ops domains:
   - `scripts/2-ops/nuc/`
   - `scripts/2-ops/worker/`

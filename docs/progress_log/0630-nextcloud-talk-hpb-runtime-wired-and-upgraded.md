@@ -29,7 +29,7 @@ Current checkpoint:
 
 1. `./scripts/2-ops/host/28-verify-pangolin-sites-and-newt.sh`
 - passed
-- `ops-brain`, `nextcloud-vm`, `talk-hpb-vm` all present and online
+- `observatory`, `nextcloud-vm`, `talk-hpb-vm` all present and online
 - VM Newt services active on both workload VMs
 
 2. `./scripts/2-ops/workload/26-configure-nextcloud-talk-runtime.sh`

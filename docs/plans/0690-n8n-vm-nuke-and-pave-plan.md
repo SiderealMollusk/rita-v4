@@ -42,7 +42,7 @@ Pave:
 4. bootstrap DB role/database using canonical helper
 
 ## Phase 0 - Preflight and Freeze
-1. Confirm cluster API and `ops-brain` SSH reachability.
+1. Confirm cluster API and `observatory` SSH reachability.
 2. Suspend Flux kustomization temporarily to avoid mid-flight drift during destructive/recreate window.
 3. Snapshot current `platform` namespace state for rollback diagnostics:
    - `kubectl get all,secret,externalsecret,pvc -n platform -o wide`
@@ -69,7 +69,7 @@ Exit criteria:
 
 ## Phase 2 - Rebuild Secret Substrate (Canonical)
 1. Reapply ESO bridge (canonical internal path):
-   - `./scripts/2-ops/ops-brain/14-apply-secret-bridge.sh`
+   - `./scripts/2-ops/observatory/14-apply-secret-bridge.sh`
 2. Ensure OP item `n8n-secrets` exists with required fields (`db-password`, `encryption-key`) and no naming drift.
 3. Reset app `ExternalSecret` to canonical format used by stable lanes (simple key path contract).
 4. Verify:

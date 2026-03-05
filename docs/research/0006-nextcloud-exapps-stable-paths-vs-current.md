@@ -37,7 +37,7 @@ This is operationally valid for custom environments where automation/deploy is e
 ### Official instance topology today
 From repo:
 1. official instance is VM-backed: `cloud.virgil.info -> 192.168.6.183:80` ([instances.yaml](/Users/virgil/Dev/rita-v4/ops/nextcloud/instances.yaml:1))
-2. Pangolin blueprint for official instance forwards directly to VM host:80 ([nextcloud-cloud.blueprint.yaml](/Users/virgil/Dev/rita-v4/ops/pangolin/blueprints/ops-brain/nextcloud-cloud.blueprint.yaml:1))
+2. Pangolin blueprint for official instance forwards directly to VM host:80 ([nextcloud-cloud.blueprint.yaml](/Users/virgil/Dev/rita-v4/ops/pangolin/blueprints/observatory/nextcloud-cloud.blueprint.yaml:1))
 
 ### AppAPI daemon registration path in scripts
 From runbook script:

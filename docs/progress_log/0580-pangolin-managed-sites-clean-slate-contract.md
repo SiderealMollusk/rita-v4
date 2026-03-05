@@ -4,7 +4,7 @@ Date: 2026-03-05
 
 ## Summary
 
-`ops_brain`, `nextcloud_vm`, and `talk_hpb_vm` are now all treated as managed Pangolin sites in canonical required-sites state.
+`observatory`, `nextcloud_vm`, and `talk_hpb_vm` are now all treated as managed Pangolin sites in canonical required-sites state.
 
 The clean-slate cycle has been proven end to end:
 1. delete managed Pangolin sites + OP items
@@ -14,10 +14,10 @@ The clean-slate cycle has been proven end to end:
 
 ## Key Change
 
-[required-sites.yaml](/Users/virgil/Dev/rita-v4/ops/pangolin/sites/required-sites.yaml) now marks `ops_brain` as:
+[required-sites.yaml](/Users/virgil/Dev/rita-v4/ops/pangolin/sites/required-sites.yaml) now marks `observatory` as:
 1. `"managed_mode": "managed"`
 
-This removed the old legacy skip behavior in reconcile for `ops_brain`.
+This removed the old legacy skip behavior in reconcile for `observatory`.
 
 ## What Was Proven
 
@@ -31,13 +31,13 @@ From a clean slate (sites + OP entries removed), this sequence works:
 
 3. Deploy connectors:
 - `NEWT_FAST_FAIL=1 ./scripts/2-ops/workload/21-wire-vm-newt-connectors.sh`
-- `./scripts/2-ops/ops-brain/10-install-newt.sh`
+- `./scripts/2-ops/observatory/10-install-newt.sh`
 
 4. Verify:
 - `./scripts/2-ops/host/28-verify-pangolin-sites-and-newt.sh`
 
 Observed successful state:
-1. Pangolin sites online for `ops-brain`, `nextcloud-vm`, `talk-hpb-vm`
+1. Pangolin sites online for `observatory`, `nextcloud-vm`, `talk-hpb-vm`
 2. VM systemd `pangolin-newt` active for `nextcloud-vm` and `talk-hpb-vm`
 
 ## Operational Contract Clarified
@@ -46,7 +46,7 @@ Observed successful state:
 
 It does not make sites online by itself. Site online requires connector deployment:
 1. VM connectors via `21-wire-vm-newt-connectors.sh`
-2. ops-brain k8s connector via `10-install-newt.sh`
+2. observatory k8s connector via `10-install-newt.sh`
 
 ## Notable Log Interpretation
 

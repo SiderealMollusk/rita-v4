@@ -25,10 +25,10 @@ For the most recent validated state, use the latest relevant progress note in `d
 ### Ops-Brain
 1. SSH user: `virgil`
 2. `virgil` is expected to have sudo
-3. Inventory: `ops/ansible/inventory/ops-brain.ini`
+3. Inventory: `ops/ansible/inventory/observatory.ini`
 4. Bootstrap helpers:
 - `scripts/0-local-setup/01-lan/`
-- `scripts/2-ops/ops-brain/`
+- `scripts/2-ops/observatory/`
 
 ## Service Access Pattern
 1. Public/operator-facing routes:

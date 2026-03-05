@@ -3,14 +3,14 @@ Status: ACTIVE
 Date: 2026-03-01
 
 ## Goal
-Expand the current internal k3s cluster beyond `ops-brain`, convert the NUC into a clean `platform-node` worker node, and establish the first declarative platform-services foundation for:
+Expand the current internal k3s cluster beyond `observatory`, convert the NUC into a clean `platform-node` worker node, and establish the first declarative platform-services foundation for:
 1. `Flux`
 2. `Gitea`
 3. shared platform/app `Postgres`
 4. automatic observability defaults
 
 This plan also locks a boundary between:
-1. `ops-brain` as the operator/bootstrap edge
+1. `observatory` as the operator/bootstrap edge
 2. `platform` capacity as the preferred home of clean IoC-managed services
 
 ## Freshness
@@ -29,7 +29,7 @@ Reason:
 3. the current need is more schedulable capacity, not a second control plane
 
 ### Node Roles
-1. `ops-brain`
+1. `observatory`
 - k3s control plane
 - monitoring home
 - bootstrap edge
@@ -38,11 +38,11 @@ Reason:
 2. `platform`
 - Proxmox-hosted worker VM on the NUC
 - preferred home of GitOps-managed platform services
-- intentionally cleaner and more declarative than `ops-brain`
+- intentionally cleaner and more declarative than `observatory`
 
 3. `workload-node`
 - future worker capacity for application and compute workloads
-- should stay cleaner than `ops-brain`
+- should stay cleaner than `observatory`
 
 ### GitOps Choice
 Use `Flux`, not `Argo CD`.
@@ -112,13 +112,13 @@ Until then:
 
 ## Placement Model
 ### Immediate Placement
-1. control plane remains on `ops-brain`
-2. monitoring remains primarily on `ops-brain`
+1. control plane remains on `observatory`
+2. monitoring remains primarily on `observatory`
 3. `Flux`, `Gitea`, and `platform-postgres` should prefer the `platform` worker
 
 ### Node Labels
 At minimum:
-1. `rita.role=ops-brain`
+1. `rita.role=observatory`
 2. `rita.role=platform`
 3. later: `rita.role=workload`
 
@@ -126,16 +126,16 @@ At minimum:
 Do not start with aggressive taints until the `platform` worker is actually in service.
 
 Once the worker is healthy, prefer:
-1. keeping `ops-brain` special-purpose
-2. pushing platform services away from `ops-brain`
-3. reserving `ops-brain` for monitoring, control-plane duties, and messy/bootstrap exceptions
+1. keeping `observatory` special-purpose
+2. pushing platform services away from `observatory`
+3. reserving `observatory` for monitoring, control-plane duties, and messy/bootstrap exceptions
 
 Possible later taint:
 ```text
-rita.role=ops-brain:NoSchedule
+rita.role=observatory:NoSchedule
 ```
 
-Only add that once enough non-`ops-brain` capacity exists.
+Only add that once enough non-`observatory` capacity exists.
 
 ## Bootstrap Model
 ### Phase 1
@@ -240,7 +240,7 @@ This should be applied declaratively, not by UI cleanup.
 ## Deliverables
 1. clean `platform` worker VM from the Debian 12 template
 2. worker join flow into the existing k3s cluster
-3. node labels/placement policy for `ops-brain` vs `platform`
+3. node labels/placement policy for `observatory` vs `platform`
 4. Flux bootstrap from GitHub
 5. Flux-managed platform namespace layout
 6. shared Postgres deployment
@@ -250,7 +250,7 @@ This should be applied declaratively, not by UI cleanup.
 
 ## Pass Criteria
 1. NUC capacity joins the current cluster as a worker, not a second cluster
-2. `platform` services can be scheduled away from `ops-brain`
+2. `platform` services can be scheduled away from `observatory`
 3. Flux manages the platform lane from Git-backed declarations
 4. Gitea runs on-cluster against Postgres
 5. stateful services declare their backup status even when backups are intentionally absent

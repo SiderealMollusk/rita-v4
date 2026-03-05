@@ -3,7 +3,7 @@
 This directory is the canonical home for Kubernetes-based Newt deployment config.
 
 Current target:
-1. `ops-brain` k3s cluster
+1. `observatory` k3s cluster
 
 Current policy:
 1. install `fossorial/newt` via Helm
@@ -12,8 +12,8 @@ Current policy:
 4. use a Kubernetes Secret named `newt-cred`
 
 Verification references:
-1. `docs/plans/0140-ops-brain-monitoring-and-pangolin-access.md`
-2. `scripts/2-ops/ops-brain/10-install-newt.sh`
+1. `docs/plans/0140-observatory-monitoring-and-pangolin-access.md`
+2. `scripts/2-ops/observatory/10-install-newt.sh`
 
 ## 1Password Item Contract
 The install script expects an item in the configured vault with:

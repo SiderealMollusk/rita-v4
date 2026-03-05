@@ -1,0 +1,56 @@
+# DRAFT
+# This file is intentionally limited to targets already verified from the Newt pod.
+# Apply only after confirming live Pangolin CLI/API blueprint schema against the running server.
+
+public-resources:
+  grafana:
+    name: observatory grafana
+    protocol: http
+    full-domain: grafana.virgil.info
+    auth:
+      sso-enabled: true
+    targets:
+      - site: __SITE_IDENTIFIER__
+        hostname: observatory-kube-prometheus-grafana.monitoring.svc.cluster.local
+        method: http
+        port: 80
+
+  prometheus:
+    name: observatory prometheus
+    protocol: http
+    full-domain: prometheus.virgil.info
+    auth:
+      sso-enabled: true
+    targets:
+      - site: __SITE_IDENTIFIER__
+        hostname: observatory-kube-prometheus-prometheus.monitoring.svc.cluster.local
+        method: http
+        port: 9090
+
+  alertmanager:
+    name: observatory alertmanager
+    protocol: http
+    full-domain: alertmanager.virgil.info
+    auth:
+      sso-enabled: true
+    targets:
+      - site: __SITE_IDENTIFIER__
+        hostname: observatory-kube-prometheus-alertmanager.monitoring.svc.cluster.local
+        method: http
+        port: 9093
+
+  uptime-kuma:
+    name: observatory uptime kuma
+    protocol: http
+    full-domain: uptime.virgil.info
+    auth:
+      sso-enabled: true
+    targets:
+      - site: __SITE_IDENTIFIER__
+        hostname: observatory-kuma-uptime-kuma.monitoring.svc.cluster.local
+        method: http
+        port: 80
+
+# Intentionally left internal for now:
+# 1. Loki is reachable and useful, but Grafana already provides the operator log UI.
+# 2. Publishing the raw Loki API adds surface area without strong operator value yet.

@@ -71,7 +71,7 @@ For this repo, the right interpretation is:
 ### Placement
 1. `Nextcloud` runs on `workload`
 2. `platform-postgres` remains on `platform`
-3. no general app workload lands on `ops-brain`
+3. no general app workload lands on `observatory`
 
 ### Exposure
 1. `Nextcloud` is a Pangolin Public Resource

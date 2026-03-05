@@ -16,6 +16,7 @@ TAG="${NEXTCLOUD_SNAPSHOT_TAG:-}"
 DESCRIPTION="${NEXTCLOUD_SNAPSHOT_DESCRIPTION:-}"
 INCLUDE_CORE=1
 INCLUDE_TALK=1
+REQUIRE_QGA="${NEXTCLOUD_SNAPSHOT_REQUIRE_QGA:-0}"
 
 usage() {
   cat <<'EOF'
@@ -31,6 +32,7 @@ Options:
   --talk-vmid <id>         Talk HPB VM ID (default: 9302)
   --core-only              Snapshot only core VM
   --talk-only              Snapshot only talk VM
+  --require-qga            Fail if QEMU Guest Agent is not responding
   --help                   Show help
 EOF
 }
@@ -45,6 +47,7 @@ while [ "$#" -gt 0 ]; do
     --talk-vmid) TALK_VMID="${2:-}"; shift 2 ;;
     --core-only) INCLUDE_CORE=1; INCLUDE_TALK=0; shift ;;
     --talk-only) INCLUDE_CORE=0; INCLUDE_TALK=1; shift ;;
+    --require-qga) REQUIRE_QGA=1; shift ;;
     --help|-h) usage; exit 0 ;;
     *) runbook_fail "Unknown argument: $1" ;;
   esac
@@ -81,10 +84,27 @@ DESC_ESCAPED="$(printf "%s" "$DESCRIPTION" | sed "s/'/'\"'\"'/g")"
 run_snapshot() {
   local vmid="$1"
   local label="$2"
+  local qga_ok=0
+
   echo "[INFO] Snapshotting ${label} VM ${vmid} on ${PVE_HOST} with tag ${TAG}"
+
+  if ssh "root@${PVE_HOST}" "set -eu; qm guest cmd '${vmid}' ping >/dev/null 2>&1"; then
+    qga_ok=1
+    echo "[INFO] QGA reachable for VM ${vmid}"
+  else
+    if [ "$REQUIRE_QGA" = "1" ]; then
+      runbook_fail "QGA not reachable for VM ${vmid} and --require-qga was set"
+    fi
+    echo "[WARN] QGA not reachable for VM ${vmid}; continuing with crash-consistent snapshot using vmstate=0"
+  fi
+
   ssh "root@${PVE_HOST}" "set -eu;
     qm status '${vmid}' >/dev/null 2>&1 || { echo 'vm not found: ${vmid}' >&2; exit 1; }
     qm snapshot '${vmid}' '${TAG}' --description '${DESC_ESCAPED}' --vmstate 0"
+
+  if [ "$qga_ok" = "0" ]; then
+    echo "[WARN] Snapshot for VM ${vmid} succeeded without QGA quiesce"
+  fi
 }
 
 if [ "$INCLUDE_CORE" = "1" ]; then

@@ -13,34 +13,34 @@ routes:
       - 80
       - 443
     notes: "Primary Pangolin server endpoint."
-  - name: "ops-brain-grafana"
+  - name: "observatory-grafana"
     fqdn: "grafana.virgil.info"
-    backend: "ops-brain"
+    backend: "observatory"
     exposure: "pangolin"
     ports:
       - 80
-    notes: "Pangolin-routed Grafana resource targeting the ops-brain monitoring cluster."
-  - name: "ops-brain-prometheus"
+    notes: "Pangolin-routed Grafana resource targeting the observatory monitoring cluster."
+  - name: "observatory-prometheus"
     fqdn: "prometheus.virgil.info"
-    backend: "ops-brain"
+    backend: "observatory"
     exposure: "pangolin"
     ports:
       - 9090
-    notes: "Pangolin-routed Prometheus resource targeting the ops-brain monitoring cluster."
-  - name: "ops-brain-alertmanager"
+    notes: "Pangolin-routed Prometheus resource targeting the observatory monitoring cluster."
+  - name: "observatory-alertmanager"
     fqdn: "alertmanager.virgil.info"
-    backend: "ops-brain"
+    backend: "observatory"
     exposure: "pangolin"
     ports:
       - 9093
-    notes: "Pangolin-routed Alertmanager resource targeting the ops-brain monitoring cluster."
-  - name: "ops-brain-uptime-kuma"
+    notes: "Pangolin-routed Alertmanager resource targeting the observatory monitoring cluster."
+  - name: "observatory-uptime-kuma"
     fqdn: "uptime.virgil.info"
-    backend: "ops-brain"
+    backend: "observatory"
     exposure: "pangolin"
     ports:
       - 80
-    notes: "Pangolin-routed Uptime Kuma resource targeting the ops-brain monitoring cluster."
+    notes: "Pangolin-routed Uptime Kuma resource targeting the observatory monitoring cluster."
   - name: "workload-nextcloud"
     fqdn: "app.virgil.info"
     backend: "workload"

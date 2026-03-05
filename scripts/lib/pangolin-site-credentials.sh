@@ -10,10 +10,10 @@ runbook_register_pangolin_site_credentials() {
   local vault_id="$5"
 
   local routes_file="$repo_root/ops/network/routes.yml"
-  local ops_brain_vars="$repo_root/ops/ansible/group_vars/ops_brain.yml"
+  local observatory_vars="$repo_root/ops/ansible/group_vars/observatory.yml"
 
   [ -f "$routes_file" ] || runbook_fail "missing routes file at $routes_file"
-  [ -f "$ops_brain_vars" ] || runbook_fail "missing group vars file at $ops_brain_vars"
+  [ -f "$observatory_vars" ] || runbook_fail "missing group vars file at $observatory_vars"
   [ -n "$site_slug" ] || runbook_fail "site slug is required"
   [ -n "$item_title" ] || runbook_fail "item title is required"
   [ -n "$vault_id" ] || runbook_fail "vault id is required"
@@ -23,8 +23,8 @@ runbook_register_pangolin_site_credentials() {
   [ -n "$pangolin_endpoint" ] || runbook_fail "pangolin_endpoint missing in $routes_file"
 
   local site_identifier_field
-  site_identifier_field="$(runbook_yaml_get "$ops_brain_vars" "pangolin_newt_site_identifier_field" || true)"
-  [ -n "$site_identifier_field" ] || runbook_fail "pangolin_newt_site_identifier_field missing in $ops_brain_vars"
+  site_identifier_field="$(runbook_yaml_get "$observatory_vars" "pangolin_newt_site_identifier_field" || true)"
+  [ -n "$site_identifier_field" ] || runbook_fail "pangolin_newt_site_identifier_field missing in $observatory_vars"
 
   echo "[INFO] Registering Pangolin site credentials for slug=${site_slug}"
   if [ -n "$site_name" ]; then

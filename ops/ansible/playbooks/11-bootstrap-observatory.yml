@@ -1,0 +1,98 @@
+---
+- name: Bootstrap observatory host baseline
+  hosts: observatory
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Require k3s API allowlist vars
+      ansible.builtin.assert:
+        that:
+          - observatory_k3s_api_port is defined
+          - observatory_k3s_api_port | length > 0
+          - observatory_k3s_api_allowed_sources is defined
+          - observatory_k3s_api_allowed_sources | length > 0
+          - observatory_flannel_vxlan_port is defined
+          - observatory_flannel_vxlan_port | length > 0
+          - observatory_flannel_allowed_sources is defined
+          - observatory_flannel_allowed_sources | length > 0
+        fail_msg: "Missing observatory k3s API UFW allowlist vars."
+
+    - name: Install baseline packages
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - ufw
+          - fail2ban
+        state: present
+
+    - name: Read UFW status
+      ansible.builtin.command: ufw status verbose
+      register: ufw_status
+      changed_when: false
+
+    - name: Derive current UFW default policies
+      ansible.builtin.set_fact:
+        ufw_incoming_is_deny: "{{ 'Default: deny (incoming)' in ufw_status.stdout }}"
+        ufw_outgoing_is_allow: "{{ '(outgoing)' in ufw_status.stdout and 'allow (outgoing)' in ufw_status.stdout }}"
+
+    - name: Ensure UFW default deny incoming
+      ansible.builtin.command: ufw default deny incoming
+      when: not ufw_incoming_is_deny
+
+    - name: Ensure UFW default allow outgoing
+      ansible.builtin.command: ufw default allow outgoing
+      when: not ufw_outgoing_is_allow
+
+    - name: Allow SSH via UFW
+      ansible.builtin.command: ufw allow OpenSSH
+      changed_when: "'Skipping adding existing rule' not in ufw_allow_ssh.stdout"
+      register: ufw_allow_ssh
+
+    - name: Allow k3s API from approved internal sources
+      ansible.builtin.command:
+        argv:
+          - ufw
+          - allow
+          - from
+          - "{{ item }}"
+          - to
+          - any
+          - port
+          - "{{ observatory_k3s_api_port }}"
+          - proto
+          - tcp
+      loop: "{{ observatory_k3s_api_allowed_sources }}"
+      register: ufw_allow_k3s_api
+      changed_when: "'Skipping adding existing rule' not in ufw_allow_k3s_api.stdout"
+
+    - name: Allow flannel VXLAN from approved worker sources
+      ansible.builtin.command:
+        argv:
+          - ufw
+          - allow
+          - from
+          - "{{ item }}"
+          - to
+          - any
+          - port
+          - "{{ observatory_flannel_vxlan_port }}"
+          - proto
+          - udp
+      loop: "{{ observatory_flannel_allowed_sources }}"
+      register: ufw_allow_flannel_vxlan
+      changed_when: "'Skipping adding existing rule' not in ufw_allow_flannel_vxlan.stdout"
+
+    - name: Enable UFW
+      ansible.builtin.command: ufw --force enable
+      changed_when: "'already enabled' not in ufw_enable.stdout"
+      register: ufw_enable
+
+    - name: Ensure fail2ban service enabled
+      ansible.builtin.service:
+        name: fail2ban
+        enabled: true
+        state: started

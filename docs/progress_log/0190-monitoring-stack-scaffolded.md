@@ -1,11 +1,11 @@
 # 0190 Monitoring Stack Scaffolded
 
-As of this update, the `ops-brain` services lane now includes a first-pass monitoring stack install and verification path.
+As of this update, the `observatory` services lane now includes a first-pass monitoring stack install and verification path.
 
 ## What was added
 
-1. `scripts/2-ops/ops-brain/11-install-monitoring-stack.sh`
-2. `scripts/2-ops/ops-brain/12-verify-monitoring-stack.sh`
+1. `scripts/2-ops/observatory/11-install-monitoring-stack.sh`
+2. `scripts/2-ops/observatory/12-verify-monitoring-stack.sh`
 3. `ops/helm/monitoring/kube-prometheus-stack.values.yaml`
 4. `ops/helm/monitoring/loki.values.yaml`
 
@@ -25,7 +25,7 @@ The current monitoring stack is intentionally pragmatic:
 
 ## Operational policy
 
-1. storage is local-path on `ops-brain`
+1. storage is local-path on `observatory`
 2. rebuild/data loss is accepted for now
 3. no public ingress is enabled by default
 4. Newt remains the prerequisite layer before monitoring

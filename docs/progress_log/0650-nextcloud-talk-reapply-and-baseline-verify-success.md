@@ -25,7 +25,7 @@ Completed a full operator re-apply sequence from host shell and confirmed the Ne
 6. Pangolin managed sites are online and VM Newt services are active for:
 1. `nextcloud-vm`
 2. `talk-hpb-vm`
-3. `ops-brain`
+3. `observatory`
 
 ## Current Position
 

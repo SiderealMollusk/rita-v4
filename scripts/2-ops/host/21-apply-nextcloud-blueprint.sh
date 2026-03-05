@@ -11,10 +11,10 @@ runbook_require_host_terminal
 
 PANGOLIN_BIN="$(runbook_require_pangolin_cli)"
 
-GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/ops_brain.yml"
-BLUEPRINT_FILE="$REPO_ROOT/ops/pangolin/blueprints/ops-brain/nextcloud.blueprint.yaml"
-BLUEPRINT_NAME="ops-brain-nextcloud"
-TMP_BLUEPRINT="$(mktemp /tmp/ops-brain-nextcloud.blueprint.XXXXXX)"
+GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
+BLUEPRINT_FILE="$REPO_ROOT/ops/pangolin/blueprints/observatory/nextcloud.blueprint.yaml"
+BLUEPRINT_NAME="observatory-nextcloud"
+TMP_BLUEPRINT="$(mktemp /tmp/observatory-nextcloud.blueprint.XXXXXX)"
 
 [ -f "$GROUP_VARS" ] || runbook_fail "missing group vars file at $GROUP_VARS"
 [ -f "$BLUEPRINT_FILE" ] || runbook_fail "missing blueprint file at $BLUEPRINT_FILE"

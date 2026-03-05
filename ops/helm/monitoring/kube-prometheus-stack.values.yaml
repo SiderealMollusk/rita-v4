@@ -10,7 +10,7 @@ grafana:
     - name: Loki
       type: loki
       access: proxy
-      url: http://ops-brain-loki:3100
+      url: http://observatory-loki:3100
       isDefault: false
       jsonData:
         maxLines: 1000

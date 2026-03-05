@@ -1,15 +1,15 @@
 # 0130 Newt Kubeconfig Plumbing Fix
 
-As of this update, the `ops-brain` services phase reached the Newt Helm install and failed for a specific automation reason, not a topology or credentials reason.
+As of this update, the `observatory` services phase reached the Newt Helm install and failed for a specific automation reason, not a topology or credentials reason.
 
 ## What was true when this was written
 
 The following parts of the flow were already working:
 
-1. `ops-brain` SSH + Ansible access
-2. k3s on `ops-brain`
-3. Helm on `ops-brain`
-4. Pangolin site credentials readable from 1Password item `pangolin_site_ops_brain`
+1. `observatory` SSH + Ansible access
+2. k3s on `observatory`
+3. Helm on `observatory`
+4. Pangolin site credentials readable from 1Password item `pangolin_site_observatory`
 5. Newt namespace creation
 6. Kubernetes secret creation for Newt credentials
 7. Fossorial Helm repo add/update
@@ -30,9 +30,9 @@ That produced:
 
 ## Fix applied
 
-`scripts/2-ops/ops-brain/10-install-newt.sh` now:
+`scripts/2-ops/observatory/10-install-newt.sh` now:
 
-1. reads `ansible_user` from `ops/ansible/inventory/ops-brain.ini`
+1. reads `ansible_user` from `ops/ansible/inventory/observatory.ini`
 2. derives:
    - `/home/<ansible_user>/.kube/config`
 3. exports that kubeconfig explicitly for every remote Kubernetes-aware command:

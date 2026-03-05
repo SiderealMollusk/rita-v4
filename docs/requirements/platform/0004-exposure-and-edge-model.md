@@ -27,7 +27,7 @@ The edge routes to internal services through the connected site model.
 Validated example:
 
 - `app.virgil.info`
-- Pangolin resource via `ops-brain`
+- Pangolin resource via `observatory`
 - backend target `nextcloud.workload.svc.cluster.local:8080`
 
 ## Important Validated Behavior

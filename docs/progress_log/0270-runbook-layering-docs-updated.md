@@ -9,7 +9,7 @@ As of this update, the repo docs were tightened to describe the actual ordered c
    - write secrets
    - apply Pangolin mutations with host-held auth
 2. `devcontainer` is the reproducible validation/automation lane
-3. `ops-brain` is documented as an ordered service lane:
+3. `observatory` is documented as an ordered service lane:
    - bootstrap host
    - bootstrap cluster
    - connect Newt

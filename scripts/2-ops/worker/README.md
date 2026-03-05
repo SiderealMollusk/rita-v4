@@ -22,7 +22,7 @@ Direct-entry scripts:
 
 Notes:
 1. `ops/ansible/inventory/platform.ini` and `ops/ansible/inventory/internal-cluster.ini` carry the current `platform-vm-worker` management IP.
-2. `ops-brain` remains the control plane and monitoring home.
+2. `observatory` remains the control plane and monitoring home.
 3. This path assumes the worker VM inventory alias is `platform-vm-worker` and the in-guest hostname remains `platform`.
 4. Flux bootstrap is intentionally host-driven so GitHub auth stays in the operator environment.
 5. Durable machine-onboarding expectations live in `docs/adding-a-machine.md`.

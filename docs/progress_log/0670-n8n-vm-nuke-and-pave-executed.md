@@ -16,7 +16,7 @@ Executed plan 0690 end-to-end through VM rebuild, cluster join, ESO recovery, DB
 3. `./scripts/2-ops/workload/31-install-n8n-k3s-agent.sh`
 4. `./scripts/2-ops/workload/32-label-n8n-node.sh`
 5. `./scripts/2-ops/workload/33-verify-n8n-node.sh`
-6. `./scripts/2-ops/ops-brain/14-apply-secret-bridge.sh`
+6. `./scripts/2-ops/observatory/14-apply-secret-bridge.sh`
 7. `./scripts/2-ops/host/22-bootstrap-n8n-db.sh`
 8. `flux resume kustomization flux-system -n flux-system`
 

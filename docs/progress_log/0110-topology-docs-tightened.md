@@ -13,7 +13,7 @@ Added:
 1. `docs/topology.md`
 2. `docs/clusters.md`
 3. `docs/access-policy.md`
-4. `docs/nodes/ops-brain.md`
+4. `docs/nodes/observatory.md`
 5. `docs/nodes/platform-node.md`
 6. `docs/nodes/workload-node.md`
 
@@ -35,8 +35,8 @@ The repo now avoids:
 ## As Of This Update
 These statements were true and verified strongly enough to document:
 1. `main-vps` exists and runs `pangolin-server` as the public edge runtime.
-2. `ops-brain` exists and has a working k3s control plane bootstrap path from repo automation.
-3. `ops-brain` and `main-vps` are separate operational domains.
+2. `observatory` exists and has a working k3s control plane bootstrap path from repo automation.
+3. `observatory` and `main-vps` are separate operational domains.
 4. `platform-node` and `workload-node` remain planned role definitions, not yet fully installed/validated nodes in repo automation.
 5. `ops/ansible/inventory/*.ini` and `ops/network/routes.yml` are the canonical discovery sources for hosts and externally hittable routes.
 
@@ -49,4 +49,4 @@ These statements were true and verified strongly enough to document:
 ## Next Useful Verification Upgrades
 1. add future inventory entries for `platform-node` and `workload-node` once real hosts exist
 2. add a stronger service contact matrix once monitoring services are live
-3. add more explicit Pangolin/Newt route verification once `ops-brain` site registration is automated
+3. add more explicit Pangolin/Newt route verification once `observatory` site registration is automated

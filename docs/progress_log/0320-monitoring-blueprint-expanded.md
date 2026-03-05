@@ -1,6 +1,6 @@
 # 0320 Monitoring Blueprint Expanded
 
-As of this update, the `ops-brain` Pangolin monitoring blueprint no longer targets only Grafana.
+As of this update, the `observatory` Pangolin monitoring blueprint no longer targets only Grafana.
 
 What changed:
 1. the monitoring blueprint now includes:

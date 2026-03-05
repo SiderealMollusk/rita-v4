@@ -17,14 +17,14 @@ The repo automates what happens after the site credentials are known.
 5. Copy the Pangolin site identifier from the site settings page.
 6. Run the host-side ingest script to extract endpoint, `id`, `secret`, and `identifier` into 1Password.
 7. Run a devcontainer validation script to confirm the note shape and readability.
-8. Run the `ops-brain` services phase to install Newt from the validated 1Password item.
+8. Run the `observatory` services phase to install Newt from the validated 1Password item.
 
 ## 1Password Contract
-For the current `ops-brain` site on `ops-brain`, the expected item is:
-1. title: `pangolin_site_ops_brain`
+For the current `observatory` site on `observatory`, the expected item is:
+1. title: `pangolin_site_observatory`
 2. category: Secure Note
 3. fields:
-- `name`: `ops-brain`
+- `name`: `observatory`
 - `identifier`: Pangolin-generated site identifier used by blueprints
 - `id`: Pangolin-issued site id
 - `secret`: Pangolin-issued site secret
@@ -38,11 +38,11 @@ Notes:
 
 ## Verification Path
 1. Ingest the site Helm snippet from the Mac host:
-- `scripts/2-ops/host/10-write-ops-brain-pangolin-site-secret.sh`
+- `scripts/2-ops/host/10-write-observatory-pangolin-site-secret.sh`
 1. Validate the OP item from the devcontainer:
-- `scripts/2-ops/devcontainer/20-validate-ops-brain-pangolin-site.sh`
+- `scripts/2-ops/devcontainer/20-validate-observatory-pangolin-site.sh`
 2. Install Newt after validation:
-- `scripts/2-ops/ops-brain/02-services/00-run-all.sh`
+- `scripts/2-ops/observatory/02-services/00-run-all.sh`
 
 ## Guardrail
 If a site secret is ever exposed in chat or an unsafe place:

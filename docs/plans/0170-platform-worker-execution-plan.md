@@ -129,13 +129,13 @@ If bootstrap fails:
 
 ## Phase 3 - Join `platform` To The Existing k3s Cluster
 ### Steps
-1. Verify `ops-brain` control plane is healthy.
+1. Verify `observatory` control plane is healthy.
 2. Verify cluster token/join path is available.
 3. Install k3s agent on `platform-vm-worker`.
 4. Join `platform-vm-worker` to the existing cluster.
 5. Verify node appears in `kubectl get nodes`.
 6. Label nodes:
-- `ops-brain` => `rita.role=ops-brain`
+- `observatory` => `rita.role=observatory`
 - `platform` => `rita.role=platform`
 7. Verify labels exist.
 
@@ -152,7 +152,7 @@ If join fails:
 4. inspect k3s agent logs
 5. retry join
 
-If `ops-brain` is unhealthy:
+If `observatory` is unhealthy:
 1. stop
 2. repair the control plane first
 
@@ -163,13 +163,13 @@ If `ops-brain` is unhealthy:
 ## Phase 4 - Apply Initial Placement Rules
 ### Steps
 1. Define node selectors/affinity for platform services.
-2. Keep monitoring workloads anchored to `ops-brain`.
+2. Keep monitoring workloads anchored to `observatory`.
 3. Configure `Flux`, `Gitea`, and `platform-postgres` to prefer `platform`.
 4. Defer taints unless needed immediately.
 
 ### Validation
 1. placement rules exist in manifests
-2. `ops-brain` remains the preferred monitoring home
+2. `observatory` remains the preferred monitoring home
 
 ### Conditional
 If the worker is unstable:
@@ -263,7 +263,7 @@ If resource pressure is high:
 3. repo creation/login path works
 
 ### Conditional
-If `Gitea` schedules onto `ops-brain` unexpectedly:
+If `Gitea` schedules onto `observatory` unexpectedly:
 1. tighten node affinity/selectors
 2. reconcile again
 
@@ -347,7 +347,7 @@ If the reporting path is not yet automated:
 Stop and resolve before continuing if:
 1. Proxmox host health is unknown
 2. `9000` template is invalid
-3. `ops-brain` control plane is unhealthy
+3. `observatory` control plane is unhealthy
 4. `platform` cannot join the cluster
 5. Flux cannot reconcile from GitHub
 6. Postgres cannot provision storage

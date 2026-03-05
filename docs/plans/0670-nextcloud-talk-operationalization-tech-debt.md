@@ -40,6 +40,15 @@ Talk reliability is improving, but several critical remediations were applied ma
 4. fail on MIME regressions (`.mjs`, `.wasm`, css/js/svg/png sanity set)
 5. fail on new level>=3 Talk-related server log entries in time window
 
+## Current Status (2026-03-05)
+
+1. Partially completed via:
+1. [41-install-nextcloud-talk-hpb-runtime.sh](/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/41-install-nextcloud-talk-hpb-runtime.sh)
+2. [42-verify-nextcloud-talk-hpb-runtime.sh](/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/42-verify-nextcloud-talk-hpb-runtime.sh)
+2. Public signaling endpoint recovered to `HTTP 200` and reports signaling `v2.1.0`.
+3. Remaining gap:
+1. full end-to-end web/mobile behavioral verification and Janus eventhandler/full-trickle tuning are still open.
+
 ## Configuration Guardrails (Missing)
 
 1. Nginx policy:

@@ -2,19 +2,19 @@
 
 As of this update:
 
-1. `ops-brain` monitoring stack is up after recovery from an unexpected power loss.
-2. The following releases are deployed on `ops-brain`:
-   - `ops-brain-kube-prometheus`
-   - `ops-brain-loki`
-   - `ops-brain-promtail`
-   - `ops-brain-kuma`
+1. `observatory` monitoring stack is up after recovery from an unexpected power loss.
+2. The following releases are deployed on `observatory`:
+   - `observatory-kube-prometheus`
+   - `observatory-loki`
+   - `observatory-promtail`
+   - `observatory-kuma`
 3. Pangolin public resources exist and are protected for:
    - `grafana.virgil.info`
    - `prometheus.virgil.info`
    - `alertmanager.virgil.info`
    - `uptime.virgil.info`
 4. `Uptime Kuma` is reachable as a deployed service in-cluster at:
-   - `ops-brain-kuma-uptime-kuma.monitoring.svc.cluster.local:80`
+   - `observatory-kuma-uptime-kuma.monitoring.svc.cluster.local:80`
 
 Current unresolved boundary:
 
@@ -27,7 +27,7 @@ Operational note:
 1. Some helper output in the `/workspaces/rita-v4` tree remains stale relative to `/Users/virgil/Dev/rita-v4`.
 2. The clearest example is the old hardcoded Kuma service name in verification output.
 3. Live cluster truth showed the correct service:
-   - `ops-brain-kuma-uptime-kuma`
+   - `observatory-kuma-uptime-kuma`
 
 Verification cues that were true at this point:
 

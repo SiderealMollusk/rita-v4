@@ -1,6 +1,6 @@
 # 0160 OP Reveal Secret Fix
 
-As of this update, the `ops-brain` Newt install failure was traced to 1Password CLI secret retrieval, not Pangolin auth or Kubernetes wiring.
+As of this update, the `observatory` Newt install failure was traced to 1Password CLI secret retrieval, not Pangolin auth or Kubernetes wiring.
 
 ## Root cause
 
@@ -26,8 +26,8 @@ instead of the real Pangolin site secret.
 
 Updated:
 
-1. `scripts/2-ops/ops-brain/10-install-newt.sh`
-2. `scripts/2-ops/devcontainer/20-validate-ops-brain-pangolin-site.sh`
+1. `scripts/2-ops/observatory/10-install-newt.sh`
+2. `scripts/2-ops/devcontainer/20-validate-observatory-pangolin-site.sh`
 
 Both now use:
 

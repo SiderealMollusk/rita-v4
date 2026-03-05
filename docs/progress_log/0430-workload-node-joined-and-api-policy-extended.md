@@ -57,22 +57,22 @@ This proved:
 4. Flannel VXLAN allowlist on the workload host
 5. fail2ban enablement
 
-### 5. The final blocker was missing API policy on `ops-brain`
+### 5. The final blocker was missing API policy on `observatory`
 The workload worker failed to join k3s because `workload` could not reach:
 1. `https://192.168.6.16:6443`
 
 Root cause:
-1. `ops-brain` UFW allowlists had been extended for `platform`
+1. `observatory` UFW allowlists had been extended for `platform`
 2. but not yet for `workload`
 
 Canonical fix:
-1. add `192.168.6.181` to `ops_brain_k3s_api_allowed_sources`
-2. add `192.168.6.181` to `ops_brain_flannel_allowed_sources`
-3. re-apply `/Users/virgil/Dev/rita-v4/scripts/2-ops/ops-brain/02-bootstrap-host.sh`
+1. add `192.168.6.181` to `observatory_k3s_api_allowed_sources`
+2. add `192.168.6.181` to `observatory_flannel_allowed_sources`
+3. re-apply `/Users/virgil/Dev/rita-v4/scripts/2-ops/observatory/02-bootstrap-host.sh`
 
 This is now encoded in:
-1. `/Users/virgil/Dev/rita-v4/ops/ansible/group_vars/ops_brain.yml`
-2. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/11-bootstrap-ops-brain.yml`
+1. `/Users/virgil/Dev/rita-v4/ops/ansible/group_vars/observatory.yml`
+2. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/11-bootstrap-observatory.yml`
 
 ## What Was Applied
 Successful runbooks:
@@ -80,14 +80,14 @@ Successful runbooks:
 2. `/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/02-rebuild-workload-vm.sh`
 3. `/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/05-bootstrap-host.sh`
 4. `/Users/virgil/Dev/rita-v4/scripts/2-ops/workload/06-install-k3s-agent.sh`
-5. `/Users/virgil/Dev/rita-v4/scripts/2-ops/ops-brain/02-bootstrap-host.sh`
+5. `/Users/virgil/Dev/rita-v4/scripts/2-ops/observatory/02-bootstrap-host.sh`
 
 Live cluster action:
 1. `kubectl label node workload rita.role=workload --overwrite`
 
 ## Current Cluster State
 Verified:
-1. `monitoring` is `Ready` with `rita.role=ops-brain`
+1. `monitoring` is `Ready` with `rita.role=observatory`
 2. `platform` is `Ready` with `rita.role=platform`
 3. `workload` is `Ready` with `rita.role=workload`
 
@@ -114,12 +114,12 @@ This is not the current blocker, but it is real storage debt pending the NAS/sto
 The cluster is still in labels-first mode.
 
 Current validated labels:
-1. `rita.role=ops-brain`
+1. `rita.role=observatory`
 2. `rita.role=platform`
 3. `rita.role=workload`
 
 Intended placement policy:
-1. `ops-brain` should not carry general app workloads
+1. `observatory` should not carry general app workloads
 2. `platform` should prefer platform services, not become the default app lane
 3. `workload` should become the default general workload target
 

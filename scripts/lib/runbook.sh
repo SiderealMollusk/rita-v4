@@ -104,7 +104,7 @@ runbook_source_labrc() {
 }
 
 runbook_export_default_kubeconfig() {
-  local fallback_path="${1:-$HOME/.kube/config-rita-ops-brain}"
+  local fallback_path="${1:-$HOME/.kube/config-rita-observatory}"
   export KUBECONFIG="${KUBECONFIG:-${KUBECONFIG_INTERNAL:-$fallback_path}}"
 }
 

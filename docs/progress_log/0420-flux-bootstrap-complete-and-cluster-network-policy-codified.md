@@ -16,25 +16,25 @@ Those gaps are now encoded in repo automation and were re-applied successfully.
 
 ## What Was Proven
 ### 1. Host-side kubeconfig now has a canonical sync path
-The canonical user kubeconfig on `ops-brain` is now regenerated from:
-1. `ops/ansible/inventory/ops-brain.ini`
+The canonical user kubeconfig on `observatory` is now regenerated from:
+1. `ops/ansible/inventory/observatory.ini`
 
 The canonical apply path is:
-1. `/Users/virgil/Dev/rita-v4/scripts/2-ops/ops-brain/08-sync-kubeconfig.sh`
+1. `/Users/virgil/Dev/rita-v4/scripts/2-ops/observatory/08-sync-kubeconfig.sh`
 
 This closed the earlier drift where:
 1. `/home/virgil/.kube/config` contained `https://127.0.0.1:6443`
 
 ### 2. Host-side API access is now durably encoded
-`ops-brain` now carries an explicit UFW allowlist for the k3s API.
+`observatory` now carries an explicit UFW allowlist for the k3s API.
 
 Current encoded sources:
 1. `192.168.5.182`
 2. `192.168.5.227`
 
 These are modeled in:
-1. `/Users/virgil/Dev/rita-v4/ops/ansible/group_vars/ops_brain.yml`
-2. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/11-bootstrap-ops-brain.yml`
+1. `/Users/virgil/Dev/rita-v4/ops/ansible/group_vars/observatory.yml`
+2. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/11-bootstrap-observatory.yml`
 
 ### 3. Inter-node Flannel traffic is now durably encoded
 The real root cause of the stuck Flux reconcile was cross-node pod networking failure.
@@ -49,15 +49,15 @@ Concrete cause:
 2. UFW on both nodes was blocking Flannel VXLAN traffic
 
 This is now encoded in:
-1. `/Users/virgil/Dev/rita-v4/ops/ansible/group_vars/ops_brain.yml`
+1. `/Users/virgil/Dev/rita-v4/ops/ansible/group_vars/observatory.yml`
 2. `/Users/virgil/Dev/rita-v4/ops/ansible/group_vars/platform.yml`
-3. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/11-bootstrap-ops-brain.yml`
+3. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/11-bootstrap-observatory.yml`
 4. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/13-bootstrap-platform.yml`
 
 ## What Was Applied
 The following runbooks were applied successfully:
-1. `/Users/virgil/Dev/rita-v4/scripts/2-ops/ops-brain/02-bootstrap-host.sh`
-2. `/Users/virgil/Dev/rita-v4/scripts/2-ops/ops-brain/08-sync-kubeconfig.sh`
+1. `/Users/virgil/Dev/rita-v4/scripts/2-ops/observatory/02-bootstrap-host.sh`
+2. `/Users/virgil/Dev/rita-v4/scripts/2-ops/observatory/08-sync-kubeconfig.sh`
 3. `/Users/virgil/Dev/rita-v4/scripts/2-ops/worker/02-bootstrap-host.sh`
 4. `/Users/virgil/Dev/rita-v4/scripts/2-ops/worker/06-bootstrap-flux-github.sh`
 
@@ -78,8 +78,8 @@ Observed healthy state:
 
 ## Repo Changes In This Closure
 ### Firewall policy
-1. added canonical k3s API allowlist vars for `ops-brain`
-2. added canonical Flannel allowlist vars for `ops-brain`
+1. added canonical k3s API allowlist vars for `observatory`
+2. added canonical Flannel allowlist vars for `observatory`
 3. added canonical Flannel allowlist vars for `platform`
 4. wired those vars into the bootstrap playbooks
 
@@ -91,7 +91,7 @@ Observed healthy state:
 ### Host/operator ergonomics
 1. Flux bootstrap now reads durable non-secret config from repo
 2. Flux bootstrap now reads the GitHub token from 1Password
-3. the `ops-brain` kubeconfig sync wrapper is part of the canonical host-side path
+3. the `observatory` kubeconfig sync wrapper is part of the canonical host-side path
 
 ## Current Known Residuals
 The main remaining issues are smaller quality items, not blockers.

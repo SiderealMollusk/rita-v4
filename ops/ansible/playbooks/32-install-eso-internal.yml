@@ -1,6 +1,6 @@
 ---
 - name: Install External Secrets Operator on internal k3s
-  hosts: ops_brain
+  hosts: observatory
   become: true
   gather_facts: true
 
@@ -13,7 +13,7 @@
         that:
           - eso_namespace is defined
           - eso_namespace | length > 0
-        fail_msg: "Missing required var: eso_namespace (set it in ops/ansible/group_vars/ops_brain.yml)."
+        fail_msg: "Missing required var: eso_namespace (set it in ops/ansible/group_vars/observatory.yml)."
 
   tasks:
     - name: Install helm if missing

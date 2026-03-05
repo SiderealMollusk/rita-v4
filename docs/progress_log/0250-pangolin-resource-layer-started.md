@@ -1,13 +1,13 @@
 # 0250 Pangolin Resource Layer Started
 
-As of this update, the repo now has a dedicated planning and artifact location for Pangolin-managed resource exposure from the `ops-brain` site.
+As of this update, the repo now has a dedicated planning and artifact location for Pangolin-managed resource exposure from the `observatory` site.
 
 ## What was added
 
 1. a concrete plan for Pangolin resource management:
-   - `/Users/virgil/Dev/rita-v4/docs/plans/0150-pangolin-resource-management-for-ops-brain.md`
+   - `/Users/virgil/Dev/rita-v4/docs/plans/0150-pangolin-resource-management-for-observatory.md`
 2. a canonical blueprint directory:
-   - `/Users/virgil/Dev/rita-v4/ops/pangolin/blueprints/ops-brain/`
+   - `/Users/virgil/Dev/rita-v4/ops/pangolin/blueprints/observatory/`
 3. an initial draft monitoring blueprint artifact:
    - `monitoring.blueprint.yaml`
 

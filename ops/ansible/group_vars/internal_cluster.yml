@@ -1,9 +1,9 @@
 k3s_channel: "stable"
 
-internal_cluster_control_plane_group: "ops_brain"
+internal_cluster_control_plane_group: "observatory"
 internal_cluster_worker_group: "platform_workers"
 internal_cluster_server_port: "6443"
 
 internal_cluster_node_labels:
-  monitoring: "rita.role=ops-brain"
+  monitoring: "rita.role=observatory"
   platform: "rita.role=platform"

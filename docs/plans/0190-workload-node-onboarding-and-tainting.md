@@ -15,7 +15,7 @@ Start with the latest relevant progress note before trusting this plan:
 ## Current State
 What is true now:
 1. the internal cluster is healthy
-2. `ops-brain` is the control plane and monitoring home
+2. `observatory` is the control plane and monitoring home
 3. `platform` is the first real worker
 4. Flux bootstrap is complete and reconciling
 5. platform services can now start landing on the cluster
@@ -32,7 +32,7 @@ The current architecture says:
 2. `workload-node` should host app and compute workloads
 
 But the actual cluster only has:
-1. `ops-brain`
+1. `observatory`
 2. `platform`
 
 So before calling the system truly app-ready for heavier or more isolated workloads, the workload lane itself must become real.
@@ -167,9 +167,9 @@ Choose this if:
 2. recovery flexibility matters more than hard isolation
 3. you are still proving app behavior
 
-#### Option B - Taint `ops-brain`
+#### Option B - Taint `observatory`
 Use:
-1. `ops-brain` tainted away from normal app workloads
+1. `observatory` tainted away from normal app workloads
 2. tolerations only for monitoring/control-plane-adjacent workloads
 
 Choose this if:
@@ -189,16 +189,16 @@ Choose this if:
 ## Recommended Tainting Sequence
 1. first add the workload worker
 2. verify the workload worker is stable under real cross-node traffic
-3. then taint `ops-brain` first
+3. then taint `observatory` first
 4. treat `platform` as platform-services-first capacity, not the default app lane
 5. move general app workloads toward `workload`
 6. defer `platform` vs `workload` hard taints until there are real workloads that justify the complexity
 
 This means the first likely taint is:
-1. reserve `ops-brain` away from arbitrary app workloads
+1. reserve `observatory` away from arbitrary app workloads
 
 Current intended placement policy:
-1. no general application workloads on `ops-brain`
+1. no general application workloads on `observatory`
 2. no default spillover of general application workloads onto `platform`
 3. `workload` is the intended default home for general workloads once app placement begins
 
@@ -249,5 +249,5 @@ Pass condition:
 2. decide whether to rebuild or reuse the current `9300` VM
 3. formalize workload substrate and guest identities in inventory and docs
 4. onboard the workload worker as a real k3s worker
-5. only then decide whether to taint `ops-brain`
+5. only then decide whether to taint `observatory`
 6. revisit workload-local `Newt` only after the workload lane is proven under real app placement

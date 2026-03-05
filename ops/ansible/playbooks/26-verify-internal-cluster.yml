@@ -1,6 +1,6 @@
 ---
 - name: Verify internal cluster state
-  hosts: ops_brain
+  hosts: observatory
   become: true
   gather_facts: true
 

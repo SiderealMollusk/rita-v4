@@ -77,15 +77,15 @@ After that:
 2. the node became `Ready`
 
 ## Naming Drift Exposed
-The repo still referred to the control-plane Kubernetes node as `ops-brain`, but the actual cluster node name is `monitoring`.
+The repo still referred to the control-plane Kubernetes node as `observatory`, but the actual cluster node name is `monitoring`.
 
 This caused:
 1. label automation to target a nonexistent node name
-2. cluster verification to fail against `ops-brain`
+2. cluster verification to fail against `observatory`
 
 Repo-side tactical fix:
 1. internal cluster label mapping now targets:
-- `monitoring` => `rita.role=ops-brain`
+- `monitoring` => `rita.role=observatory`
 - `platform` => `rita.role=platform`
 2. cluster verification playbooks were corrected to use properly quoted `kubectl` jsonpath expressions
 

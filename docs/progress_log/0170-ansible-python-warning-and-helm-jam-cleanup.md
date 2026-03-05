@@ -9,7 +9,7 @@ As of this update, two recurring operational annoyances were cleaned up:
 
 The active inventories now pin the interpreter explicitly:
 
-1. `ops/ansible/inventory/ops-brain.ini`
+1. `ops/ansible/inventory/observatory.ini`
 2. `ops/ansible/inventory/vps.ini`
 
 Using:
@@ -20,7 +20,7 @@ This removes the noisy interpreter discovery warning from ad-hoc commands and ru
 
 ## Helm jam cleanup
 
-`scripts/2-ops/ops-brain/10-install-newt.sh` now checks for:
+`scripts/2-ops/observatory/10-install-newt.sh` now checks for:
 
 1. `pending-install`
 2. `pending-upgrade`

@@ -23,7 +23,7 @@ Reached stable infra baseline before HPB deep-dive
  M ops/ansible/group_vars/nextcloud.yml
  M ops/ansible/group_vars/vps.yml
  M ops/ansible/playbooks/28-install-k3s-workload-agent.yml
- M ops/pangolin/blueprints/ops-brain/nextcloud-cloud.blueprint.yaml
+ M ops/pangolin/blueprints/observatory/nextcloud-cloud.blueprint.yaml
  M scripts/2-ops/host/23-apply-nextcloud-cloud-blueprint.sh
  M scripts/2-ops/host/README.md
  M scripts/2-ops/workload/31-install-n8n-k3s-agent.sh

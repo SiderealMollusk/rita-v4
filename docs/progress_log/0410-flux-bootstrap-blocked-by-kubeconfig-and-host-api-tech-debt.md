@@ -9,11 +9,11 @@ The platform worker phase completed, but Flux bootstrap did not complete cleanly
 The current blockers are not Flux-specific logic bugs.
 
 They are two host/control-plane integration debts that were still implicit:
-1. the user kubeconfig on `ops-brain` was not being durably rendered from canonical inventory data
+1. the user kubeconfig on `observatory` was not being durably rendered from canonical inventory data
 2. the control-plane API exposure model for Mac-hosted operator tools remains incomplete
 
 ## What Was Observed
-### 1. Wrong kubeconfig source on `ops-brain`
+### 1. Wrong kubeconfig source on `observatory`
 The file:
 1. `/home/virgil/.kube/config`
 
@@ -28,11 +28,11 @@ That broke:
 This proved the source artifact itself was wrong, not just a host-side consumer.
 
 ### 2. Manual fix proved the real desired server value
-After editing the file on `ops-brain`, the desired value was:
+After editing the file on `observatory`, the desired value was:
 1. `server: https://192.168.6.16:6443`
 
 That value should come from:
-1. `ops/ansible/inventory/ops-brain.ini`
+1. `ops/ansible/inventory/observatory.ini`
 
 ### 3. Worker join already exposed the firewall issue once
 Earlier in the worker phase:
@@ -44,16 +44,16 @@ That problem is now broader than just the worker:
 ## Repo Changes Made
 ### Canonical kubeconfig sync path
 The repo now has:
-1. a dedicated playbook to regenerate the user kubeconfig on `ops-brain` from canonical inventory identity
+1. a dedicated playbook to regenerate the user kubeconfig on `observatory` from canonical inventory identity
 2. a no-arg wrapper script to run that sync explicitly
 3. a Flux bootstrap wrapper that calls the canonical sync path before copying kubeconfig
 
 Files added:
-1. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/27-sync-ops-brain-kubeconfig.yml`
-2. `/Users/virgil/Dev/rita-v4/scripts/2-ops/ops-brain/08-sync-kubeconfig.sh`
+1. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/27-sync-observatory-kubeconfig.yml`
+2. `/Users/virgil/Dev/rita-v4/scripts/2-ops/observatory/08-sync-kubeconfig.sh`
 
 Files updated:
-1. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/21-install-k3s-ops-brain.yml`
+1. `/Users/virgil/Dev/rita-v4/ops/ansible/playbooks/21-install-k3s-observatory.yml`
 2. `/Users/virgil/Dev/rita-v4/scripts/2-ops/worker/06-bootstrap-flux-github.sh`
 
 ## Current Untested Tech Debt
@@ -80,7 +80,7 @@ That means:
 
 ## Current Plan
 The immediate play is:
-1. rerender the canonical kubeconfig on `ops-brain`
+1. rerender the canonical kubeconfig on `observatory`
 2. verify the host-side copied kubeconfig points at `192.168.6.16`
 3. verify host-side API reachability from the Mac
 4. if needed, codify the missing `6443/tcp` rule for host-side access
@@ -90,7 +90,7 @@ The immediate play is:
 The point of scripting here is durability.
 
 So the repo should not rely on:
-1. manual file edits on `ops-brain`
+1. manual file edits on `observatory`
 2. accidental kubeconfig contents
 3. remembered one-off firewall exceptions
 
@@ -98,7 +98,7 @@ Those must become explicit automation or explicit policy.
 
 ## Next Verification Gate
 This note should be superseded once all of the following are true:
-1. `scripts/2-ops/ops-brain/08-sync-kubeconfig.sh` reliably regenerates the correct server address
+1. `scripts/2-ops/observatory/08-sync-kubeconfig.sh` reliably regenerates the correct server address
 2. host-side copied kubeconfig works without manual patching
 3. Flux bootstrap completes
 4. `flux-system` and Flux CRDs exist and reconcile cleanly

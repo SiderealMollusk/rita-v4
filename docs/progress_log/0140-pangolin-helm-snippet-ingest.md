@@ -4,7 +4,7 @@ As of this update, the host-side Pangolin site credential flow was tightened aro
 
 ## What changed
 
-`scripts/2-ops/host/10-write-ops-brain-pangolin-site-secret.sh` now:
+`scripts/2-ops/host/10-write-observatory-pangolin-site-secret.sh` now:
 
 1. runs on the Mac host only
 2. asks for the Pangolin site name

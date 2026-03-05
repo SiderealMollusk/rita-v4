@@ -1,0 +1,6 @@
+# Canonical Pangolin site slugs for operator credential registration.
+# One slug per line; blank lines and comments are ignored.
+observatory
+nextcloud_core
+nextcloud_vm
+n8n_vm

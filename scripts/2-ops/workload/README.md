@@ -75,7 +75,10 @@ Direct-entry scripts:
 36. `37-prune-nextcloud-snapshots.sh`
 37. `38-configure-nextcloud-main-users.sh`
 38. `40-floating-checkpoint.sh`
-38. `39-bring-up-n8n-vm-k8s-pangolin.sh`
+39. `39-bring-up-n8n-vm-k8s-pangolin.sh`
+40. `41-install-nextcloud-talk-hpb-runtime.sh`
+41. `42-verify-nextcloud-talk-hpb-runtime.sh`
+42. `43-bring-up-nextcloud-talk-hpb.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -126,4 +129,10 @@ Notes:
 31. Nextcloud main user SoT is now tracked in `ops/nextcloud/main-users.yaml` (vault ID, item mapping, and role intent), and applied via `38-configure-nextcloud-main-users.sh`.
 32. `40-floating-checkpoint.sh` is the intentional "save-point" helper: it takes a coordinated Nextcloud VM pair snapshot and auto-generates a new progress note baseline entry under `docs/progress_log/`.
 33. The floating checkpoint script is expected to be manually renumbered over time as validation confidence increases (for example `40-*` -> `50-*`), so the lane reflects the current baseline ritual.
-32. `39-bring-up-n8n-vm-k8s-pangolin.sh` is the canonical full chain for n8n: VM rebuild, k3s join/label/verify, ESO+n8n runtime reconcile, Pangolin site reconcile, VM Newt connector wiring, n8n resource apply, and end-state verification.
+34. `39-bring-up-n8n-vm-k8s-pangolin.sh` is the canonical full chain for n8n: VM rebuild, k3s join/label/verify, ESO+n8n runtime reconcile, Pangolin site reconcile, VM Newt connector wiring, n8n resource apply, and end-state verification.
+35. `41-install-nextcloud-talk-hpb-runtime.sh` codifies HPB runtime provisioning on `talk-hpb-vm` (signaling, janus, nats, and systemd service wiring) with snapshot guardrails.
+36. `42-verify-nextcloud-talk-hpb-runtime.sh` validates HPB service/process/port state plus public signaling endpoint reachability and Nextcloud Talk runtime registration.
+37. `43-bring-up-nextcloud-talk-hpb.sh` is the no-adhoc orchestration entrypoint: install HPB runtime, apply Talk runtime SoT, and run HPB verification.
+38. Optional cross-lane validation from `43`:
+- set `HPB_VERIFY_SITES=1` to append Pangolin/Newt global site verification.
+- default keeps HPB success scoped to HPB/Talk criteria so unrelated missing sites do not block the run.

@@ -30,7 +30,7 @@ The strongest asset of this repo isn't the code itself, but the **Documentation 
 1.  **Hardcoded Paths:** `scripts/lib/runbook.sh` contains hardcoded paths (`/Users/virgil/Dev/rita-v4`). This is the primary blocker for true repo portability.
 2.  **KUBECONFIG Fragmentation:** While `08-sync-kubeconfig.sh` solved a major pain point, `KUBECONFIG` is still managed in three different places (`.k8s-env`, `.labrc`, and script-local exports).
 3.  **Manual "Plumbing":** Scripts like `06-bootstrap-flux-github.sh` still feel a bit "plumb-y" with manual `scp` of kubeconfigs.
-4.  **Naming Consistency:** There is minor naming drift between "platform," "internal," and "ops-brain" in different contexts (inventory vs. gitops vs. scripts).
+4.  **Naming Consistency:** There is minor naming drift between "platform," "internal," and "observatory" in different contexts (inventory vs. gitops vs. scripts).
 
 ---
 

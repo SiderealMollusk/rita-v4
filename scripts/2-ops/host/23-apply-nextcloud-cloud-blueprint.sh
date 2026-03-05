@@ -11,11 +11,11 @@ runbook_require_host_terminal
 
 PANGOLIN_BIN="$(runbook_require_pangolin_cli)"
 
-GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/ops_brain.yml"
+GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
 REQUIRED_SITES_FILE="$REPO_ROOT/ops/pangolin/sites/required-sites.yaml"
-BLUEPRINT_FILE="$REPO_ROOT/ops/pangolin/blueprints/ops-brain/nextcloud-cloud.blueprint.yaml"
-BLUEPRINT_NAME="ops-brain-nextcloud-cloud"
-TMP_BLUEPRINT="$(mktemp /tmp/ops-brain-nextcloud-cloud.blueprint.XXXXXX)"
+BLUEPRINT_FILE="$REPO_ROOT/ops/pangolin/blueprints/observatory/nextcloud-cloud.blueprint.yaml"
+BLUEPRINT_NAME="observatory-nextcloud-cloud"
+TMP_BLUEPRINT="$(mktemp /tmp/observatory-nextcloud-cloud.blueprint.XXXXXX)"
 SITE_SLUG="${PANGOLIN_SITE_SLUG:-nextcloud_vm}"
 
 [ -f "$GROUP_VARS" ] || runbook_fail "missing group vars file at $GROUP_VARS"

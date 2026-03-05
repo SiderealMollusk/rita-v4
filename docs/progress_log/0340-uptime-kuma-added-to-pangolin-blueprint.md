@@ -2,10 +2,10 @@
 
 As of this update:
 
-1. The `ops-brain` monitoring Pangolin blueprint now includes `uptime.virgil.info`.
+1. The `observatory` monitoring Pangolin blueprint now includes `uptime.virgil.info`.
 2. The target is the in-cluster Kuma service:
-   - `ops-brain-kuma-uptime-kuma.monitoring.svc.cluster.local:80`
-3. The route catalog now records `uptime.virgil.info` as a Pangolin-routed `ops-brain` resource.
+   - `observatory-kuma-uptime-kuma.monitoring.svc.cluster.local:80`
+3. The route catalog now records `uptime.virgil.info` as a Pangolin-routed `observatory` resource.
 
 Verification expectation:
 

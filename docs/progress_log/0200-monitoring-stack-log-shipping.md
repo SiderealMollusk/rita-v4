@@ -1,6 +1,6 @@
 # 0200 Monitoring Stack Log Shipping
 
-As of this update, the `ops-brain` monitoring lane moved from a thin scaffold to a usable first-pass stack.
+As of this update, the `observatory` monitoring lane moved from a thin scaffold to a usable first-pass stack.
 
 ## What changed
 
@@ -42,6 +42,6 @@ As of this update, the `ops-brain` monitoring lane moved from a thin scaffold to
 
 If the monitoring behavior changes after this note, treat the runbooks and values files as more authoritative than this summary:
 
-1. `/Users/virgil/Dev/rita-v4/scripts/2-ops/ops-brain/11-install-monitoring-stack.sh`
-2. `/Users/virgil/Dev/rita-v4/scripts/2-ops/ops-brain/12-verify-monitoring-stack.sh`
+1. `/Users/virgil/Dev/rita-v4/scripts/2-ops/observatory/11-install-monitoring-stack.sh`
+2. `/Users/virgil/Dev/rita-v4/scripts/2-ops/observatory/12-verify-monitoring-stack.sh`
 3. `/Users/virgil/Dev/rita-v4/ops/helm/monitoring/`

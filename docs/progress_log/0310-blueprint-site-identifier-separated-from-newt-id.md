@@ -3,7 +3,7 @@
 As of this update, the repo no longer assumes the Pangolin blueprint `site` field can use the Newt credential `id`.
 
 What changed:
-1. the canonical OP item contract for `pangolin_site_ops_brain` now includes:
+1. the canonical OP item contract for `pangolin_site_observatory` now includes:
    - `identifier`
 2. the host-side Pangolin site ingest script now prompts for and stores that value
 3. the devcontainer validator now requires that field
@@ -13,7 +13,7 @@ What changed:
 Why:
 1. Pangolin site display name, Pangolin site identifier, and Newt credential id are different concepts
 2. the earlier blueprint apply failure:
-   - `Site not found: ops-brain in org virgil-labs`
+   - `Site not found: observatory in org virgil-labs`
    was consistent with using the wrong `site` value
 
 Operational consequence:

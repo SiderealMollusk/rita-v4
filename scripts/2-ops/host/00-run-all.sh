@@ -11,7 +11,7 @@ runbook_require_op_access
 
 echo "[INFO] Running host-ops pipeline"
 for step in \
-  01-seed-ops-brain-ssh.sh
+  01-seed-observatory-ssh.sh
   do
   echo "[INFO] >>> ${step}"
   "$SCRIPT_DIR/${step}"

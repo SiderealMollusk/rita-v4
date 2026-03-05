@@ -1,6 +1,6 @@
 ---
 - name: Verify workload node state
-  hosts: ops_brain
+  hosts: observatory
   become: true
   gather_facts: true
 

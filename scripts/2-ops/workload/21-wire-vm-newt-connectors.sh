@@ -16,7 +16,7 @@ runbook_require_cmd op
 runbook_require_cmd python3
 runbook_source_labrc "$REPO_ROOT"
 
-GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/ops_brain.yml"
+GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
 REQUIRED_SITES_FILE="$REPO_ROOT/ops/pangolin/sites/required-sites.yaml"
 PLAYBOOK="$REPO_ROOT/ops/ansible/playbooks/35-wire-vm-newt-connector.yml"
 

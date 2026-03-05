@@ -98,7 +98,7 @@ It advances the larger plan by:
 1. codify the k3s API firewall rule on the control-plane host
 2. keep the internal cluster node-name mapping aligned with reality
 3. ensure the GitOps tree reflects the current node/placement model
-4. ensure the user kubeconfig on `ops-brain` is rendered from canonical inventory truth
+4. ensure the user kubeconfig on `observatory` is rendered from canonical inventory truth
 
 ### Stage 5 - Deploy `platform-postgres`
 1. reconcile the Postgres app definition through Flux
@@ -172,7 +172,7 @@ Pass condition:
 1. GitHub bootstrap credentials remain operator-bound and need a cleaner retrieval path
 2. some durable config for Flux bootstrap inputs is not yet encoded as cleanly as other infrastructure facts
 3. stateful services are still landing before real backup implementation exists
-4. the control-plane node name remains `monitoring` while the role concept remains `ops-brain`
+4. the control-plane node name remains `monitoring` while the role concept remains `observatory`
 5. host-side control-plane API reachability is still an active integration boundary, not yet fully codified policy
 
 ## Deliverables
@@ -193,7 +193,7 @@ Pass condition:
 6. the phase leaves the repo in a better automated state than the manual worker-join phase
 
 ## Immediate Next Actions
-1. rerender the canonical kubeconfig on `ops-brain`
+1. rerender the canonical kubeconfig on `observatory`
 2. verify host-side kubeconfig reaches the real control-plane address
 3. codify the host-side `6443/tcp` access rule if direct Mac access is the intended model
 4. rerun Flux bootstrap from the Mac host

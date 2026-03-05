@@ -18,14 +18,14 @@ That gives weak drift detection and weak idempotency guarantees compared to dire
 
 ## Current State (Repo Inventory)
 Current Pangolin mutation flow is concentrated in:
-1. `scripts/2-ops/host/20-apply-ops-brain-monitoring-blueprint.sh`
+1. `scripts/2-ops/host/20-apply-observatory-monitoring-blueprint.sh`
 2. `scripts/2-ops/host/21-apply-nextcloud-blueprint.sh`
 3. `scripts/2-ops/host/23-apply-nextcloud-cloud-blueprint.sh`
-4. `scripts/2-ops/host/10-write-ops-brain-pangolin-site-secret.sh`
+4. `scripts/2-ops/host/10-write-observatory-pangolin-site-secret.sh`
 5. `scripts/2-ops/host/24-register-pangolin-site-credentials.sh`
 6. `scripts/2-ops/host/25-register-pangolin-sites.sh`
 7. `scripts/lib/pangolin-site-credentials.sh`
-8. `ops/pangolin/blueprints/ops-brain/*.blueprint.yaml`
+8. `ops/pangolin/blueprints/observatory/*.blueprint.yaml`
 9. `docs/pangolin/0002-human-site-registration.md`
 
 ## API Surface To Use
@@ -70,7 +70,7 @@ Exit criteria:
 ### Phase 1 - Read-only API Probe
 1. add script: `scripts/2-ops/host/26-pangolin-api-readonly-check.sh`
 2. validate token, org lookup, site list, resource list, blueprint list
-3. print canonical IDs for `ops-brain` site and key resources
+3. print canonical IDs for `observatory` site and key resources
 
 Exit criteria:
 1. reproducible read-only output from API
@@ -80,7 +80,7 @@ Exit criteria:
 1. add script: `scripts/2-ops/host/27-apply-pangolin-blueprint-api.sh`
 2. continue running existing CLI apply in parallel for one cycle
 3. compare API post-state vs CLI post-state
-4. keep writes limited to one blueprint (`ops-brain-monitoring`) first
+4. keep writes limited to one blueprint (`observatory-monitoring`) first
 
 Exit criteria:
 1. API apply converges to same effective state as CLI path
@@ -88,7 +88,7 @@ Exit criteria:
 
 ### Phase 3 - Cutover Resource Workflows
 1. migrate these scripts to API-backed implementation:
-   - `20-apply-ops-brain-monitoring-blueprint.sh`
+   - `20-apply-observatory-monitoring-blueprint.sh`
    - `21-apply-nextcloud-blueprint.sh`
    - `23-apply-nextcloud-cloud-blueprint.sh`
 2. keep script names for operator continuity; swap internals from CLI to API

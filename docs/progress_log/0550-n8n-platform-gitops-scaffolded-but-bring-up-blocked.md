@@ -10,7 +10,7 @@ The repo now contains a first-pass `n8n` platform deployment shape, but the live
 The GitOps slice was added and aligned to the current 1Password layout, then cluster-side validation was attempted.
 
 The blocking issue was not the manifest render.
-It was loss of reachability to `ops-brain` from the Mac host during the apply/verify phase.
+It was loss of reachability to `observatory` from the Mac host during the apply/verify phase.
 
 ## Repo Changes Made
 
@@ -71,7 +71,7 @@ That prevented:
 
 ## Remaining Bring-Up Steps
 
-Once `ops-brain` and the cluster API are reachable again, resume with:
+Once `observatory` and the cluster API are reachable again, resume with:
 1. `flux reconcile kustomization flux-system -n flux-system --with-source`
 2. `kubectl get secret n8n-secrets -n platform`
 3. [22-bootstrap-n8n-db.sh](/Users/virgil/Dev/rita-v4/scripts/2-ops/host/22-bootstrap-n8n-db.sh)

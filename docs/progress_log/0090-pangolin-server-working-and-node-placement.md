@@ -53,7 +53,7 @@ This closes the main VPS edge goal: get a real Pangolin deployment working on th
 ## Architecture Decision Locked
 After additional planning and independent re-validation, service placement is now:
 
-1. `ops-brain` = 16 GB laptop
+1. `observatory` = 16 GB laptop
 - Prometheus
 - Grafana
 - Loki
@@ -92,5 +92,5 @@ After additional planning and independent re-validation, service placement is no
 ## Next Steps
 1. Extract and review the known-good VPS Pangolin config (`docker-compose.yml`, `config/`)
 2. Tighten `06-verify-pangolin-server.sh` based on actual healthy endpoint behavior
-3. Stand up monitoring on the future `ops-brain`
+3. Stand up monitoring on the future `observatory`
 4. Begin documenting/implementing `platform-node` services on the NUC

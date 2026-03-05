@@ -21,7 +21,7 @@ Fast handoff for the current ExApps/AppAPI failure mode on `cloud.virgil.info`.
 
 3. Official domain target is VM:
 - [instances.yaml](/Users/virgil/Dev/rita-v4/ops/nextcloud/instances.yaml:10)
-- [nextcloud-cloud.blueprint.yaml](/Users/virgil/Dev/rita-v4/ops/pangolin/blueprints/ops-brain/nextcloud-cloud.blueprint.yaml:11)
+- [nextcloud-cloud.blueprint.yaml](/Users/virgil/Dev/rita-v4/ops/pangolin/blueprints/observatory/nextcloud-cloud.blueprint.yaml:11)
 
 4. AppAPI warning tracked in plan:
 - [0650-nextcloud-combined-upgrade-and-reliability-plan.md](/Users/virgil/Dev/rita-v4/docs/plans/0650-nextcloud-combined-upgrade-and-reliability-plan.md:134)

@@ -9,9 +9,9 @@ They are intended operational roles.
 
 ## Core Lanes
 
-### `ops-brain`
+### `observatory`
 
-`ops-brain` is the bootstrap and operations edge.
+`observatory` is the bootstrap and operations edge.
 
 It currently carries:
 
@@ -63,7 +63,7 @@ It is not the internal app platform.
 
 Validated node labels:
 
-- `monitoring` -> `rita.role=ops-brain`
+- `monitoring` -> `rita.role=observatory`
 - `platform` -> `rita.role=platform`
 - `workload` -> `rita.role=workload`
 
@@ -71,7 +71,7 @@ Validated node labels:
 
 Current intent is:
 
-- no general workloads on `ops-brain`
+- no general workloads on `observatory`
 - no default spillover of general workloads onto `platform`
 - `workload` is the intended default app lane
 

@@ -12,9 +12,9 @@ runbook_require_op_user_session
 
 runbook_fail "Uptime Kuma monitor seeding is currently disabled. The current script design is busted: it still depends on an SSH-backed local port-forward to reach Kuma's API, and that path is proving unreliable in practice. Do not use this script as-is. Recommended next step: seed monitors manually in Kuma or replace this with a different integration approach."
 
-GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/ops_brain.yml"
-INV="$REPO_ROOT/ops/ansible/inventory/ops-brain.ini"
-BLUEPRINT_FILE="$REPO_ROOT/ops/pangolin/blueprints/ops-brain/monitoring.blueprint.yaml"
+GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
+INV="$REPO_ROOT/ops/ansible/inventory/observatory.ini"
+BLUEPRINT_FILE="$REPO_ROOT/ops/pangolin/blueprints/observatory/monitoring.blueprint.yaml"
 
 [ -f "$GROUP_VARS" ] || runbook_fail "missing group vars file at $GROUP_VARS"
 [ -f "$INV" ] || runbook_fail "inventory not found: $INV"
@@ -67,7 +67,7 @@ OPS_BRAIN_HOST="$(awk '
 [ -n "$OPS_BRAIN_HOST" ] || runbook_fail "ansible_host missing in $INV"
 
 KUBECONFIG_REMOTE="/home/${OPS_BRAIN_ANSIBLE_USER}/.kube/config"
-KUMA_SERVICE="ops-brain-kuma-uptime-kuma"
+KUMA_SERVICE="observatory-kuma-uptime-kuma"
 
 resolve_local_tunnel_port() {
   if python3 - "$LOCAL_PORT" <<'PY' >/dev/null 2>&1

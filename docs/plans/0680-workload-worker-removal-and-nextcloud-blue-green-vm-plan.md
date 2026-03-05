@@ -16,7 +16,7 @@ In scope:
 
 Out of scope:
 1. removing all historical k3s documentation across the entire repository
-2. deleting ops-brain k3s control-plane capabilities
+2. deleting observatory k3s control-plane capabilities
 3. full data migration automation between blue and green instances
 
 ## Current Source-Of-Truth Gaps

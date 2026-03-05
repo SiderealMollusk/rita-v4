@@ -17,7 +17,7 @@ runbook_require_cmd python3
 runbook_require_cmd op
 runbook_source_labrc "$REPO_ROOT"
 
-GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/ops_brain.yml"
+GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
 REQUIRED_SITES_FILE="$REPO_ROOT/ops/pangolin/sites/required-sites.yaml"
 
 [ -f "$GROUP_VARS" ] || runbook_fail "missing group vars file at $GROUP_VARS"

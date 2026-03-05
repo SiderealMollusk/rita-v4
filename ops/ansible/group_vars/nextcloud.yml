@@ -40,6 +40,7 @@ nextcloud_php_modules:
   - php-zip
   - php-bz2
   - php-pgsql
+  - php-sqlite3
   - php-gmp
   - php-bcmath
   - php-imagick

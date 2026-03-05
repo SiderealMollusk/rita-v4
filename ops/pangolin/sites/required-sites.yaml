@@ -1,12 +1,12 @@
 [
   {
-    "slug": "ops_brain",
-    "display_name": "ops-brain",
-    "host_alias": "ops-brain",
-    "inventory_file": "ops/ansible/inventory/ops-brain.ini",
+    "slug": "observatory",
+    "display_name": "observatory",
+    "host_alias": "observatory",
+    "inventory_file": "ops/ansible/inventory/observatory.ini",
     "connector_mode": "k8s",
     "newt_enabled": true,
-    "op_item_title": "pangolin_site_ops_brain",
+    "op_item_title": "pangolin_site_observatory",
     "rebuild_policy": "reuse",
     "managed_mode": "managed"
   },

@@ -65,4 +65,4 @@ spec:
         enabled: true
         namespace: monitoring
         labels:
-          release: ops-brain-kube-prometheus
+          release: observatory-kube-prometheus

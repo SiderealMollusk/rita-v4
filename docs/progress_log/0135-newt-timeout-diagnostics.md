@@ -1,6 +1,6 @@
 # 0135 Newt Timeout Diagnostics
 
-As of this update, the kubeconfig plumbing issue was resolved and the `ops-brain` Newt install reached a later failure point.
+As of this update, the kubeconfig plumbing issue was resolved and the `observatory` Newt install reached a later failure point.
 
 ## What changed
 
@@ -19,9 +19,9 @@ It is now in the release readiness path.
 
 ## Fix applied
 
-`scripts/2-ops/ops-brain/10-install-newt.sh` now:
+`scripts/2-ops/observatory/10-install-newt.sh` now:
 
-1. reads a canonical Helm timeout from `ops/ansible/group_vars/ops_brain.yml`
+1. reads a canonical Helm timeout from `ops/ansible/group_vars/observatory.yml`
 2. uses `--timeout <value>` explicitly during `helm upgrade --install`
 3. prints diagnostics on failure:
    - `kubectl get pods -n newt -o wide`

@@ -7,7 +7,7 @@ source "$SCRIPT_DIR/../../lib/runbook.sh"
 
 runbook_require_no_args "$@"
 REPO_ROOT="$(runbook_detect_repo_root)"
-INV="$REPO_ROOT/ops/ansible/inventory/ops-brain.ini"
+INV="$REPO_ROOT/ops/ansible/inventory/observatory.ini"
 PB="$REPO_ROOT/ops/ansible/playbooks/31-verify-workload-node.yml"
 WORKLOAD_VARS="$REPO_ROOT/ops/ansible/group_vars/workload.yml"
 

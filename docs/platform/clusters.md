@@ -25,12 +25,12 @@ Purpose:
 - monitoring stack home
 
 Shape:
-- current control plane is `ops-brain`
+- current control plane is `observatory`
 - repo now carries a codified worker-join path for the `platform-node`
-- intended steady-state shape is `ops-brain` + `platform-node`
+- intended steady-state shape is `observatory` + `platform-node`
 
 Verify:
-1. `scripts/2-ops/ops-brain/07-verify-cluster.sh`
+1. `scripts/2-ops/observatory/07-verify-cluster.sh`
 2. `scripts/2-ops/worker/05-verify-cluster.sh`
 3. `ops/ansible/inventory/internal-cluster.ini`
 4. `ops/ansible/group_vars/internal_cluster.yml`
@@ -50,6 +50,6 @@ Verify:
 2. `scripts/1-session/`
 
 ## Notes
-1. `main-vps` and `ops-brain` are separate operational domains.
+1. `main-vps` and `observatory` are separate operational domains.
 2. A fresh agent should not assume there is only one cluster.
 3. Service placement lives in `docs/service-placement.md`, not here.

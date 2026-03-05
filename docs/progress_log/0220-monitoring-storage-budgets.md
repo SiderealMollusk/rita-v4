@@ -1,6 +1,6 @@
 # 0220 Monitoring Storage Budgets
 
-As of this update, the `ops-brain` monitoring stack has explicit first-pass local storage budgets instead of relying only on time-based retention and whatever disk happened to be available.
+As of this update, the `observatory` monitoring stack has explicit first-pass local storage budgets instead of relying only on time-based retention and whatever disk happened to be available.
 
 ## Current budgets
 
@@ -13,7 +13,7 @@ As of this update, the `ops-brain` monitoring stack has explicit first-pass loca
 ## Why
 
 1. traffic volume is expected to be low
-2. `ops-brain` is a single-node local-first monitoring box
+2. `observatory` is a single-node local-first monitoring box
 3. bounded local storage is more useful than theoretical long retention right now
 4. local disk failure remains more important than preserving short-horizon observability history
 

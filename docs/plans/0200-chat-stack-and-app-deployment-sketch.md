@@ -30,7 +30,7 @@ The current platform assumptions are:
 1. self-hosted on-prem is the default
 2. `workload` is the intended default home for general app workloads
 3. `platform` is platform-services-first
-4. `ops-brain` should not become the default app lane
+4. `observatory` should not become the default app lane
 5. Pangolin remains the exposure boundary, not the internal service architecture
 
 ## Research Summary
@@ -165,7 +165,7 @@ Exposure:
 
 Why:
 1. chat is user-facing and stateful
-2. it should not live on `ops-brain`
+2. it should not live on `observatory`
 3. it is a real workload, not a platform primitive
 
 ### 2. Leantime (deprecated)

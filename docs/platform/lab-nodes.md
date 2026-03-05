@@ -13,13 +13,13 @@ Use the latest relevant progress note in `docs/progress_log/` as the practical t
 
 ## Nodes
 - [main-vps](/Users/virgil/Dev/rita-v4/docs/nodes/main-vps.md)
-- [ops-brain](/Users/virgil/Dev/rita-v4/docs/nodes/ops-brain.md)
+- [observatory](/Users/virgil/Dev/rita-v4/docs/nodes/observatory.md)
 - [platform-node](/Users/virgil/Dev/rita-v4/docs/nodes/platform-node.md)
 - [workload-node](/Users/virgil/Dev/rita-v4/docs/nodes/workload-node.md)
 
 ## Placement Model
 This placement reflects prior user research and later repo-side validation:
-- `ops-brain`: monitoring, operator-facing control, internal k3s control plane
+- `observatory`: monitoring, operator-facing control, internal k3s control plane
 - `platform-node`: platform services worker capacity and clean declarative lane
 - `workload-node`: application and compute load
 - `main-vps`: public edge runtime and `pangolin-server`

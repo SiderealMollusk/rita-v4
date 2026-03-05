@@ -1,6 +1,6 @@
 # 0230 Grafana Init Chown Disabled
 
-As of this update, the `ops-brain` monitoring stack had a concrete Grafana rollout failure on the persistent volume.
+As of this update, the `observatory` monitoring stack had a concrete Grafana rollout failure on the persistent volume.
 
 ## Root cause
 

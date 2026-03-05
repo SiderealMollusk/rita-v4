@@ -15,8 +15,11 @@ Use these terms consistently in docs, scripts, plans, and automation.
 3. Do not invent a new term when an existing repo term already covers the concept.
 4. Historical docs may preserve older wording, but current navigation docs should use current canonical terms.
 
+#### Deprecated Name
+[Deprecated name: `ops-brain`. Use `observatory`.]
+
 ## Canonical Terms
-### `ops-brain`
+### `observatory`
 Meaning:
 1. the 16 GB laptop
 2. the internal k3s control-plane host
@@ -153,7 +156,7 @@ Rule:
 ## Cluster Terms
 ### `internal cluster`
 Meaning:
-1. the real internal k3s cluster rooted at `ops-brain`
+1. the real internal k3s cluster rooted at `observatory`
 2. the cluster that `platform-node` joins as worker capacity
 
 Use it for:
@@ -229,7 +232,7 @@ Meaning:
 1. the tolerated messy, hand-rolled, operator-heavy boundary required to bring up cleaner automation
 
 Current home:
-1. primarily `ops-brain`
+1. primarily `observatory`
 2. Mac host for operator-auth/session-bound mutations where appropriate
 
 ### `clean declarative lane`

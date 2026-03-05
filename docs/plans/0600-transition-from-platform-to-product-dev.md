@@ -15,7 +15,7 @@ It is the handoff document another agent should use before starting implementati
 The validated platform baseline is:
 
 1. the internal k3s cluster is live and stable enough to build on
-2. `ops-brain`, `platform`, and `workload` are real lanes with intended roles
+2. `observatory`, `platform`, and `workload` are real lanes with intended roles
 3. Flux is active
 4. External Secrets is active
 5. `platform-postgres` is live

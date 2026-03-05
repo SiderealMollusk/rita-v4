@@ -1,6 +1,6 @@
 config:
   clients:
-    - url: http://ops-brain-loki:3100/loki/api/v1/push
+    - url: http://observatory-loki:3100/loki/api/v1/push
 
 resources:
   requests:

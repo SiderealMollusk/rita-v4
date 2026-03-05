@@ -34,7 +34,7 @@ Validated live:
 
 ### 1. Cross-worker overlay traffic was under-modeled
 
-The repo initially allowed Flannel VXLAN traffic only between each worker and `ops-brain`.
+The repo initially allowed Flannel VXLAN traffic only between each worker and `observatory`.
 
 That was sufficient for worker join, but insufficient once Flux controllers landed on different worker nodes and had to talk to pod-backed services across the overlay.
 
@@ -88,7 +88,7 @@ Treat this as cleanup debt, not a reason to block the app wave.
 
 Current first-wave platform state is now:
 
-1. internal cluster healthy across `ops-brain`, `platform`, and `workload`
+1. internal cluster healthy across `observatory`, `platform`, and `workload`
 2. Flux healthy
 3. ESO installed and bridged to 1Password
 4. `platform-postgres` live on `platform`

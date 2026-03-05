@@ -3,7 +3,7 @@ Date: 2026-03-02
 
 ## Summary
 
-The internal cluster now has a canonical, repo-managed External Secrets bootstrap path rooted on `ops-brain`.
+The internal cluster now has a canonical, repo-managed External Secrets bootstrap path rooted on `observatory`.
 
 This replaces the older VPS-shaped ESO automation as the source of truth for the internal cluster.
 
@@ -14,11 +14,11 @@ This replaces the older VPS-shaped ESO automation as the source of truth for the
 2. Added internal-cluster secret-bridge playbook:
    - `ops/ansible/playbooks/42-apply-secret-bridge-internal.yml`
 3. Added no-arg operator wrappers:
-   - `scripts/2-ops/ops-brain/13-install-eso.sh`
-   - `scripts/2-ops/ops-brain/14-apply-secret-bridge.sh`
+   - `scripts/2-ops/observatory/13-install-eso.sh`
+   - `scripts/2-ops/observatory/14-apply-secret-bridge.sh`
 4. Kept the `ClusterSecretStore` manifest canonical in GitOps:
    - `ops/gitops/platform/sources/onepassword-cluster-store.yaml`
-5. Added `eso_namespace` to `ops_brain` vars.
+5. Added `eso_namespace` to `observatory` vars.
 
 ## Live Validation
 

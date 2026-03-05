@@ -25,16 +25,16 @@ Current scripts:
 1. `00-run-all.sh`
 - runs the currently safe host-side sequence
 
-2. `01-seed-ops-brain-ssh.sh`
-- seeds SSH/admin access for `ops-brain` from canonical inventory
+2. `01-seed-observatory-ssh.sh`
+- seeds SSH/admin access for `observatory` from canonical inventory
 - expects root password SSH on the fresh machine
 
 3. `02-seed-main-vps-ssh.sh`
 - seeds SSH/admin access for `main-vps` from canonical inventory
 - expects root password SSH on the fresh machine
 
-4. `10-write-ops-brain-pangolin-site-secret.sh`
-- creates or updates the `ops-brain` Newt credential item in 1Password
+4. `10-write-observatory-pangolin-site-secret.sh`
+- creates or updates the `observatory` Newt credential item in 1Password
 - requires that the Pangolin site already exists
 - prompts for the Pangolin site name
 - ingests the rendered Pangolin Helm snippet by paste
@@ -49,11 +49,11 @@ Current scripts:
 - verifies the CLI is callable
 - tolerates the common case where the binary exists in `~/.local/bin` before the shell `PATH` is updated
 
-6. `20-apply-ops-brain-monitoring-blueprint.sh`
-- applies the canonical draft Pangolin monitoring blueprint for `ops-brain`
+6. `20-apply-observatory-monitoring-blueprint.sh`
+- applies the canonical draft Pangolin monitoring blueprint for `observatory`
 - runs on the Mac host with Pangolin CLI
 - assumes Pangolin CLI is already authenticated
-- reads the Pangolin site identifier from `pangolin_site_ops_brain`
+- reads the Pangolin site identifier from `pangolin_site_observatory`
 - resolves Pangolin CLI from `PATH` or `~/.local/bin/pangolin`
 
 7. `21-apply-nextcloud-blueprint.sh`
@@ -61,7 +61,7 @@ Current scripts:
 - targets `nextcloud-edge.workload.svc.cluster.local:8080`
 - runs on the Mac host with Pangolin CLI
 - assumes Pangolin CLI is already authenticated
-- reads the Pangolin site identifier from `pangolin_site_ops_brain`
+- reads the Pangolin site identifier from `pangolin_site_observatory`
 
 8. `23-apply-nextcloud-cloud-blueprint.sh`
 - applies a temporary validation route for `cloud.virgil.info`
@@ -69,14 +69,14 @@ Current scripts:
 - leaves the older `app.virgil.info` route untouched during validation
 
 9. `24-register-pangolin-site-credentials.sh`
-- single-site credential registration for the canonical `ops_brain` site
-- writes or updates the canonical 1Password secure note from `ops_brain.yml`
+- single-site credential registration for the canonical `observatory` site
+- writes or updates the canonical 1Password secure note from `observatory.yml`
 - requires operator 1Password human-session auth (not service-account mode)
 - validates pasted Helm snippet endpoint/newt_id/secret against repo endpoint
 
 10. `25-register-pangolin-sites.sh`
 - batch wrapper for registering multiple Pangolin site credential notes
-- reads canonical slugs from `ops/pangolin/sites/ops-brain-site-slugs.txt`
+- reads canonical slugs from `ops/pangolin/sites/observatory-site-slugs.txt`
 - derives canonical names/items from slug + `pangolin_newt_credentials_item_prefix`
 - keeps one `Secure Note` item per site
 
@@ -110,8 +110,8 @@ Current scripts:
 15. `30-seed-kuma-monitors.sh`
 - seeds Uptime Kuma monitors from the canonical Pangolin monitoring blueprint
 - runs on the Mac host
-- uses a temporary SSH-backed tunnel to reach Kuma directly on `ops-brain`
-- reads Kuma admin credentials from `kuma_ops_brain_admin` in 1Password
+- uses a temporary SSH-backed tunnel to reach Kuma directly on `observatory`
+- reads Kuma admin credentials from `kuma_observatory_admin` in 1Password
 - creates the 1Password login item if it is missing and you provide credentials interactively
 
 16. `31-apply-n8n-blueprint.sh`

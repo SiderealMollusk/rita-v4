@@ -5,7 +5,7 @@ Validated: 2026-02-27
 This placement model matches prior user research and was independently re-validated during current architecture planning.
 
 ## Node Roles
-1. `ops-brain`
+1. `observatory`
 - Hardware: 16 GB laptop
 - Purpose: observability, operator-facing control, possible internal cluster control plane
 
@@ -22,7 +22,7 @@ This placement model matches prior user research and was independently re-valida
 - Purpose: internet-facing Pangolin server and edge networking
 
 ## Placement
-### ops-brain
+### observatory
 - Prometheus
 - Grafana
 - Loki
@@ -43,7 +43,7 @@ Reason:
 - Supporting automation/platform services
 
 Reason:
-- better fit for clean declarative platform services than the operator-heavy `ops-brain`
+- better fit for clean declarative platform services than the operator-heavy `observatory`
 - adds schedulable capacity without creating a second internal cluster
 
 ### workload-node
@@ -67,4 +67,4 @@ Reason:
 1. Do not place the full monitoring stack on the public edge VPS.
 2. Do not place CI/CD core services on the workload node unless forced by capacity constraints.
 3. Keep the 64 GB server aesthetically and operationally "clean" for workloads.
-4. Treat `ops-brain` as the tolerated bootstrap/monitoring edge and prefer clean platform services on `platform-node`.
+4. Treat `observatory` as the tolerated bootstrap/monitoring edge and prefer clean platform services on `platform-node`.

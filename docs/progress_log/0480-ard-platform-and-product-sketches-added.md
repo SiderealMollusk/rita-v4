@@ -26,7 +26,7 @@ without reading the full plan and progress history first.
 The platform requirement sketches backfill the current platform shape from the repo and recent validated milestones:
 
 - single internal cluster
-- `ops-brain`, `platform`, `workload`
+- `observatory`, `platform`, `workload`
 - Flux, ESO, `platform-postgres`, Nextcloud
 - Pangolin exposure model
 

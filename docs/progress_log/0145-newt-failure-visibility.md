@@ -1,6 +1,6 @@
 # 0145 Newt Failure Visibility
 
-As of this update, the `ops-brain` Newt install path has better built-in diagnostics for runtime failures.
+As of this update, the `observatory` Newt install path has better built-in diagnostics for runtime failures.
 
 ## Why this changed
 
@@ -19,7 +19,7 @@ That signal should have been part of the runbook automatically.
 
 ## What was added
 
-When `scripts/2-ops/ops-brain/10-install-newt.sh` fails or times out, it now also prints:
+When `scripts/2-ops/observatory/10-install-newt.sh` fails or times out, it now also prints:
 
 1. secret data structure for `newt-cred`
 2. `kubectl describe deployment ...`

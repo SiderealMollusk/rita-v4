@@ -13,8 +13,8 @@ runbook_require_host_terminal
 runbook_require_op_write_access
 runbook_source_labrc "$REPO_ROOT"
 
-OPS_BRAIN_VARS="$REPO_ROOT/ops/ansible/group_vars/ops_brain.yml"
-SITE_LIST_FILE="$REPO_ROOT/ops/pangolin/sites/ops-brain-site-slugs.txt"
+OPS_BRAIN_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
+SITE_LIST_FILE="$REPO_ROOT/ops/pangolin/sites/observatory-site-slugs.txt"
 
 [ -f "$OPS_BRAIN_VARS" ] || runbook_fail "missing group vars file at $OPS_BRAIN_VARS"
 [ -f "$SITE_LIST_FILE" ] || runbook_fail "missing site list file at $SITE_LIST_FILE"

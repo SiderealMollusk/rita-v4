@@ -1,6 +1,6 @@
 # Monitoring Helm Config
 
-This directory is the canonical home for the initial `ops-brain` monitoring stack.
+This directory is the canonical home for the initial `observatory` monitoring stack.
 
 Planned contents:
 1. committed values files for kube-prometheus-stack, Loki, and Promtail

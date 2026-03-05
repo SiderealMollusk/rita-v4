@@ -1,10 +1,10 @@
 # 0260 Host Blueprint Apply Script Added
 
-As of this update, the repo now has a host-side runbook for applying the canonical `ops-brain` monitoring blueprint through the Pangolin CLI.
+As of this update, the repo now has a host-side runbook for applying the canonical `observatory` monitoring blueprint through the Pangolin CLI.
 
 ## What was added
 
-1. `/Users/virgil/Dev/rita-v4/scripts/2-ops/host/20-apply-ops-brain-monitoring-blueprint.sh`
+1. `/Users/virgil/Dev/rita-v4/scripts/2-ops/host/20-apply-observatory-monitoring-blueprint.sh`
 
 ## Scope
 

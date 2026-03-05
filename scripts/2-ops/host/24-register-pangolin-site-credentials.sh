@@ -13,7 +13,7 @@ runbook_require_host_terminal
 runbook_require_op_write_access
 runbook_source_labrc "$REPO_ROOT"
 
-OPS_BRAIN_VARS="$REPO_ROOT/ops/ansible/group_vars/ops_brain.yml"
+OPS_BRAIN_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
 [ -f "$OPS_BRAIN_VARS" ] || runbook_fail "missing group vars file at $OPS_BRAIN_VARS"
 
 VAULT_ID="$(runbook_yaml_get "$OPS_BRAIN_VARS" "pangolin_newt_credentials_vault_id" || true)"

@@ -15,7 +15,7 @@ For the most recent validated state, check the latest relevant progress note in 
 - runs `pangolin-server`
 - front door for operator-facing remote access
 
-2. `ops-brain`
+2. `observatory`
 - internal laptop on the LAN
 - runs the internal k3s control plane
 - intended home of the monitoring stack
@@ -33,9 +33,9 @@ For the most recent validated state, check the latest relevant progress note in 
 1. Public internet reaches `main-vps`.
 2. Operator-facing remote access is intended to go through Pangolin.
 3. Internal nodes live on the LAN and are discovered/managed from repo inventories.
-4. `ops-brain` is the first internal k3s cluster/control-plane node.
+4. `observatory` is the first internal k3s cluster/control-plane node.
 5. `main-vps` is not the internal cluster control plane.
-6. Pangolin resources for `ops-brain` should target addresses resolvable from the Newt/site perspective, including verified `*.svc.cluster.local` cluster-local service names.
+6. Pangolin resources for `observatory` should target addresses resolvable from the Newt/site perspective, including verified `*.svc.cluster.local` cluster-local service names.
 
 ## Verify
 1. Hosts/IPs:
@@ -47,6 +47,6 @@ For the most recent validated state, check the latest relevant progress note in 
 4. Node roles:
 - `docs/service-placement.md`
 5. Recent validated state:
-- `docs/progress_log/0100-ops-brain-bootstrap-complete.md`
+- `docs/progress_log/0100-observatory-bootstrap-complete.md`
 - `docs/progress_log/0090-pangolin-server-working-and-node-placement.md`
 - `docs/progress_log/0240-newt-can-reach-cluster-services.md`
