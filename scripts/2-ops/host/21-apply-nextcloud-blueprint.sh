@@ -19,7 +19,7 @@ TMP_BLUEPRINT="$(mktemp /tmp/ops-brain-nextcloud.blueprint.XXXXXX)"
 [ -f "$GROUP_VARS" ] || runbook_fail "missing group vars file at $GROUP_VARS"
 [ -f "$BLUEPRINT_FILE" ] || runbook_fail "missing blueprint file at $BLUEPRINT_FILE"
 
-runbook_require_op_user_session
+runbook_require_op_access
 
 VAULT_ID="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_credentials_vault_id" || true)"
 ITEM_TITLE="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_credentials_item" || true)"

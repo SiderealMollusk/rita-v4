@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "ops_brain",
+    "display_name": "ops-brain",
+    "host_alias": "ops-brain",
+    "inventory_file": "ops/ansible/inventory/ops-brain.ini",
+    "connector_mode": "k8s",
+    "newt_enabled": true,
+    "op_item_title": "pangolin_site_ops_brain",
+    "rebuild_policy": "reuse",
+    "managed_mode": "managed"
+  },
+  {
+    "slug": "nextcloud_vm",
+    "display_name": "nextcloud-vm",
+    "host_alias": "nextcloud-vm",
+    "inventory_file": "ops/ansible/inventory/nextcloud.ini",
+    "connector_mode": "vm",
+    "newt_enabled": true,
+    "op_item_title": "pangolin_site_nextcloud_vm",
+    "rebuild_policy": "rotate",
+    "managed_mode": "managed"
+  },
+  {
+    "slug": "talk_hpb_vm",
+    "display_name": "talk-hpb-vm",
+    "host_alias": "talk-hpb-vm",
+    "inventory_file": "ops/ansible/inventory/talk-hpb.ini",
+    "connector_mode": "vm",
+    "newt_enabled": true,
+    "op_item_title": "pangolin_site_talk_hpb_vm",
+    "rebuild_policy": "rotate",
+    "managed_mode": "managed"
+  }
+]

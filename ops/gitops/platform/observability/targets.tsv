@@ -1,3 +1,4 @@
 name	namespace	kind	metrics	logs	health_check	notes
 platform-postgres	platform	HelmRelease	prometheus-servicemonitor	promtail	statefulset-readiness	bitnami-postgresql-exporter-enabled
 gitea	platform	HelmRelease	none	promtail	http-root	probe-via-service-or-ingress-when-exposed
+n8n	platform	Deployment	none	promtail	http-healthz	private-clusterip-service-on-5678

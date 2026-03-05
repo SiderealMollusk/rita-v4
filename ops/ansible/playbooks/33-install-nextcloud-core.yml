@@ -1,0 +1,427 @@
+---
+- name: Install Nextcloud core stack on dedicated VM
+  hosts: nextcloud_vms
+  become: true
+  gather_facts: true
+
+  handlers:
+    - name: restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
+    - name: restart redis
+      ansible.builtin.service:
+        name: redis-server
+        state: restarted
+
+    - name: restart php fpm
+      ansible.builtin.service:
+        name: "{{ nextcloud_php_fpm_service }}"
+        state: restarted
+
+  tasks:
+    - name: Require Nextcloud install vars
+      ansible.builtin.assert:
+        that:
+          - nextcloud_domain | length > 0
+          - nextcloud_admin_user | length > 0
+          - nextcloud_admin_password | length > 0
+          - nextcloud_db_name | length > 0
+          - nextcloud_db_user | length > 0
+          - nextcloud_db_password | length > 0
+        fail_msg: >-
+          Missing required env-backed vars. Set NEXTCLOUD_DOMAIN,
+          NEXTCLOUD_ADMIN_USER, NEXTCLOUD_ADMIN_PASSWORD, and NEXTCLOUD_DB_PASSWORD
+          before running this playbook.
+
+    - name: Install Nextcloud system packages
+      ansible.builtin.apt:
+        update_cache: true
+        name: "{{ nextcloud_system_packages + nextcloud_php_modules }}"
+        state: present
+
+    - name: Detect installed PHP version
+      ansible.builtin.command: php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;'
+      register: nextcloud_php_version_cmd
+      changed_when: false
+
+    - name: Set PHP path facts
+      ansible.builtin.set_fact:
+        nextcloud_php_version: "{{ nextcloud_php_version_cmd.stdout }}"
+        nextcloud_php_fpm_service: "php{{ nextcloud_php_version_cmd.stdout }}-fpm"
+        nextcloud_php_fpm_conf_dir: "/etc/php/{{ nextcloud_php_version_cmd.stdout }}/fpm/conf.d"
+        nextcloud_php_cli_conf_dir: "/etc/php/{{ nextcloud_php_version_cmd.stdout }}/cli/conf.d"
+        nextcloud_db_password_sql_literal: "{{ nextcloud_db_password | replace(\"'\", \"''\") }}"
+
+    - name: Ensure core services enabled
+      ansible.builtin.service:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+      loop:
+        - nginx
+        - postgresql
+        - redis-server
+        - cron
+        - "{{ nextcloud_php_fpm_service }}"
+
+    - name: Create Nextcloud package cache directory
+      ansible.builtin.file:
+        path: "{{ nextcloud_package_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Create Nextcloud data directory
+      ansible.builtin.file:
+        path: "{{ nextcloud_data_dir }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: "0750"
+
+    - name: Download Nextcloud release archive
+      ansible.builtin.get_url:
+        url: "{{ nextcloud_archive_url }}"
+        dest: "{{ nextcloud_package_dir }}/nextcloud-{{ nextcloud_version }}.tar.bz2"
+        mode: "0644"
+
+    - name: Unpack Nextcloud release
+      ansible.builtin.unarchive:
+        src: "{{ nextcloud_package_dir }}/nextcloud-{{ nextcloud_version }}.tar.bz2"
+        dest: /var/www
+        remote_src: true
+        owner: www-data
+        group: www-data
+        creates: "{{ nextcloud_web_root }}/version.php"
+
+    - name: Ensure Nextcloud web root ownership
+      ansible.builtin.file:
+        path: "{{ nextcloud_web_root }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        recurse: true
+
+    - name: Write Nextcloud PHP tuning file for FPM
+      ansible.builtin.template:
+        src: ../templates/nextcloud/nextcloud-php.ini.j2
+        dest: "{{ nextcloud_php_fpm_conf_dir }}/90-nextcloud.ini"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart php fpm
+
+    - name: Write Nextcloud PHP tuning file for CLI
+      ansible.builtin.template:
+        src: ../templates/nextcloud/nextcloud-php.ini.j2
+        dest: "{{ nextcloud_php_cli_conf_dir }}/90-nextcloud.ini"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure Redis listens locally
+      ansible.builtin.lineinfile:
+        path: /etc/redis/redis.conf
+        regexp: '^bind '
+        line: 'bind 127.0.0.1 ::1'
+      notify: restart redis
+
+    - name: Ensure Redis protected mode is enabled
+      ansible.builtin.lineinfile:
+        path: /etc/redis/redis.conf
+        regexp: '^protected-mode '
+        line: 'protected-mode yes'
+      notify: restart redis
+
+    - name: Render Nextcloud nginx site
+      ansible.builtin.template:
+        src: ../templates/nextcloud/nginx-site.conf.j2
+        dest: /etc/nginx/sites-available/nextcloud.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart nginx
+
+    - name: Enable Nextcloud nginx site
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/nextcloud.conf
+        dest: /etc/nginx/sites-enabled/nextcloud.conf
+        state: link
+      notify: restart nginx
+
+    - name: Disable default nginx site
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: restart nginx
+
+    - name: Ensure nginx config is valid
+      ansible.builtin.command: nginx -t
+      changed_when: false
+
+    - name: Apply web and runtime config changes before DB/app install
+      ansible.builtin.meta: flush_handlers
+
+    - name: Ensure Nextcloud postgres role exists
+      ansible.builtin.shell: |
+        sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='{{ nextcloud_db_user }}'" | grep -q 1 || \
+        sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE \"{{ nextcloud_db_user }}\" LOGIN PASSWORD '{{ nextcloud_db_password_sql_literal }}';"
+      args:
+        executable: /bin/bash
+
+    - name: Ensure Nextcloud postgres role password is current
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - postgres
+          - psql
+          - -v
+          - ON_ERROR_STOP=1
+          - -c
+          - ALTER ROLE "{{ nextcloud_db_user }}" WITH LOGIN PASSWORD '{{ nextcloud_db_password_sql_literal }}';
+
+    - name: Ensure Nextcloud database exists
+      ansible.builtin.shell: |
+        sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='{{ nextcloud_db_name }}'" | grep -q 1 || \
+        sudo -u postgres createdb --owner="{{ nextcloud_db_user }}" "{{ nextcloud_db_name }}"
+      args:
+        executable: /bin/bash
+
+    - name: Ensure Nextcloud database privileges are correct
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - postgres
+          - psql
+          - -v
+          - ON_ERROR_STOP=1
+          - -c
+          - GRANT ALL PRIVILEGES ON DATABASE "{{ nextcloud_db_name }}" TO "{{ nextcloud_db_user }}";
+
+    - name: Check whether Nextcloud is already installed
+      ansible.builtin.stat:
+        path: "{{ nextcloud_web_root }}/config/config.php"
+      register: nextcloud_config_php
+
+    - name: Run Nextcloud maintenance install
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - maintenance:install
+          - --no-interaction
+          - --database
+          - pgsql
+          - --database-host
+          - localhost
+          - --database-name
+          - "{{ nextcloud_db_name }}"
+          - --database-user
+          - "{{ nextcloud_db_user }}"
+          - --database-pass
+          - "{{ nextcloud_db_password }}"
+          - --admin-user
+          - "{{ nextcloud_admin_user }}"
+          - --admin-pass
+          - "{{ nextcloud_admin_password }}"
+          - --data-dir
+          - "{{ nextcloud_data_dir }}"
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      when: not nextcloud_config_php.stat.exists
+
+    - name: Set Nextcloud trusted domains
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - trusted_domains
+          - "{{ index | string }}"
+          - --value={{ item }}
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      loop: "{{ nextcloud_trusted_domains | unique }}"
+      loop_control:
+        index_var: index
+
+    - name: Set Nextcloud primary trusted domain at index zero
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - trusted_domains
+          - "0"
+          - --value={{ nextcloud_domain }}
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+
+    - name: Set Nextcloud overwrite host
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - overwritehost
+          - --value={{ nextcloud_domain }}
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+
+    - name: Set Nextcloud overwrite protocol
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - overwriteprotocol
+          - --value={{ nextcloud_overwrite_protocol }}
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+
+    - name: Set Nextcloud overwrite CLI URL
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - overwrite.cli.url
+          - --value={{ nextcloud_overwrite_protocol }}://{{ nextcloud_domain }}
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+
+    - name: Set Nextcloud trusted proxy when provided
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - trusted_proxies
+          - "0"
+          - --value={{ nextcloud_trusted_proxy }}
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      when: nextcloud_trusted_proxy | length > 0
+
+    - name: Enable APCu local cache
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - memcache.local
+          - "--value=\\OC\\Memcache\\APCu"
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+
+    - name: Enable Redis distributed cache
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - memcache.distributed
+          - "--value=\\OC\\Memcache\\Redis"
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+
+    - name: Enable Redis locking cache
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - memcache.locking
+          - "--value=\\OC\\Memcache\\Redis"
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+
+    - name: Set Redis host for Nextcloud
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - redis
+          - host
+          - --value=127.0.0.1
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+
+    - name: Set Redis port for Nextcloud
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:set
+          - redis
+          - port
+          - --value=6379
+          - --type=integer
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+
+    - name: Set Nextcloud background jobs to cron
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - background:cron
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+
+    - name: Install system cron entry for Nextcloud
+      ansible.builtin.copy:
+        dest: /etc/cron.d/nextcloud
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          */5 * * * * www-data php -f {{ nextcloud_web_root }}/cron.php
+
+    - name: Flush service handlers
+      ansible.builtin.meta: flush_handlers

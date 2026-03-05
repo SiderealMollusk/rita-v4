@@ -62,18 +62,21 @@ NEWT_CRED_ITEM="$(runbook_yaml_get "$GROUP_VARS" "pangolin_newt_credentials_item
 [ -n "$NEWT_CRED_VAULT_ID" ] || runbook_fail "pangolin_newt_credentials_vault_id missing in $GROUP_VARS"
 [ -n "$NEWT_CRED_ITEM" ] || runbook_fail "pangolin_newt_credentials_item missing in $GROUP_VARS"
 
+runbook_require_op_access
 if [ -n "${OP_SERVICE_ACCOUNT_TOKEN:-}" ]; then
   echo "[INFO] Using 1Password service-account context"
 else
-  echo "[INFO] Verifying 1Password CLI user session"
-  op whoami >/dev/null
+  echo "[INFO] Using 1Password human session"
 fi
 
 echo "[INFO] Reading Newt site credentials from vault=$NEWT_CRED_VAULT_ID item=$NEWT_CRED_ITEM"
-NEWT_ID="$(op item get "$NEWT_CRED_ITEM" --vault "$NEWT_CRED_VAULT_ID" --fields label='id')"
+NEWT_ID="$(op item get "$NEWT_CRED_ITEM" --vault "$NEWT_CRED_VAULT_ID" --fields label='newt_id' 2>/dev/null || true)"
+if [ -z "$NEWT_ID" ]; then
+  NEWT_ID="$(op item get "$NEWT_CRED_ITEM" --vault "$NEWT_CRED_VAULT_ID" --fields label='id' 2>/dev/null || true)"
+fi
 NEWT_SECRET="$(op item get "$NEWT_CRED_ITEM" --vault "$NEWT_CRED_VAULT_ID" --reveal --fields label='secret')"
 
-[ -n "$NEWT_ID" ] || runbook_fail "failed to read field 'id' from 1Password item $NEWT_CRED_ITEM"
+[ -n "$NEWT_ID" ] || runbook_fail "failed to read field 'newt_id' (or legacy 'id') from 1Password item $NEWT_CRED_ITEM"
 [ -n "$NEWT_SECRET" ] || runbook_fail "failed to read field 'secret' from 1Password item $NEWT_CRED_ITEM"
 case "$NEWT_SECRET" in
   "[use '"*" --reveal' to reveal]")

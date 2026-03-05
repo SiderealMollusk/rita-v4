@@ -16,3 +16,4 @@ node_modules/
 *.pem
 *.key
 .env
+.envrc.local

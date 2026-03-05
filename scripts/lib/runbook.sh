@@ -65,7 +65,66 @@ runbook_require_op_user_session() {
     exit 1
   fi
   runbook_require_cmd op
+  local whoami_output
+  whoami_output="$(op whoami 2>/dev/null || true)"
+  [ -n "$whoami_output" ] || runbook_fail "1Password CLI is not authenticated. Run: op signin"
+  if printf '%s\n' "$whoami_output" | grep -q "User Type:[[:space:]]*SERVICE_ACCOUNT"; then
+    echo "[FAIL] 1Password CLI is currently authenticated as SERVICE_ACCOUNT."
+    echo "[INFO] This write path requires a human operator session."
+    echo "[INFO] Run these first:"
+    echo "       unset OP_SERVICE_ACCOUNT_TOKEN"
+    echo "       op signin"
+    exit 1
+  fi
+}
+
+runbook_require_op_write_access() {
+  runbook_require_op_user_session
+}
+
+runbook_require_op_access() {
+  runbook_require_cmd op
+
+  if [ -n "${OP_SERVICE_ACCOUNT_TOKEN:-}" ]; then
+    op vault list >/dev/null
+    return 0
+  fi
+
   op whoami >/dev/null
+}
+
+runbook_source_labrc() {
+  local repo_root
+  repo_root="${1:-$(runbook_detect_repo_root)}"
+  local labrc_path="${repo_root}/.labrc"
+  if [ -f "$labrc_path" ]; then
+    # shellcheck source=/dev/null
+    source "$labrc_path"
+  fi
+}
+
+runbook_export_default_kubeconfig() {
+  local fallback_path="${1:-$HOME/.kube/config-rita-ops-brain}"
+  export KUBECONFIG="${KUBECONFIG:-${KUBECONFIG_INTERNAL:-$fallback_path}}"
+}
+
+runbook_build_op_ref() {
+  local vault_id="$1"
+  local item_name="$2"
+  local field_name="$3"
+  printf 'op://%s/%s/%s\n' "$vault_id" "$item_name" "$field_name"
+}
+
+runbook_resolve_secret_from_op() {
+  local current_value="${1:-}"
+  local op_ref="${2:-}"
+  if [ -n "$current_value" ]; then
+    printf '%s\n' "$current_value"
+    return 0
+  fi
+  [ -n "$op_ref" ] || return 1
+  runbook_require_op_access
+  op read "$op_ref"
 }
 
 runbook_require_env() {

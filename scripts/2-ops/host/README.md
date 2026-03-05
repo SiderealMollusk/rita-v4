@@ -8,7 +8,9 @@ Freshness anchor:
 Rules:
 1. no-arg and opinionated
 2. host-only guarded
-3. assumes real 1Password user session, not service-account mode
+3. uses the least-strict viable 1Password auth mode for the task:
+   - read-only tasks may use service-account or human session
+   - write/mutation tasks may still require a real human operator session
 4. bridges repo automation to external/operator actions where the privilege lives on the host
 
 Current host-only responsibilities:
@@ -61,7 +63,51 @@ Current scripts:
 - assumes Pangolin CLI is already authenticated
 - reads the Pangolin site identifier from `pangolin_site_ops_brain`
 
-8. `30-seed-kuma-monitors.sh`
+8. `23-apply-nextcloud-cloud-blueprint.sh`
+- applies a temporary validation route for `cloud.virgil.info`
+- targets the dedicated `nextcloud-core` VM at `192.168.6.183:80`
+- leaves the older `app.virgil.info` route untouched during validation
+
+9. `24-register-pangolin-site-credentials.sh`
+- single-site credential registration for the canonical `ops_brain` site
+- writes or updates the canonical 1Password secure note from `ops_brain.yml`
+- requires operator 1Password human-session auth (not service-account mode)
+- validates pasted Helm snippet endpoint/id/secret against repo endpoint
+
+10. `25-register-pangolin-sites.sh`
+- batch wrapper for registering multiple Pangolin site credential notes
+- reads canonical slugs from `ops/pangolin/sites/ops-brain-site-slugs.txt`
+- derives canonical names/items from slug + `pangolin_newt_credentials_item_prefix`
+- keeps one `Secure Note` item per site
+
+11. `26-pangolin-api-readonly-check.sh`
+- read-only Pangolin + OP contract check
+- reads required sites from `ops/pangolin/sites/required-sites.yaml`
+- verifies each required site exists in Pangolin
+- verifies each required OP item exists and carries canonical fields
+
+12. `27-reconcile-pangolin-sites.sh`
+- operator mutation script for Pangolin site lifecycle
+- creates missing required sites through Pangolin API
+- writes/updates canonical per-site Secure Notes in OP
+- requires operator human-session OP auth
+
+13. `28-verify-pangolin-sites-and-newt.sh`
+- end-to-end verify gate
+- runs script `26` first
+- verifies VM Newt systemd service state for VM connector records
+- checks Pangolin `online` state for required sites
+
+14. `29-teardown-pangolin-sites.sh`
+- cleanly deletes all `managed` Pangolin sites from canonical `required-sites.yaml`
+- optionally deletes matching OP secure-note items (enabled by default)
+- refuses to run without explicit confirm guard:
+  - `PANGOLIN_TEARDOWN_CONFIRM=delete-managed-sites`
+- optional OP item behavior:
+  - `PANGOLIN_TEARDOWN_DELETE_OP_ITEMS=1` (default)
+  - `PANGOLIN_TEARDOWN_DELETE_OP_ITEMS=0` (keep OP items)
+
+15. `30-seed-kuma-monitors.sh`
 - seeds Uptime Kuma monitors from the canonical Pangolin monitoring blueprint
 - runs on the Mac host
 - uses a temporary SSH-backed tunnel to reach Kuma directly on `ops-brain`
@@ -69,7 +115,7 @@ Current scripts:
 - creates the 1Password login item if it is missing and you provide credentials interactively
 
 Notes:
-1. site creation in Pangolin is a separate host-side/operator step and should feed into `10-write-ops-brain-pangolin-site-secret.sh`.
-2. service-account mode is intentionally blocked here because these scripts are operator workflows.
+1. site creation/reconciliation is now handled by `27-reconcile-pangolin-sites.sh` from canonical required-site records.
+2. service-account mode is acceptable for read-only host tasks that only need to resolve secrets or identifiers; human-session mode is required for any 1Password write/update flow.
 3. blueprint YAML is non-secret; the sensitive boundary is the Pangolin CLI auth/session used to apply it.
 4. the Pangolin CLI install belongs here because the operator-authenticated mutation workflow belongs here.

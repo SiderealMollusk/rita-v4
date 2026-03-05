@@ -1,0 +1,123 @@
+---
+- name: Verify Nextcloud core VM baseline
+  hosts: nextcloud_vms
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Detect installed PHP version
+      ansible.builtin.command: php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;'
+      register: nextcloud_php_version_cmd
+      changed_when: false
+
+    - name: Set PHP service fact
+      ansible.builtin.set_fact:
+        nextcloud_php_fpm_service: "php{{ nextcloud_php_version_cmd.stdout }}-fpm"
+
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Check PostgreSQL readiness
+      ansible.builtin.command: pg_isready
+      register: nextcloud_pg_isready
+      changed_when: false
+
+    - name: Assert expected services are running
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['nginx.service'].state == 'running'
+          - nextcloud_pg_isready.rc == 0
+          - ansible_facts.services['redis-server.service'].state == 'running'
+          - ansible_facts.services['cron.service'].state == 'running'
+          - ansible_facts.services[nextcloud_php_fpm_service + '.service'].state == 'running'
+        fail_msg: "One or more core Nextcloud services are not running."
+
+    - name: Check Nextcloud status
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - status
+          - --output=json
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      register: nextcloud_status
+      changed_when: false
+
+    - name: Assert Nextcloud is installed
+      ansible.builtin.assert:
+        that:
+          - "'\"installed\":true' in (nextcloud_status.stdout | replace(' ', ''))"
+        fail_msg: "Nextcloud is not installed correctly."
+
+    - name: Read Nextcloud memcache.local
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:get
+          - memcache.local
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      register: nextcloud_memcache_local
+      changed_when: false
+
+    - name: Read Nextcloud memcache.locking
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:system:get
+          - memcache.locking
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      register: nextcloud_memcache_locking
+      changed_when: false
+
+    - name: Read Nextcloud background job mode
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - config:app:get
+          - core
+          - backgroundjobs_mode
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      register: nextcloud_background_jobs
+      changed_when: false
+
+    - name: Assert baseline performance config is present
+      ansible.builtin.assert:
+        that:
+          - nextcloud_memcache_local.stdout == '\\OC\\Memcache\\APCu'
+          - nextcloud_memcache_locking.stdout == '\\OC\\Memcache\\Redis'
+          - "'cron' in (nextcloud_background_jobs.stdout | lower)"
+        fail_msg: "Nextcloud caching or cron background mode is not configured as expected."
+
+    - name: Verify local status endpoint
+      ansible.builtin.uri:
+        url: http://127.0.0.1/status.php
+        headers:
+          Host: "{{ nextcloud_domain }}"
+        return_content: true
+        status_code: 200
+      register: nextcloud_status_http
+
+    - name: Assert status endpoint advertises installed instance
+      ansible.builtin.assert:
+        that:
+          - "'\"installed\":true' in (nextcloud_status_http.content | replace(' ', ''))"
+        fail_msg: "status.php did not return an installed Nextcloud instance."

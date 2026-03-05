@@ -8,7 +8,7 @@ source "$SCRIPT_DIR/../../lib/runbook.sh"
 
 runbook_require_no_args "$@"
 runbook_require_host_terminal
-runbook_require_op_user_session
+runbook_require_op_access
 
 INV="$REPO_ROOT/ops/ansible/inventory/vps.ini"
 SEED_SCRIPT="$REPO_ROOT/scripts/0-local-setup/03-vps/01-seed-ssh-admin-from-op.sh"

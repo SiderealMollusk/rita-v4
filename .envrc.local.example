@@ -1,0 +1,13 @@
+# Copy to .envrc.local for machine-specific or secret-backed values that should not
+# live in git. direnv will load this after .labrc via .envrc.
+#
+# Example:
+# export NEXTCLOUD_ADMIN_USER="virgil"
+#
+# Optional if you need to override the repo default:
+# export NEXTCLOUD_DOMAIN="app.virgil.info"
+#
+# Optional overrides if the default refs are not right for this repo:
+# export NEXTCLOUD_OP_ITEM="nextcloud-main"
+# export NEXTCLOUD_ADMIN_PASSWORD_OP_REF="op://<vault-id>/nextcloud-main/nextcloud-admin"
+# export NEXTCLOUD_DB_PASSWORD_OP_REF="op://<vault-id>/nextcloud-main/nextcloud-db"

@@ -1,0 +1,63 @@
+nextcloud_expected_hostname: "nextcloud-core"
+
+nextcloud_ufw_allow_http: true
+nextcloud_ufw_allow_https: true
+
+nextcloud_domain: "{{ lookup('env', 'NEXTCLOUD_DOMAIN') | default('cloud.virgil.info', true) }}"
+nextcloud_trusted_domains:
+  - "{{ nextcloud_domain }}"
+  - "app.virgil.info"
+nextcloud_trusted_proxy: "{{ lookup('env', 'NEXTCLOUD_TRUSTED_PROXY') | default('', true) }}"
+nextcloud_overwrite_protocol: "{{ lookup('env', 'NEXTCLOUD_OVERWRITE_PROTOCOL') | default('https', true) }}"
+nextcloud_admin_user: "{{ lookup('env', 'NEXTCLOUD_ADMIN_USER') }}"
+nextcloud_admin_password: "{{ lookup('env', 'NEXTCLOUD_ADMIN_PASSWORD') }}"
+nextcloud_db_name: "{{ lookup('env', 'NEXTCLOUD_DB_NAME') | default('nextcloud', true) }}"
+nextcloud_db_user: "{{ lookup('env', 'NEXTCLOUD_DB_USER') | default('nextcloud', true) }}"
+nextcloud_db_password: "{{ lookup('env', 'NEXTCLOUD_DB_PASSWORD') }}"
+nextcloud_data_dir: "/var/lib/nextcloud/data"
+nextcloud_web_root: "/var/www/nextcloud"
+nextcloud_package_dir: "/var/cache/nextcloud"
+nextcloud_version: "{{ lookup('env', 'NEXTCLOUD_VERSION') | default('32.0.6', true) }}"
+nextcloud_archive_url: "https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.tar.bz2"
+
+nextcloud_php_modules:
+  - php-fpm
+  - php-cli
+  - php-common
+  - php-curl
+  - php-gd
+  - php-intl
+  - php-mbstring
+  - php-xml
+  - php-zip
+  - php-bz2
+  - php-pgsql
+  - php-gmp
+  - php-bcmath
+  - php-imagick
+  - php-apcu
+  - php-redis
+
+nextcloud_system_packages:
+  - ca-certificates
+  - curl
+  - gnupg
+  - ufw
+  - fail2ban
+  - nginx
+  - postgresql
+  - redis-server
+  - cron
+  - bzip2
+  - unzip
+  - rsync
+  - imagemagick
+  - ffmpeg
+  - python3-psycopg2
+
+nextcloud_apcu_shm_size: "128M"
+nextcloud_opcache_memory_consumption: "128"
+nextcloud_opcache_interned_strings_buffer: "16"
+nextcloud_opcache_max_accelerated_files: "10000"
+nextcloud_opcache_save_comments: "1"
+nextcloud_opcache_revalidate_freq: "60"

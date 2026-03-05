@@ -6,6 +6,9 @@
 - Hardware class: 64 GB server
 - Current substrate alias: `workload-pve`
 - Current worker VM target: `workload-vm-worker`
+- Dedicated service VM targets:
+  - `nextcloud-vm`
+  - `talk-hpb-vm`
 
 ## Access
 - Login model should follow `virgil` + sudo
@@ -20,6 +23,7 @@
 - compute tasks
 - GPU-related services such as vLLM
 - only minimal support agents needed for workload participation
+- dedicated collaboration VMs when the single-worker shape becomes too coarse
 
 ## Not Intended For
 - full monitoring stack
@@ -35,6 +39,7 @@
 ## Status
 Worker joined and labeled.
 Do not treat this doc as proof that tainting or workload-local Newt decisions are complete.
+The `workload-pve` host vars now also reserve standalone VM capacity for `nextcloud-core` and `nextcloud-talk-hpb`.
 
 ## Freshness Anchor
 1. [0430-workload-node-joined-and-api-policy-extended.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0430-workload-node-joined-and-api-policy-extended.md)

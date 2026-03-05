@@ -48,3 +48,10 @@ routes:
     ports:
       - 80
     notes: "Pangolin should target nextcloud-edge.workload.svc.cluster.local:8080 so /exapps/ routes to HaRP while all other paths continue to Nextcloud."
+  - name: "nextcloud-core-vm"
+    fqdn: "cloud.virgil.info"
+    backend: "nextcloud-core"
+    exposure: "pangolin"
+    ports:
+      - 80
+    notes: "Temporary validation route for the dedicated nextcloud-core VM at 192.168.6.183:80 before decommissioning the older app.virgil.info path."

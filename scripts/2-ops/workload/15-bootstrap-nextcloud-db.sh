@@ -5,14 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 cd "${REPO_ROOT}"
 
-LABRC="${REPO_ROOT}/.labrc"
-if [ -f "${LABRC}" ]; then
-  # shellcheck source=/dev/null
-  source "${LABRC}"
-fi
-
-KUBECONFIG_PATH="${KUBECONFIG:-${KUBECONFIG_INTERNAL:-$HOME/.kube/config-rita-ops-brain}}"
-export KUBECONFIG="${KUBECONFIG_PATH}"
+runbook_source_labrc "${REPO_ROOT}"
+runbook_export_default_kubeconfig
 
 echo "[INFO] Using kubeconfig: ${KUBECONFIG}"
 echo "[INFO] Bootstrapping Nextcloud database and role on platform-postgres"

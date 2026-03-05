@@ -1,0 +1,158 @@
+---
+- name: Wire VM Newt connector
+  hosts: all
+  gather_facts: true
+  become: true
+  vars:
+    newt_installer_url: "https://static.pangolin.net/get-newt.sh"
+    pangolin_newt_service_name: "pangolin-newt"
+    pangolin_newt_wait_retries: 20
+    pangolin_newt_wait_delay: 2
+
+  tasks:
+    - name: Require Pangolin connector vars
+      ansible.builtin.assert:
+        that:
+          - pangolin_endpoint is defined
+          - pangolin_endpoint | length > 0
+          - pangolin_org_id is defined
+          - pangolin_org_id | length > 0
+          - pangolin_newt_id is defined
+          - pangolin_newt_id | length > 0
+          - pangolin_newt_secret is defined
+          - pangolin_newt_secret | length > 0
+        fail_msg: "Missing required Pangolin Newt connector variables."
+
+    - name: Ensure connector runtime packages are present
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+        update_cache: true
+
+    - name: Download Newt installer script
+      ansible.builtin.get_url:
+        url: "{{ newt_installer_url }}"
+        dest: /tmp/get-newt.sh
+        mode: "0755"
+
+    - name: Install Newt binary
+      ansible.builtin.command: /tmp/get-newt.sh
+      changed_when: false
+
+    - name: Resolve installed Newt binary path
+      ansible.builtin.command: "bash -lc 'command -v newt'"
+      register: newt_bin_path
+      changed_when: false
+
+    - name: Fail when Newt binary is not installed
+      ansible.builtin.assert:
+        that:
+          - newt_bin_path.stdout | trim | length > 0
+        fail_msg: "newt binary was not found in PATH after installation."
+
+    - name: Ensure connector config directory exists
+      ansible.builtin.file:
+        path: /etc/pangolin-newt
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Write connector environment file
+      ansible.builtin.copy:
+        dest: /etc/pangolin-newt/newt.env
+        owner: root
+        group: root
+        mode: "0600"
+        content: |
+          PANGOLIN_ENDPOINT={{ pangolin_endpoint }}
+          PANGOLIN_ORG_ID={{ pangolin_org_id }}
+          PANGOLIN_NEWT_ID={{ pangolin_newt_id }}
+          PANGOLIN_NEWT_SECRET={{ pangolin_newt_secret }}
+      no_log: true
+
+    - name: Install systemd unit for Pangolin Newt connector
+      ansible.builtin.copy:
+        dest: "/etc/systemd/system/{{ pangolin_newt_service_name }}.service"
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Pangolin Newt Connector
+          After=network-online.target
+          Wants=network-online.target
+
+          [Service]
+          Type=simple
+          User=root
+          Group=root
+          EnvironmentFile=/etc/pangolin-newt/newt.env
+          Environment=USER=root
+          Environment=LOGNAME=root
+          Environment=HOME=/root
+          Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          Environment=XDG_CONFIG_HOME=/root/.config
+          Environment=XDG_CACHE_HOME=/root/.cache
+          Environment=XDG_DATA_HOME=/root/.local/share
+          WorkingDirectory=/root
+          ExecStart={{ newt_bin_path.stdout | trim }} --id ${PANGOLIN_NEWT_ID} --secret ${PANGOLIN_NEWT_SECRET}
+          KillMode=process
+          TimeoutStartSec=30
+          TimeoutStopSec=20
+          Restart=always
+          RestartSec=5
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Enable and restart Newt connector service
+      ansible.builtin.systemd:
+        name: "{{ pangolin_newt_service_name }}"
+        daemon_reload: true
+        enabled: true
+        state: restarted
+
+    - name: Show Newt connector unit state after restart
+      ansible.builtin.command: "systemctl show {{ pangolin_newt_service_name }} -p ActiveState -p SubState -p Result -p ExecMainStatus --no-page"
+      register: newt_unit_show
+      changed_when: false
+
+    - name: Print Newt connector unit state
+      ansible.builtin.debug:
+        var: newt_unit_show.stdout_lines
+
+    - name: Wait for Newt connector service to become active
+      ansible.builtin.command: "systemctl is-active {{ pangolin_newt_service_name }}"
+      register: newt_service_state
+      changed_when: false
+      failed_when: false
+      until: newt_service_state.stdout | trim == 'active'
+      retries: "{{ pangolin_newt_wait_retries }}"
+      delay: "{{ pangolin_newt_wait_delay }}"
+
+    - name: Show Newt connector unit state after wait
+      ansible.builtin.command: "systemctl show {{ pangolin_newt_service_name }} -p ActiveState -p SubState -p Result -p ExecMainStatus --no-page"
+      register: newt_unit_show_after_wait
+      changed_when: false
+
+    - name: Print Newt connector unit state after wait
+      ansible.builtin.debug:
+        var: newt_unit_show_after_wait.stdout_lines
+
+    - name: Dump Newt service logs
+      ansible.builtin.command: "journalctl -u {{ pangolin_newt_service_name }} -n 120 --no-pager"
+      changed_when: false
+      register: newt_journal
+
+    - name: Print Newt service logs
+      ansible.builtin.debug:
+        var: newt_journal.stdout_lines
+
+    - name: Fail if Newt connector service is not active
+      ansible.builtin.assert:
+        that:
+          - newt_service_state.stdout | trim == 'active'
+        fail_msg: "Newt connector service did not become active."

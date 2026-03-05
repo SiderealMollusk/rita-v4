@@ -46,15 +46,11 @@ if [ -f /.dockerenv ] || grep -q 'docker\|containerd' /proc/1/cgroup 2>/dev/null
 fi
 
 if [ -n "${OP_SERVICE_ACCOUNT_TOKEN:-}" ]; then
-  echo "[FAIL] OP_SERVICE_ACCOUNT_TOKEN is set; this puts op CLI in service-account mode."
-  echo "[INFO] Run these first:"
-  echo "       unset OP_SERVICE_ACCOUNT_TOKEN"
-  echo "       op signin"
-  exit 1
+  echo "[INFO] Using 1Password service-account context"
+else
+  echo "[INFO] Verifying 1Password CLI session..."
+  op whoami >/dev/null
 fi
-
-echo "[INFO] Verifying 1Password CLI session..."
-op whoami >/dev/null
 
 echo "[INFO] Reading public key from vault=$OP_SSH_ADMIN_KEY_VAULT_ID item=$OP_SSH_ADMIN_KEY_ITEM_ID"
 PUB_KEY="$(op item get "$OP_SSH_ADMIN_KEY_ITEM_ID" \

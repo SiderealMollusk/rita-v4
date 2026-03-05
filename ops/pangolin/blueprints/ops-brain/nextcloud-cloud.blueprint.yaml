@@ -1,0 +1,14 @@
+# Public Nextcloud route for the dedicated nextcloud-core VM.
+# This leaves the older app.virgil.info path untouched while cloud.virgil.info is validated.
+
+public-resources:
+  nextcloud-cloud:
+    name: nextcloud core vm
+    protocol: http
+    full-domain: cloud.virgil.info
+    targets:
+      - site: __SITE_IDENTIFIER__
+        hostname: 192.168.6.183
+        method: http
+        port: 80
+

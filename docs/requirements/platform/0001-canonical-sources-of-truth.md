@@ -82,9 +82,9 @@ Use the routes catalog for:
 
 If the question is "how is this app supposed to be exposed?", the routes catalog is the canonical answer.
 
-### 6. `.labrc`: Operator-Local Non-Secret Config
+### 6. `.labrc` And `.envrc`: Operator-Local Non-Secret Config
 
-`.labrc`
+`.labrc` and `.envrc`
 
 Use `.labrc` for local operator config that should not be hardcoded into repo-managed manifests:
 
@@ -92,7 +92,9 @@ Use `.labrc` for local operator config that should not be hardcoded into repo-ma
 - vault ID
 - other local, non-secret operator defaults
 
-Wrappers should prefer `.labrc` over repeated ad hoc exports.
+Use `.envrc` as the repo-managed loader that pulls in `.labrc`, optional ignored overrides, and default shell wiring such as `KUBECONFIG`.
+
+Wrappers should prefer these surfaces over repeated ad hoc exports.
 
 ### 7. 1Password: Secrets
 

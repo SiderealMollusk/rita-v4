@@ -32,6 +32,8 @@ Validated navigation model: 2026-02-28
   - `ops/ansible/inventory/ops-brain.ini`
   - `ops/ansible/inventory/platform.ini`
   - `ops/ansible/inventory/workload.ini`
+  - `ops/ansible/inventory/nextcloud.ini`
+  - `ops/ansible/inventory/talk-hpb.ini`
   - `ops/ansible/inventory/workload-cluster.ini`
   - `ops/ansible/inventory/internal-cluster.ini`
 
@@ -46,6 +48,13 @@ Validated navigation model: 2026-02-28
 
 ## Hittable Routes (FQDN -> backend/ports/exposure)
 - Source of truth: `ops/network/routes.yml`
+
+## Pangolin Site + Newt Connector Truth
+- Required site records: `ops/pangolin/sites/required-sites.yaml`
+- Read-only contract check: `scripts/2-ops/host/26-pangolin-api-readonly-check.sh`
+- Site reconcile + OP write: `scripts/2-ops/host/27-reconcile-pangolin-sites.sh`
+- VM connector wiring: `scripts/2-ops/workload/21-wire-vm-newt-connectors.sh`
+- End-to-end verify: `scripts/2-ops/host/28-verify-pangolin-sites-and-newt.sh`
 
 ## Node Inventory (human-readable clues)
 - Entry point: `docs/lab-nodes.md`

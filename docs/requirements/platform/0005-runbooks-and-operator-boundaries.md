@@ -30,11 +30,12 @@ They should not force the operator to remember:
 - hostnames
 - stable item names
 
-### `.labrc`
+### `.labrc` And `.envrc`
 
 `.labrc` is the preferred home for operator-local non-secret config.
+`.envrc` is the preferred repo-managed loader for that config.
 
-Host-side scripts should source it instead of requiring repeated manual exports.
+Host-side scripts should source shared helpers that ultimately derive their context from these files instead of requiring repeated manual exports.
 
 ## Desired Operator Experience
 

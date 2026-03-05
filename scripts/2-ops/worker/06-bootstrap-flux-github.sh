@@ -19,9 +19,7 @@ LABRC="$REPO_ROOT/.labrc"
 [ -f "$BOOTSTRAP_CFG" ] || runbook_fail "missing bootstrap config: $BOOTSTRAP_CFG"
 [ -f "$OPS_BRAIN_INV" ] || runbook_fail "missing inventory: $OPS_BRAIN_INV"
 [ -f "$LABRC" ] || runbook_fail "missing lab config: $LABRC"
-
-# shellcheck source=/dev/null
-source "$LABRC"
+runbook_source_labrc "$REPO_ROOT"
 
 FLUX_GITHUB_BRANCH="${FLUX_GITHUB_BRANCH:-$(runbook_yaml_get "$BOOTSTRAP_CFG" github_branch)}"
 FLUX_GITHUB_PATH="${FLUX_GITHUB_PATH:-$(runbook_yaml_get "$BOOTSTRAP_CFG" github_path)}"
@@ -29,7 +27,7 @@ GITHUB_TOKEN_ITEM="${GITHUB_TOKEN_ITEM:-$(runbook_yaml_get "$BOOTSTRAP_CFG" gith
 GITHUB_TOKEN_FIELD="${GITHUB_TOKEN_FIELD:-$(runbook_yaml_get "$BOOTSTRAP_CFG" github_token_field)}"
 
 if [ -z "${GITHUB_TOKEN_OP_REF:-}" ] && [ -n "${OP_VAULT_ID:-}" ] && [ -n "${GITHUB_TOKEN_ITEM:-}" ] && [ -n "${GITHUB_TOKEN_FIELD:-}" ]; then
-  GITHUB_TOKEN_OP_REF="op://${OP_VAULT_ID}/${GITHUB_TOKEN_ITEM}/${GITHUB_TOKEN_FIELD}"
+  GITHUB_TOKEN_OP_REF="$(runbook_build_op_ref "${OP_VAULT_ID}" "${GITHUB_TOKEN_ITEM}" "${GITHUB_TOKEN_FIELD}")"
 fi
 
 if [ -z "${FLUX_GITHUB_OWNER:-}" ] || [ -z "${FLUX_GITHUB_REPO:-}" ]; then
@@ -50,8 +48,7 @@ fi
 
 if [ -z "${GITHUB_TOKEN:-}" ]; then
   if [ -n "${GITHUB_TOKEN_OP_REF:-}" ]; then
-    runbook_require_cmd op
-    GITHUB_TOKEN="$(op read "$GITHUB_TOKEN_OP_REF")"
+    GITHUB_TOKEN="$(runbook_resolve_secret_from_op "${GITHUB_TOKEN:-}" "${GITHUB_TOKEN_OP_REF}")"
   else
     runbook_fail "Set GITHUB_TOKEN or GITHUB_TOKEN_OP_REF before running Flux bootstrap."
   fi

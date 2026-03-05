@@ -7,7 +7,7 @@ source "$SCRIPT_DIR/../../lib/runbook.sh"
 
 runbook_require_no_args "$@"
 runbook_require_host_terminal
-runbook_require_op_user_session
+runbook_require_op_access
 
 echo "[INFO] Running host-ops pipeline"
 for step in \

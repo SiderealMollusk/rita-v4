@@ -1,0 +1,74 @@
+---
+- name: Bootstrap Nextcloud core VM baseline
+  hosts: nextcloud_vms
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Install baseline packages
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - ufw
+          - fail2ban
+        state: present
+
+    - name: Read UFW status
+      ansible.builtin.command: ufw status verbose
+      register: ufw_status
+      changed_when: false
+
+    - name: Derive current UFW default policies
+      ansible.builtin.set_fact:
+        ufw_incoming_is_deny: "{{ 'Default: deny (incoming)' in ufw_status.stdout }}"
+        ufw_outgoing_is_allow: "{{ '(outgoing)' in ufw_status.stdout and 'allow (outgoing)' in ufw_status.stdout }}"
+
+    - name: Ensure UFW default deny incoming
+      ansible.builtin.command: ufw default deny incoming
+      when: not ufw_incoming_is_deny
+
+    - name: Ensure UFW default allow outgoing
+      ansible.builtin.command: ufw default allow outgoing
+      when: not ufw_outgoing_is_allow
+
+    - name: Allow SSH via UFW
+      ansible.builtin.command: ufw allow OpenSSH
+      changed_when: "'Skipping adding existing rule' not in ufw_allow_ssh.stdout"
+      register: ufw_allow_ssh
+
+    - name: Allow HTTP via UFW
+      ansible.builtin.command: ufw allow 80/tcp
+      when: nextcloud_ufw_allow_http | bool
+      changed_when: "'Skipping adding existing rule' not in ufw_allow_http.stdout"
+      register: ufw_allow_http
+
+    - name: Allow HTTPS via UFW
+      ansible.builtin.command: ufw allow 443/tcp
+      when: nextcloud_ufw_allow_https | bool
+      changed_when: "'Skipping adding existing rule' not in ufw_allow_https.stdout"
+      register: ufw_allow_https
+
+    - name: Enable UFW
+      ansible.builtin.command: ufw --force enable
+      changed_when: "'already enabled' not in ufw_enable.stdout"
+      register: ufw_enable
+
+    - name: Ensure fail2ban service enabled
+      ansible.builtin.service:
+        name: fail2ban
+        enabled: true
+        state: started
+
+    - name: Verify expected nextcloud hostname
+      ansible.builtin.assert:
+        that:
+          - nextcloud_expected_hostname is defined
+          - ansible_facts["hostname"] == nextcloud_expected_hostname
+        fail_msg: >-
+          Nextcloud hostname mismatch. Expected '{{ nextcloud_expected_hostname }}'
+          but found '{{ ansible_facts["hostname"] }}'. Rebuild or fix cloud-init before
+          continuing.
+

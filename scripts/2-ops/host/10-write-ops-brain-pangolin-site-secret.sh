@@ -83,7 +83,7 @@ if op item get "$ITEM_TITLE" --vault "$VAULT_ID" >/dev/null 2>&1; then
     "endpoint[text]=$PANGOLIN_ENDPOINT" \
     "name[text]=$SITE_NAME" \
     "${SITE_IDENTIFIER_FIELD}[text]=$SITE_IDENTIFIER_VALUE" \
-    "id[text]=$NEWT_ID_VALUE" \
+    "newt_id[text]=$NEWT_ID_VALUE" \
     "secret[concealed]=$NEWT_SECRET_VALUE" >/dev/null
 else
   echo "[INFO] Creating new 1Password item: $ITEM_TITLE"
@@ -91,7 +91,7 @@ else
     "endpoint[text]=$PANGOLIN_ENDPOINT" \
     "name[text]=$SITE_NAME" \
     "${SITE_IDENTIFIER_FIELD}[text]=$SITE_IDENTIFIER_VALUE" \
-    "id[text]=$NEWT_ID_VALUE" \
+    "newt_id[text]=$NEWT_ID_VALUE" \
     "secret[concealed]=$NEWT_SECRET_VALUE" >/dev/null
 fi
 

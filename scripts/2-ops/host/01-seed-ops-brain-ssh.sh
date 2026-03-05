@@ -8,7 +8,7 @@ source "$SCRIPT_DIR/../../lib/runbook.sh"
 
 runbook_require_no_args "$@"
 runbook_require_host_terminal
-runbook_require_op_user_session
+runbook_require_op_access
 
 SEED_SCRIPT="$REPO_ROOT/scripts/0-local-setup/01-lan/10-seed-ops-brain-ssh.sh"
 [ -x "$SEED_SCRIPT" ] || runbook_fail "missing executable script: $SEED_SCRIPT"
