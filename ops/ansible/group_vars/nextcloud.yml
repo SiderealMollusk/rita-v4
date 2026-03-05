@@ -70,6 +70,7 @@ nextcloud_opcache_max_accelerated_files: "10000"
 nextcloud_opcache_save_comments: "1"
 nextcloud_opcache_revalidate_freq: "60"
 nextcloud_hsts_max_age: "15552000"
+nextcloud_talk_signaling_upstream: "http://192.168.6.184:8080"
 
 # App policy:
 # - easy/core apps are always enforced

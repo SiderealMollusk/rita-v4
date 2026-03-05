@@ -90,6 +90,7 @@ server {
         types {
             text/css css;
             application/javascript js;
+            application/wasm wasm;
         }
         try_files $uri /index.php$request_uri;
         expires 6M;
@@ -104,6 +105,21 @@ server {
 
     location /remote {
         return 301 /remote.php$request_uri;
+    }
+
+    # Nextcloud Talk external signaling websocket endpoint.
+    # Keep this on the same public HTTPS origin so browser clients use secure WSS.
+    location ^~ /standalone-signaling/ {
+        proxy_pass {{ nextcloud_talk_signaling_upstream }}/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 3600;
+        proxy_send_timeout 3600;
+        proxy_buffering off;
     }
 
     location = /ocs-provider {

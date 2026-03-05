@@ -13,10 +13,16 @@ Current checkpoint (2026-03-05):
 - [0610-nextcloud-phase2-core-warning-remediation.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0610-nextcloud-phase2-core-warning-remediation.md)
 - [0620-nextcloud-admin-overview-post-remediation-snapshot.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0620-nextcloud-admin-overview-post-remediation-snapshot.md)
 - [0630-nextcloud-talk-hpb-runtime-wired-and-upgraded.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0630-nextcloud-talk-hpb-runtime-wired-and-upgraded.md)
+- [0640-nextcloud-talk-websocket-https-fix-and-log-cleanup.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0640-nextcloud-talk-websocket-https-fix-and-log-cleanup.md)
+- [0650-nextcloud-talk-reapply-and-baseline-verify-success.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0650-nextcloud-talk-reapply-and-baseline-verify-success.md)
 
 Supersedes:
 1. [0630-nextcloud-admin-warning-remediation-tracker.md](/Users/virgil/Dev/rita-v4/docs/plans/0630-nextcloud-admin-warning-remediation-tracker.md)
 2. [0640-nextcloud-official-upgrade-and-talk-reliability-plan.md](/Users/virgil/Dev/rita-v4/docs/plans/0640-nextcloud-official-upgrade-and-talk-reliability-plan.md)
+
+Related debt tracking:
+1. [0660-nextcloud-talk-secret-management-tech-debt.md](/Users/virgil/Dev/rita-v4/docs/plans/0660-nextcloud-talk-secret-management-tech-debt.md)
+2. [0670-nextcloud-talk-operationalization-tech-debt.md](/Users/virgil/Dev/rita-v4/docs/plans/0670-nextcloud-talk-operationalization-tech-debt.md)
 
 ## Goal
 
@@ -121,14 +127,14 @@ Use statuses:
 | Mimetype migrations | done | P2 | 2/4 | `occ maintenance:repair --include-expensive` success |
 | PHP memory limit >= 512M | done | P2 | 2 | `php -i | grep memory_limit` |
 | Maintenance window start | done | P2 | 2 | `occ config:system:get maintenance_window_start` |
-| High-performance backend (Talk) | in_progress | P2 | 3 | Talk admin reports HPB configured |
+| High-performance backend (Talk) | in_progress | P2 | 3 | Talk admin warning cleared and browser call controls enabled |
 | STUN/TURN configured | in_progress | P2 | 3 | `occ talk:stun:list`, `occ talk:turn:list` non-empty |
 | `notify_push` installed/configured | done | P2 | 3 | app present + push validation |
 | Ringing persistence repro test | todo | P1 | 3 | no persistent ringing after call answer |
 | AppAPI default deploy daemon | todo | P2 | 5 | AppAPI settings show default daemon |
 | 2FA provider available | todo | P2 | 5 | admin security page shows provider |
 | PHP `getenv("PATH")` warning | blocked | P1 | 2/5 | FPM env strategy decided and validated |
-| Collectives SQLite warning | todo | P3 | 5 | `php -m | grep -i sqlite` + warning clear |
+| Collectives SQLite warning | done | P3 | 5 | `php -m | grep -i sqlite` includes `pdo_sqlite` |
 | Font `.otf` self-check warning | todo | P3 | 5 | warning clear after DNS/self-connect + MIME check |
 | Default phone region | done | P3 | 2 | `occ config:system:get default_phone_region` |
 | Email config/test | todo | P2 | 5 | Nextcloud test email succeeds |

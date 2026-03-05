@@ -8,9 +8,9 @@
   },
   "talk": {
     "signaling": {
-      "server": "ws://192.168.6.184:8080",
+      "server": "https://cloud.virgil.info/standalone-signaling",
       "secret_op_ref": "op://5vr4hef2746tpplvjx424xafvu/nextcloud-talk-runtime/password",
-      "verify_tls": false
+      "verify_tls": true
     },
     "stun_servers": [
       "stun.nextcloud.com:443"
