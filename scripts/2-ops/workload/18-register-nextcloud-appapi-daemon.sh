@@ -11,7 +11,7 @@ runbook_source_labrc "${REPO_ROOT}"
 
 INSTANCES_FILE="${REPO_ROOT}/ops/nextcloud/instances.yaml"
 OCC_PATH="${NEXTCLOUD_OCC_PATH:-/var/www/nextcloud/occ}"
-APPAPI_MODE="${APPAPI_MODE:-docker-local}"
+APPAPI_MODE="${APPAPI_MODE:-harp}"
 
 APPAPI_DAEMON_NAME="${APPAPI_DAEMON_NAME:-}"
 APPAPI_DAEMON_DISPLAY_NAME="${APPAPI_DAEMON_DISPLAY_NAME:-}"
@@ -20,6 +20,11 @@ APPAPI_DAEMON_PROTOCOL="${APPAPI_DAEMON_PROTOCOL:-}"
 APPAPI_DAEMON_HOST="${APPAPI_DAEMON_HOST:-}"
 APPAPI_DAEMON_NET="${APPAPI_DAEMON_NET:-}"
 APPAPI_COMPUTE_DEVICE="${APPAPI_COMPUTE_DEVICE:-}"
+APPAPI_HARP_FRP_ADDRESS="${APPAPI_HARP_FRP_ADDRESS:-}"
+APPAPI_HARP_SHARED_KEY="${APPAPI_HARP_SHARED_KEY:-}"
+APPAPI_HARP_SHARED_KEY_OP_REF="${APPAPI_HARP_SHARED_KEY_OP_REF:-}"
+APPAPI_HARP_DOCKER_SOCKET_PORT="${APPAPI_HARP_DOCKER_SOCKET_PORT:-24000}"
+APPAPI_HARP_EXAPP_DIRECT="${APPAPI_HARP_EXAPP_DIRECT:-0}"
 APPAPI_SET_DEFAULT="${APPAPI_SET_DEFAULT:-1}"
 APPAPI_REPLACE_EXISTING="${APPAPI_REPLACE_EXISTING:-0}"
 APPAPI_PREPARE_DOCKER_LOCAL="${APPAPI_PREPARE_DOCKER_LOCAL:-0}"
@@ -39,7 +44,7 @@ Usage:
   18-register-nextcloud-appapi-daemon.sh [options]
 
 Options:
-  --mode <mode>                daemon mode: docker-local|manual-install (default: docker-local)
+  --mode <mode>                daemon mode: harp|docker-local|manual-install (default: harp)
   --inventory <path>            Inventory path (default: from official instance)
   --host-alias <alias>          Host alias (default: from official instance)
   --occ-path <path>             occ path (default: /var/www/nextcloud/occ)
@@ -52,6 +57,11 @@ Options:
   --nextcloud-url <url>         Nextcloud URL (default: official instance domain)
   --net <name>                  Optional docker net
   --compute-device <device>     Optional compute device (cpu|cuda|rocm)
+  --harp-frp-address <host:port>  HaRP FRP address (required in harp mode)
+  --harp-shared-key <value>       HaRP shared key value
+  --harp-shared-key-op-ref <ref>  HaRP shared key OP ref (used if key value omitted)
+  --harp-docker-socket-port <n>   HaRP docker socket FRP remote port (default: 24000)
+  --harp-exapp-direct             Enable advanced HaRP exapp direct mode
   --set-default                 Set as default daemon (default behavior)
   --no-set-default              Do not set as default
   --replace-existing            Replace daemon if it already exists
@@ -77,6 +87,11 @@ while [ "$#" -gt 0 ]; do
     --nextcloud-url) APPAPI_NEXTCLOUD_URL="${2:-}"; shift 2 ;;
     --net) APPAPI_DAEMON_NET="${2:-}"; shift 2 ;;
     --compute-device) APPAPI_COMPUTE_DEVICE="${2:-}"; shift 2 ;;
+    --harp-frp-address) APPAPI_HARP_FRP_ADDRESS="${2:-}"; shift 2 ;;
+    --harp-shared-key) APPAPI_HARP_SHARED_KEY="${2:-}"; shift 2 ;;
+    --harp-shared-key-op-ref) APPAPI_HARP_SHARED_KEY_OP_REF="${2:-}"; shift 2 ;;
+    --harp-docker-socket-port) APPAPI_HARP_DOCKER_SOCKET_PORT="${2:-}"; shift 2 ;;
+    --harp-exapp-direct) APPAPI_HARP_EXAPP_DIRECT="1"; shift ;;
     --set-default) APPAPI_SET_DEFAULT="1"; shift ;;
     --no-set-default) APPAPI_SET_DEFAULT="0"; shift ;;
     --replace-existing) APPAPI_REPLACE_EXISTING="1"; shift ;;
@@ -87,6 +102,14 @@ while [ "$#" -gt 0 ]; do
 done
 
 case "${APPAPI_MODE}" in
+  harp)
+    [ -n "${APPAPI_DAEMON_NAME}" ] || APPAPI_DAEMON_NAME="harp_local_vm"
+    [ -n "${APPAPI_DAEMON_DISPLAY_NAME}" ] || APPAPI_DAEMON_DISPLAY_NAME="HaRP Local VM"
+    [ -n "${APPAPI_DAEMON_ACCEPTS_DEPLOY_ID}" ] || APPAPI_DAEMON_ACCEPTS_DEPLOY_ID="docker-install"
+    [ -n "${APPAPI_DAEMON_PROTOCOL}" ] || APPAPI_DAEMON_PROTOCOL="http"
+    [ -n "${APPAPI_DAEMON_HOST}" ] || APPAPI_DAEMON_HOST="127.0.0.1:8780"
+    [ -n "${APPAPI_HARP_FRP_ADDRESS}" ] || APPAPI_HARP_FRP_ADDRESS="127.0.0.1:8782"
+    ;;
   docker-local)
     [ -n "${APPAPI_DAEMON_NAME}" ] || APPAPI_DAEMON_NAME="docker_local_vm"
     [ -n "${APPAPI_DAEMON_DISPLAY_NAME}" ] || APPAPI_DAEMON_DISPLAY_NAME="Docker Local VM"
@@ -102,7 +125,7 @@ case "${APPAPI_MODE}" in
     [ -n "${APPAPI_DAEMON_HOST}" ] || APPAPI_DAEMON_HOST="null"
     ;;
   *)
-    runbook_fail "Unsupported --mode '${APPAPI_MODE}'. Use docker-local or manual-install."
+    runbook_fail "Unsupported --mode '${APPAPI_MODE}'. Use harp, docker-local, or manual-install."
     ;;
 esac
 
@@ -135,6 +158,13 @@ IFS=$'\t' read -r OFFICIAL_MODE OFFICIAL_INV_REL OFFICIAL_HOST_ALIAS OFFICIAL_DO
 [ -n "${APPAPI_NEXTCLOUD_URL}" ] || runbook_fail "nextcloud url resolved empty"
 
 runbook_require_cmd ansible
+if [ "${APPAPI_MODE}" = "harp" ] && [ -z "${APPAPI_HARP_SHARED_KEY}" ] && [ -n "${APPAPI_HARP_SHARED_KEY_OP_REF}" ]; then
+  APPAPI_HARP_SHARED_KEY="$(runbook_resolve_secret_from_op "" "${APPAPI_HARP_SHARED_KEY_OP_REF}")"
+fi
+
+if [ "${APPAPI_MODE}" = "harp" ] && [ -z "${APPAPI_HARP_SHARED_KEY}" ]; then
+  runbook_fail "harp mode requires --harp-shared-key or --harp-shared-key-op-ref"
+fi
 
 if [ "${NEXTCLOUD_SNAPSHOT_MODE}" = "critical" ]; then
   echo "[INFO] Creating pre-change Nextcloud VM pair snapshot"
@@ -206,6 +236,18 @@ fi
 
 if [ -n "${APPAPI_COMPUTE_DEVICE}" ]; then
   register_cmd="${register_cmd} --compute_device='${APPAPI_COMPUTE_DEVICE}'"
+fi
+
+if [ "${APPAPI_MODE}" = "harp" ]; then
+  register_cmd="${register_cmd} --harp"
+  register_cmd="${register_cmd} --harp_frp_address='${APPAPI_HARP_FRP_ADDRESS}'"
+  register_cmd="${register_cmd} --harp_shared_key='${APPAPI_HARP_SHARED_KEY}'"
+  if [ -n "${APPAPI_HARP_DOCKER_SOCKET_PORT}" ]; then
+    register_cmd="${register_cmd} --harp_docker_socket_port='${APPAPI_HARP_DOCKER_SOCKET_PORT}'"
+  fi
+  if [ "${APPAPI_HARP_EXAPP_DIRECT}" = "1" ]; then
+    register_cmd="${register_cmd} --harp_exapp_direct"
+  fi
 fi
 
 if [ "${APPAPI_SET_DEFAULT}" = "1" ]; then

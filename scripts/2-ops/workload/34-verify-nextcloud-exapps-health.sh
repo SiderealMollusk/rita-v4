@@ -11,7 +11,7 @@ runbook_require_host_terminal
 REPO_ROOT="$(runbook_detect_repo_root)"
 INSTANCES_FILE="$REPO_ROOT/ops/nextcloud/instances.yaml"
 
-APPAPI_EXPECTED_DAEMON="${APPAPI_EXPECTED_DAEMON:-docker_local_vm}"
+APPAPI_EXPECTED_DAEMON="${APPAPI_EXPECTED_DAEMON:-harp_local_vm}"
 APPAPI_EXPECTED_NC_URL="${APPAPI_EXPECTED_NC_URL:-}"
 EXAPP_APP_ID="${EXAPP_APP_ID:-flow}"
 EXAPP_LOG_TAIL_LINES="${EXAPP_LOG_TAIL_LINES:-4000}"
@@ -81,36 +81,40 @@ if [ "$EXAPP_REQUIRE_APP_ENABLED" = "1" ]; then
   echo "$APP_LIST" | grep -Eq "^${EXAPP_APP_ID} .*\[enabled\]" || runbook_fail "ExApp not enabled: ${EXAPP_APP_ID}"
 fi
 
-NC_LOG_TAIL="$(ansible -i "$INVENTORY_PATH" "$HOST_ALIAS" -b -m shell -a "set -eu; [ -f '$EXAPP_NC_LOG_PATH' ] && tail -n $EXAPP_LOG_TAIL_LINES '$EXAPP_NC_LOG_PATH' || true")"
-if printf '%s\n' "$NC_LOG_TAIL" | grep -Eq "Invalid signature for[[:space:]]+ExApp: ${EXAPP_APP_ID}|ExApp ${EXAPP_APP_ID} request to[[:space:]]+NC validation failed"; then
-  echo "[INFO] Matching recent AppAPI errors:"
-  printf '%s\n' "$NC_LOG_TAIL" | grep -E "Invalid signature for[[:space:]]+ExApp: ${EXAPP_APP_ID}|ExApp ${EXAPP_APP_ID} request to[[:space:]]+NC validation failed" | tail -n 10
-  runbook_fail "recent AppAPI signature/validation regression detected."
-fi
-
-ACCESS_TAIL="$(ansible -i "$INVENTORY_PATH" "$HOST_ALIAS" -b -m shell -a "set -eu; [ -f '$EXAPP_NGINX_ACCESS_LOG' ] && tail -n $EXAPP_ACCESS_TAIL_LINES '$EXAPP_NGINX_ACCESS_LOG' || true")"
-FLOW_STATE_LINES="$(printf '%s\n' "$ACCESS_TAIL" | grep "ExApp/${EXAPP_APP_ID}" | grep '/ocs/v1.php/apps/app_api/ex-app/state' || true)"
-
-if [ -n "$FLOW_STATE_LINES" ]; then
-  BAD_401="$(printf '%s\n' "$FLOW_STATE_LINES" | grep '" 401 ' || true)"
-  if [ -n "$BAD_401" ]; then
-    echo "[INFO] Recent unauthorized ExApp state calls:"
-    printf '%s\n' "$BAD_401" | tail -n 10
-    runbook_fail "detected 401 responses for ExApp state endpoint."
+if [ "$EXAPP_REQUIRE_APP_ENABLED" = "1" ]; then
+  NC_LOG_TAIL="$(ansible -i "$INVENTORY_PATH" "$HOST_ALIAS" -b -m shell -a "set -eu; [ -f '$EXAPP_NC_LOG_PATH' ] && tail -n $EXAPP_LOG_TAIL_LINES '$EXAPP_NC_LOG_PATH' || true")"
+  if printf '%s\n' "$NC_LOG_TAIL" | grep -Eq "Invalid signature for[[:space:]]+ExApp: ${EXAPP_APP_ID}|ExApp ${EXAPP_APP_ID} request to[[:space:]]+NC validation failed"; then
+    echo "[INFO] Matching recent AppAPI errors:"
+    printf '%s\n' "$NC_LOG_TAIL" | grep -E "Invalid signature for[[:space:]]+ExApp: ${EXAPP_APP_ID}|ExApp ${EXAPP_APP_ID} request to[[:space:]]+NC validation failed" | tail -n 10
+    runbook_fail "recent AppAPI signature/validation regression detected."
   fi
 
-  CALLER_IPS="$(printf '%s\n' "$FLOW_STATE_LINES" | awk '{print $1}' | grep -E '^([0-9]{1,3}\.){3}[0-9]{1,3}$|^::1$' | sort -u || true)"
-  while IFS= read -r ip; do
-    [ -n "$ip" ] || continue
-    case ",$ALLOWED_IPS," in
-      *",$ip,"*) ;;
-      *)
-        echo "[INFO] Recent ExApp state lines:"
-        printf '%s\n' "$FLOW_STATE_LINES" | tail -n 10
-        runbook_fail "unexpected ExApp caller IP detected: $ip"
-        ;;
-    esac
-  done <<<"$CALLER_IPS"
+  ACCESS_TAIL="$(ansible -i "$INVENTORY_PATH" "$HOST_ALIAS" -b -m shell -a "set -eu; [ -f '$EXAPP_NGINX_ACCESS_LOG' ] && tail -n $EXAPP_ACCESS_TAIL_LINES '$EXAPP_NGINX_ACCESS_LOG' || true")"
+  FLOW_STATE_LINES="$(printf '%s\n' "$ACCESS_TAIL" | grep "ExApp/${EXAPP_APP_ID}" | grep '/ocs/v1.php/apps/app_api/ex-app/state' || true)"
+
+  if [ -n "$FLOW_STATE_LINES" ]; then
+    BAD_401="$(printf '%s\n' "$FLOW_STATE_LINES" | grep '" 401 ' || true)"
+    if [ -n "$BAD_401" ]; then
+      echo "[INFO] Recent unauthorized ExApp state calls:"
+      printf '%s\n' "$BAD_401" | tail -n 10
+      runbook_fail "detected 401 responses for ExApp state endpoint."
+    fi
+
+    CALLER_IPS="$(printf '%s\n' "$FLOW_STATE_LINES" | awk '{print $1}' | grep -E '^([0-9]{1,3}\.){3}[0-9]{1,3}$|^::1$' | sort -u || true)"
+    while IFS= read -r ip; do
+      [ -n "$ip" ] || continue
+      case ",$ALLOWED_IPS," in
+        *",$ip,"*) ;;
+        *)
+          echo "[INFO] Recent ExApp state lines:"
+          printf '%s\n' "$FLOW_STATE_LINES" | tail -n 10
+          runbook_fail "unexpected ExApp caller IP detected: $ip"
+          ;;
+      esac
+    done <<<"$CALLER_IPS"
+  fi
+else
+  echo "[INFO] Skipping app-specific log regression checks (daemon-only mode)."
 fi
 
 echo "[OK] Nextcloud ExApps health verification passed."

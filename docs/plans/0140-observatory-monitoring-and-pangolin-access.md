@@ -1,4 +1,4 @@
-# 0140 - Ops-Brain Monitoring and Pangolin Access
+# 0140 - Observatory Monitoring and Pangolin Access
 Status: ACTIVE
 Date: 2026-02-28
 
@@ -76,7 +76,7 @@ Constraint:
 6. GPU workload restoration.
 
 ## Execution Sequence
-### Phase 1 - Verify and Connect Ops-Brain
+### Phase 1 - Verify and Connect Observatory
 1. Add `07-verify-cluster.sh`.
 2. Verify:
 - `kubectl get nodes`

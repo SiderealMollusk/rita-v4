@@ -16,7 +16,7 @@ GROUP_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
 runbook_require_cmd ansible
 runbook_refresh_known_hosts_from_inventory "$INV"
 
-OPS_BRAIN_ANSIBLE_USER="$(awk '
+OBSERVATORY_ANSIBLE_USER="$(awk '
   /^\[/ { next }
   $0 !~ /^[[:space:]]*#/ && NF > 0 {
     for (i=1; i<=NF; i++) {
@@ -28,9 +28,9 @@ OPS_BRAIN_ANSIBLE_USER="$(awk '
     }
   }
 ' "$INV")"
-[ -n "$OPS_BRAIN_ANSIBLE_USER" ] || runbook_fail "ansible_user missing in $INV"
-OPS_BRAIN_KUBECONFIG="/home/${OPS_BRAIN_ANSIBLE_USER}/.kube/config"
-KUBE_ENV="export KUBECONFIG=${OPS_BRAIN_KUBECONFIG}"
+[ -n "$OBSERVATORY_ANSIBLE_USER" ] || runbook_fail "ansible_user missing in $INV"
+OBSERVATORY_KUBECONFIG="/home/${OBSERVATORY_ANSIBLE_USER}/.kube/config"
+KUBE_ENV="export KUBECONFIG=${OBSERVATORY_KUBECONFIG}"
 
 MON_NS="$(runbook_yaml_get "$GROUP_VARS" "monitoring_namespace" || true)"
 MON_TIMEOUT="$(runbook_yaml_get "$GROUP_VARS" "monitoring_helm_timeout" || true)"

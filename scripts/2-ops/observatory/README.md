@@ -1,4 +1,4 @@
-# Ops-Brain Runbooks
+# Observatory Runbooks
 
 These scripts manage the laptop that acts as the `observatory`.
 

@@ -79,6 +79,9 @@ Direct-entry scripts:
 40. `41-install-nextcloud-talk-hpb-runtime.sh`
 41. `42-verify-nextcloud-talk-hpb-runtime.sh`
 42. `43-bring-up-nextcloud-talk-hpb.sh`
+43. `44-clear-nextcloud-throttle-and-show-source.sh`
+44. `45-flush-nextcloud-logs.sh`
+45. `46-configure-nextcloud-appapi-harp-runtime.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -93,7 +96,7 @@ Notes:
 10. `09-rebuild-nextcloud-vm.sh` and `10-rebuild-talk-hpb-vm.sh` create the dedicated VMs directly from the same Proxmox template lane as the worker.
 11. `11-bootstrap-nextcloud-host.sh`, `12-install-nextcloud-core.sh`, and `13-verify-nextcloud-core.sh` are the VM-first operator path for bringing up a boring, tuned Nextcloud core before any Flow/AppAPI experimentation.
 12. `17-enable-nextcloud-flow.sh` is VM-native and enables Flow prerequisites (`app_api`, `webhook_listeners`) on the official Nextcloud VM before ExApp deployment.
-13. `18-register-nextcloud-appapi-daemon.sh` is VM-native and registers the AppAPI daemon directly through `occ` on the official Nextcloud VM (no kubectl/k8s dependency); default mode is `docker-local` and supports `--prepare-docker-local` for first-time host bootstrap.
+13. `18-register-nextcloud-appapi-daemon.sh` is VM-native and registers the AppAPI daemon directly through `occ` on the official Nextcloud VM (no kubectl/k8s dependency); default mode is `harp` and supports `docker-local`/`manual-install` as explicit fallbacks.
 14. `19-deploy-nextcloud-flow-exapp.sh` is VM-native and registers Flow ExApp against the configured AppAPI daemon.
 15. `20-patch-nextcloud-flow-oss.sh` reapplies the current Flow `1.3.1` Windmill OSS workaround after an ExApp redeploy until upstream `nextcloud/flow` fixes the initialization bug.
 16. `21-wire-vm-newt-connectors.sh` wires Pangolin Newt connector services on VM records from `ops/pangolin/sites/required-sites.yaml`.
@@ -136,3 +139,6 @@ Notes:
 38. Optional cross-lane validation from `43`:
 - set `HPB_VERIFY_SITES=1` to append Pangolin/Newt global site verification.
 - default keeps HPB success scoped to HPB/Talk criteria so unrelated missing sites do not block the run.
+39. `44-clear-nextcloud-throttle-and-show-source.sh` resets Nextcloud brute-force counters for a target IP and prints recent likely source lines (failed auth + AppAPI polling) so operators can separate stale client credentials from proxy/header issues quickly.
+40. `45-flush-nextcloud-logs.sh` truncates Nextcloud and Nginx logs on the official Nextcloud VM (`nextcloud.log`, `access.log`, `error.log`) behind an explicit confirm token (`NEXTCLOUD_LOG_FLUSH_CONFIRM=flush-nextcloud-logs`).
+41. AppAPI daemon/HaRP SoT now lives in `ops/nextcloud/appapi-runtime.yaml`; use `46-configure-nextcloud-appapi-harp-runtime.sh` to apply VM-local HaRP runtime + default daemon registration deterministically.

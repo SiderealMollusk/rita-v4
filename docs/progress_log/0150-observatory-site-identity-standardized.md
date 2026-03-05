@@ -1,4 +1,4 @@
-# 0150 Ops-Brain Site Identity Standardized
+# 0150 Observatory Site Identity Standardized
 
 As of this update, the Pangolin site identity for the laptop path was standardized away from `monitoring` and onto `observatory`.
 

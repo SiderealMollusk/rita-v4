@@ -8,7 +8,7 @@ public-resources:
     protocol: http
     full-domain: grafana.virgil.info
     auth:
-      sso-enabled: true
+      sso-enabled: false
     targets:
       - site: __SITE_IDENTIFIER__
         hostname: observatory-kube-prometheus-grafana.monitoring.svc.cluster.local
@@ -20,10 +20,10 @@ public-resources:
     protocol: http
     full-domain: prometheus.virgil.info
     auth:
-      sso-enabled: true
+      sso-enabled: false
     targets:
       - site: __SITE_IDENTIFIER__
-        hostname: observatory-kube-prometheus-prometheus.monitoring.svc.cluster.local
+        hostname: observatory-kube-prometheu-prometheus.monitoring.svc.cluster.local
         method: http
         port: 9090
 
@@ -32,10 +32,10 @@ public-resources:
     protocol: http
     full-domain: alertmanager.virgil.info
     auth:
-      sso-enabled: true
+      sso-enabled: false
     targets:
       - site: __SITE_IDENTIFIER__
-        hostname: observatory-kube-prometheus-alertmanager.monitoring.svc.cluster.local
+        hostname: observatory-kube-prometheu-alertmanager.monitoring.svc.cluster.local
         method: http
         port: 9093
 
@@ -44,7 +44,7 @@ public-resources:
     protocol: http
     full-domain: uptime.virgil.info
     auth:
-      sso-enabled: true
+      sso-enabled: false
     targets:
       - site: __SITE_IDENTIFIER__
         hostname: observatory-kuma-uptime-kuma.monitoring.svc.cluster.local

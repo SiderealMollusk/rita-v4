@@ -1,4 +1,4 @@
-# 0100 - Ops-Brain Bootstrap Complete
+# 0100 - Observatory Bootstrap Complete
 Status: DONE
 Date: 2026-02-28
 

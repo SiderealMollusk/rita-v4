@@ -6,6 +6,8 @@ public-resources:
     name: nextcloud core vm
     protocol: http
     full-domain: cloud.virgil.info
+    auth:
+      sso-enabled: false
     targets:
       - site: __SITE_IDENTIFIER__
         hostname: 127.0.0.1

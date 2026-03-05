@@ -13,17 +13,17 @@ runbook_require_host_terminal
 runbook_require_op_write_access
 runbook_source_labrc "$REPO_ROOT"
 
-OPS_BRAIN_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
+OBSERVATORY_VARS="$REPO_ROOT/ops/ansible/group_vars/observatory.yml"
 SITE_LIST_FILE="$REPO_ROOT/ops/pangolin/sites/observatory-site-slugs.txt"
 
-[ -f "$OPS_BRAIN_VARS" ] || runbook_fail "missing group vars file at $OPS_BRAIN_VARS"
+[ -f "$OBSERVATORY_VARS" ] || runbook_fail "missing group vars file at $OBSERVATORY_VARS"
 [ -f "$SITE_LIST_FILE" ] || runbook_fail "missing site list file at $SITE_LIST_FILE"
 
-VAULT_ID="$(runbook_yaml_get "$OPS_BRAIN_VARS" "pangolin_newt_credentials_vault_id" || true)"
-ITEM_PREFIX="$(runbook_yaml_get "$OPS_BRAIN_VARS" "pangolin_newt_credentials_item_prefix" || true)"
+VAULT_ID="$(runbook_yaml_get "$OBSERVATORY_VARS" "pangolin_newt_credentials_vault_id" || true)"
+ITEM_PREFIX="$(runbook_yaml_get "$OBSERVATORY_VARS" "pangolin_newt_credentials_item_prefix" || true)"
 
-[ -n "$VAULT_ID" ] || runbook_fail "pangolin_newt_credentials_vault_id missing in $OPS_BRAIN_VARS"
-[ -n "$ITEM_PREFIX" ] || runbook_fail "pangolin_newt_credentials_item_prefix missing in $OPS_BRAIN_VARS"
+[ -n "$VAULT_ID" ] || runbook_fail "pangolin_newt_credentials_vault_id missing in $OBSERVATORY_VARS"
+[ -n "$ITEM_PREFIX" ] || runbook_fail "pangolin_newt_credentials_item_prefix missing in $OBSERVATORY_VARS"
 
 slug_count=0
 while IFS= read -r site_slug; do

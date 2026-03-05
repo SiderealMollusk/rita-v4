@@ -1,0 +1,26 @@
+{
+  "inventory_file": "ops/ansible/inventory/nextcloud.ini",
+  "host_alias": "nextcloud-vm",
+  "occ_path": "/var/www/nextcloud/occ",
+  "nextcloud_url": "https://cloud.virgil.info",
+  "daemon": {
+    "mode": "harp",
+    "name": "harp_local_vm",
+    "display_name": "HaRP Local VM",
+    "accepts_deploy_id": "docker-install",
+    "protocol": "http",
+    "host": "127.0.0.1:8780",
+    "set_default": true,
+    "harp_frp_address": "127.0.0.1:8782",
+    "harp_docker_socket_port": "24000",
+    "harp_shared_key_op_ref": "op://5vr4hef2746tpplvjx424xafvu/nextcloud-main/nextcloud-appapi-harp"
+  },
+  "harp_runtime": {
+    "enabled": true,
+    "container_name": "appapi-harp",
+    "image": "ghcr.io/nextcloud/nextcloud-appapi-harp:release",
+    "listen_host": "127.0.0.1",
+    "exapps_port": 8780,
+    "frp_port": 8782
+  }
+}

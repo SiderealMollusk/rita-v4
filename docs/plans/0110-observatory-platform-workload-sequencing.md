@@ -1,4 +1,4 @@
-# 0110 - Ops-Brain / Platform / Workload Sequencing
+# 0110 - Observatory / Platform / Workload Sequencing
 Status: 🟡 ACTIVE
 Date: 2026-02-27
 
@@ -23,7 +23,7 @@ This plan assumes the currently validated placement model:
 - `workload-node` = 64 GB server
 - `public edge runtime` = VPS
 
-## Phase 1 - Rebuild Ops-Brain Laptop
+## Phase 1 - Rebuild Observatory Laptop
 ### Objective
 Reinstall Ubuntu on the laptop and make it the long-term home for monitoring and operator-facing control.
 

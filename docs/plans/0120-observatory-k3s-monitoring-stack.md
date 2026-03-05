@@ -1,4 +1,4 @@
-# 0120 - Ops-Brain K3s Monitoring Stack
+# 0120 - Observatory K3s Monitoring Stack
 Status: 🟡 ACTIVE
 Date: 2026-02-27
 

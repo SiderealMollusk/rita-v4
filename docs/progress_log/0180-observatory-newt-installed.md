@@ -1,4 +1,4 @@
-# 0180 Ops-Brain Newt Installed
+# 0180 Observatory Newt Installed
 
 As of this update, `observatory` successfully installed and deployed `newt` into the local k3s cluster.
 

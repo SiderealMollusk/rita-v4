@@ -15,9 +15,6 @@ Use these terms consistently in docs, scripts, plans, and automation.
 3. Do not invent a new term when an existing repo term already covers the concept.
 4. Historical docs may preserve older wording, but current navigation docs should use current canonical terms.
 
-#### Deprecated Name
-[Deprecated name: `ops-brain`. Use `observatory`.]
-
 ## Canonical Terms
 ### `observatory`
 Meaning:

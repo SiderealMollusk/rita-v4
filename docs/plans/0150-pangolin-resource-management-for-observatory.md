@@ -1,4 +1,4 @@
-# 0150 - Pangolin Resource Management For Ops-Brain
+# 0150 - Pangolin Resource Management For Observatory
 Status: ACTIVE
 Date: 2026-03-01
 

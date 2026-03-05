@@ -3,9 +3,6 @@
 This is the single navigation doc for operational truth.
 It intentionally links to source files instead of duplicating values.
 
-#### Deprecated Name
-[Deprecated name: `ops-brain`. Use `observatory`.]
-
 Use the latest relevant progress note in `docs/progress_log/` as the practical timestamp for how current the linked summaries are.
 
 Reading order for uncertain state:
@@ -110,7 +107,7 @@ Validated navigation model: 2026-02-28
   - `docs/progress_log/0510-product-requirements-refactored-into-numbered-docs.md`
 - Host/operator-boundary runbooks: `scripts/2-ops/host/`
 - VPS runbook scripts: `scripts/2-ops/vps/`
-- Ops-brain runbook scripts: `scripts/2-ops/observatory/`
+- Observatory runbook scripts: `scripts/2-ops/observatory/`
 - Platform worker runbook scripts: `scripts/2-ops/worker/`
 - Workload worker runbook scripts: `scripts/2-ops/workload/`
 - NUC/Proxmox runbook scripts: `scripts/2-ops/nuc/`
@@ -137,7 +134,7 @@ Validated navigation model: 2026-02-28
 2. Devcontainer lane:
 - validate repo-driven secrets/contracts
 - run reproducible automation
-3. Ops-brain lane:
+3. Observatory lane:
 - bootstrap Debian + k3s + Helm
 - install Newt
 - install monitoring

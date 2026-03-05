@@ -1,4 +1,4 @@
-# 0120 - Host Lane and Ops-Brain Orchestration
+# 0120 - Host Lane and Observatory Orchestration
 Status: DONE
 Date: 2026-02-28
 
@@ -34,7 +34,7 @@ Purpose:
 2. 1Password user-session workflows that should not run in service-account mode
 3. operator-boundary secret writing
 
-### Ops-brain orchestration layers
+### Observatory orchestration layers
 Added phase directories:
 1. `scripts/2-ops/observatory/01-bootstrap/`
 2. `scripts/2-ops/observatory/02-services/`

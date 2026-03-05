@@ -22,7 +22,7 @@ For the most recent validated state, use the latest relevant progress note in `d
 - `scripts/0-local-setup/03-vps/`
 - `docs/reset-vps.md`
 
-### Ops-Brain
+### Observatory
 1. SSH user: `virgil`
 2. `virgil` is expected to have sudo
 3. Inventory: `ops/ansible/inventory/observatory.ini`

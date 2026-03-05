@@ -1,8 +1,5 @@
 # Node: observatory
 
-#### Deprecated Name
-[Deprecated name: `ops-brain`. Use `observatory`.]
-
 ## Identity
 - Host alias: `observatory`
 - Role: internal k3s control plane and monitoring node

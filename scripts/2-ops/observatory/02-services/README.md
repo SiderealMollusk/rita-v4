@@ -1,4 +1,4 @@
-# Ops-Brain Services Phase
+# Observatory Services Phase
 
 This phase installs actual services after the base machine/cluster lane is complete.
 

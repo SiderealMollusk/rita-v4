@@ -13,11 +13,11 @@ runbook_require_cmd ansible-playbook
 REPO_ROOT="$(runbook_detect_repo_root)"
 cd "$REPO_ROOT"
 BOOTSTRAP_CFG="$REPO_ROOT/ops/gitops/flux-bootstrap.yml"
-OPS_BRAIN_INV="$REPO_ROOT/ops/ansible/inventory/observatory.ini"
+OBSERVATORY_INV="$REPO_ROOT/ops/ansible/inventory/observatory.ini"
 LABRC="$REPO_ROOT/.labrc"
 
 [ -f "$BOOTSTRAP_CFG" ] || runbook_fail "missing bootstrap config: $BOOTSTRAP_CFG"
-[ -f "$OPS_BRAIN_INV" ] || runbook_fail "missing inventory: $OPS_BRAIN_INV"
+[ -f "$OBSERVATORY_INV" ] || runbook_fail "missing inventory: $OBSERVATORY_INV"
 [ -f "$LABRC" ] || runbook_fail "missing lab config: $LABRC"
 runbook_source_labrc "$REPO_ROOT"
 
@@ -56,12 +56,12 @@ fi
 
 export GITHUB_TOKEN
 
-OPS_BRAIN_HOST="$(runbook_inventory_get_field "$OPS_BRAIN_INV" "observatory" "ansible_host")"
-OPS_BRAIN_USER="$(runbook_inventory_get_field "$OPS_BRAIN_INV" "observatory" "ansible_user")"
-[ -n "$OPS_BRAIN_HOST" ] || runbook_fail "Could not resolve observatory ansible_host from $OPS_BRAIN_INV"
-[ -n "$OPS_BRAIN_USER" ] || runbook_fail "Could not resolve observatory ansible_user from $OPS_BRAIN_INV"
+OBSERVATORY_HOST="$(runbook_inventory_get_field "$OBSERVATORY_INV" "observatory" "ansible_host")"
+OBSERVATORY_USER="$(runbook_inventory_get_field "$OBSERVATORY_INV" "observatory" "ansible_user")"
+[ -n "$OBSERVATORY_HOST" ] || runbook_fail "Could not resolve observatory ansible_host from $OBSERVATORY_INV"
+[ -n "$OBSERVATORY_USER" ] || runbook_fail "Could not resolve observatory ansible_user from $OBSERVATORY_INV"
 
-runbook_refresh_known_hosts_from_inventory "$OPS_BRAIN_INV"
+runbook_refresh_known_hosts_from_inventory "$OBSERVATORY_INV"
 
 LOCAL_INTERNAL_KUBECONFIG="${KUBECONFIG_INTERNAL:-${HOME}/.kube/config-rita-observatory}"
 if ! kubectl get nodes --request-timeout=10s >/dev/null 2>&1; then
@@ -70,7 +70,7 @@ if ! kubectl get nodes --request-timeout=10s >/dev/null 2>&1; then
   "$REPO_ROOT/scripts/2-ops/observatory/08-sync-kubeconfig.sh"
   echo "[INFO] Pulling kubeconfig from observatory to ${LOCAL_INTERNAL_KUBECONFIG}"
   mkdir -p "${HOME}/.kube"
-  scp "${OPS_BRAIN_USER}@${OPS_BRAIN_HOST}:/home/${OPS_BRAIN_USER}/.kube/config" "${LOCAL_INTERNAL_KUBECONFIG}"
+  scp "${OBSERVATORY_USER}@${OBSERVATORY_HOST}:/home/${OBSERVATORY_USER}/.kube/config" "${LOCAL_INTERNAL_KUBECONFIG}"
   chmod 600 "${LOCAL_INTERNAL_KUBECONFIG}"
   export KUBECONFIG="${LOCAL_INTERNAL_KUBECONFIG}"
 fi

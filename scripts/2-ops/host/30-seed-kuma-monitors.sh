@@ -40,7 +40,7 @@ MAX_RETRIES="$(runbook_yaml_get "$GROUP_VARS" "monitoring_kuma_seed_max_retries"
 [ -n "$INTERVAL" ] || runbook_fail "monitoring_kuma_seed_interval missing in $GROUP_VARS"
 [ -n "$MAX_RETRIES" ] || runbook_fail "monitoring_kuma_seed_max_retries missing in $GROUP_VARS"
 
-OPS_BRAIN_ANSIBLE_USER="$(awk '
+OBSERVATORY_ANSIBLE_USER="$(awk '
   /^\[/ { next }
   $0 !~ /^[[:space:]]*#/ && NF > 0 {
     host=""
@@ -52,7 +52,7 @@ OPS_BRAIN_ANSIBLE_USER="$(awk '
     if (user != "") { print user; exit }
   }
 ' "$INV")"
-OPS_BRAIN_HOST="$(awk '
+OBSERVATORY_HOST="$(awk '
   /^\[/ { next }
   $0 !~ /^[[:space:]]*#/ && NF > 0 {
     host=""
@@ -63,10 +63,10 @@ OPS_BRAIN_HOST="$(awk '
   }
 ' "$INV")"
 
-[ -n "$OPS_BRAIN_ANSIBLE_USER" ] || runbook_fail "ansible_user missing in $INV"
-[ -n "$OPS_BRAIN_HOST" ] || runbook_fail "ansible_host missing in $INV"
+[ -n "$OBSERVATORY_ANSIBLE_USER" ] || runbook_fail "ansible_user missing in $INV"
+[ -n "$OBSERVATORY_HOST" ] || runbook_fail "ansible_host missing in $INV"
 
-KUBECONFIG_REMOTE="/home/${OPS_BRAIN_ANSIBLE_USER}/.kube/config"
+KUBECONFIG_REMOTE="/home/${OBSERVATORY_ANSIBLE_USER}/.kube/config"
 KUMA_SERVICE="observatory-kuma-uptime-kuma"
 
 resolve_local_tunnel_port() {
@@ -133,7 +133,7 @@ if [ "$TUNNEL_PORT" != "$LOCAL_PORT" ]; then
 fi
 
 echo "[INFO] Opening temporary SSH-backed Kuma tunnel on 127.0.0.1:${TUNNEL_PORT}"
-ssh -o ExitOnForwardFailure=yes -L "${TUNNEL_PORT}:127.0.0.1:${TUNNEL_PORT}" "${OPS_BRAIN_ANSIBLE_USER}@${OPS_BRAIN_HOST}" \
+ssh -o ExitOnForwardFailure=yes -L "${TUNNEL_PORT}:127.0.0.1:${TUNNEL_PORT}" "${OBSERVATORY_ANSIBLE_USER}@${OBSERVATORY_HOST}" \
   "export KUBECONFIG=${KUBECONFIG_REMOTE} && kubectl port-forward -n ${MON_NS} svc/${KUMA_SERVICE} ${TUNNEL_PORT}:80" \
   >/tmp/rita-kuma-seed-tunnel.log 2>&1 &
 TUNNEL_PID=$!

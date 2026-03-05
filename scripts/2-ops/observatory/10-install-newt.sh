@@ -23,7 +23,7 @@ runbook_require_cmd ansible
 runbook_require_cmd op
 runbook_refresh_known_hosts_from_inventory "$INV"
 
-OPS_BRAIN_ANSIBLE_USER="$(awk '
+OBSERVATORY_ANSIBLE_USER="$(awk '
   /^\[/ { next }
   $0 !~ /^[[:space:]]*#/ && NF > 0 {
     for (i=1; i<=NF; i++) {
@@ -35,9 +35,9 @@ OPS_BRAIN_ANSIBLE_USER="$(awk '
     }
   }
 ' "$INV")"
-[ -n "$OPS_BRAIN_ANSIBLE_USER" ] || runbook_fail "ansible_user missing in $INV"
-OPS_BRAIN_KUBECONFIG="/home/${OPS_BRAIN_ANSIBLE_USER}/.kube/config"
-KUBE_ENV="export KUBECONFIG=${OPS_BRAIN_KUBECONFIG}"
+[ -n "$OBSERVATORY_ANSIBLE_USER" ] || runbook_fail "ansible_user missing in $INV"
+OBSERVATORY_KUBECONFIG="/home/${OBSERVATORY_ANSIBLE_USER}/.kube/config"
+KUBE_ENV="export KUBECONFIG=${OBSERVATORY_KUBECONFIG}"
 
 PANGOLIN_ENDPOINT="$(runbook_yaml_get "$ROUTES_FILE" "pangolin_endpoint" || true)"
 [ -n "$PANGOLIN_ENDPOINT" ] || runbook_fail "pangolin_endpoint missing in $ROUTES_FILE"

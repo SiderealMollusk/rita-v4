@@ -1,4 +1,4 @@
-# Ops-Brain Bootstrap Phase
+# Observatory Bootstrap Phase
 
 This phase prepares the laptop as an internal k3s control-plane node.
 
