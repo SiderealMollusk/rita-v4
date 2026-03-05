@@ -32,6 +32,8 @@ Direct-entry scripts:
 18. `19-deploy-nextcloud-flow-exapp.sh`
 19. `20-patch-nextcloud-flow-oss.sh`
 20. `21-wire-vm-newt-connectors.sh`
+21. `22-rotate-nextcloud-user-password.sh`
+22. `23-rotate-nextcloud-virgil-admin-password.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -50,3 +52,7 @@ Notes:
 14. `19-deploy-nextcloud-flow-exapp.sh` deploys the Flow ExApp through the registered daemon rather than only enabling the UI-side app package.
 15. `20-patch-nextcloud-flow-oss.sh` reapplies the current Flow `1.3.1` Windmill OSS workaround after an ExApp redeploy until upstream `nextcloud/flow` fixes the initialization bug.
 16. `21-wire-vm-newt-connectors.sh` wires Pangolin Newt connector services on VM records from `ops/pangolin/sites/required-sites.yaml`.
+17. `22-rotate-nextcloud-user-password.sh` is the argument-driven password rotation path that reads username/password from a 1Password item and applies it to a Nextcloud user with `occ user:resetpassword`.
+18. `23-rotate-nextcloud-virgil-admin-password.sh` is the no-arg wrapper for the canonical `nextcloud-main-users` vault item `virgil-admin`.
+19. Nextcloud official-instance defaults now come from `ops/nextcloud/instances.yaml` so operator flows can keep one technical pointer while still tracking legacy instances.
+20. Nextcloud app policy is split into `easy/core` and `experimental` tiers in `ops/ansible/group_vars/nextcloud.yml`; install playbook `33` enforces this desired app state.

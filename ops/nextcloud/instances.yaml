@@ -1,0 +1,23 @@
+{
+  "official_instance": "nextcloud_core_vm",
+  "instances": {
+    "nextcloud_core_vm": {
+      "display_name": "nextcloud-core-vm",
+      "connector_mode": "vm",
+      "inventory_file": "ops/ansible/inventory/nextcloud.ini",
+      "host_alias": "nextcloud-vm",
+      "domain": "cloud.virgil.info",
+      "backend_target": "192.168.6.183:80",
+      "status": "active"
+    },
+    "nextcloud_k3s_legacy": {
+      "display_name": "nextcloud-k3s-legacy",
+      "connector_mode": "k8s",
+      "inventory_file": "ops/ansible/inventory/workload.ini",
+      "host_alias": "workload-vm-worker",
+      "domain": "app.virgil.info",
+      "backend_target": "nextcloud-edge.workload.svc.cluster.local:8080",
+      "status": "legacy"
+    }
+  }
+}

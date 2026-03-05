@@ -61,3 +61,28 @@ nextcloud_opcache_interned_strings_buffer: "16"
 nextcloud_opcache_max_accelerated_files: "10000"
 nextcloud_opcache_save_comments: "1"
 nextcloud_opcache_revalidate_freq: "60"
+
+# App policy:
+# - easy/core apps are always enforced
+# - experimental apps are enabled only when explicitly toggled
+nextcloud_apps_easy:
+  - calendar
+  - contacts
+  - deck
+  - notes
+  - tasks
+  - spreed
+  - circles
+  - collectives
+
+nextcloud_apps_experimental:
+  - flow
+
+nextcloud_enable_experimental_apps: false
+nextcloud_required_apps: >-
+  {{
+    nextcloud_apps_easy
+    + (nextcloud_apps_experimental if nextcloud_enable_experimental_apps else [])
+  }}
+
+nextcloud_disabled_apps: []

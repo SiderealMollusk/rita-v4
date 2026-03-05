@@ -414,6 +414,43 @@
       args:
         chdir: "{{ nextcloud_web_root }}"
 
+    - name: Enable required Nextcloud apps
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - app:enable
+          - "{{ item }}"
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      loop: "{{ nextcloud_required_apps | default([]) }}"
+      register: nextcloud_enable_app_cmd
+      changed_when: >-
+        'already enabled' not in ((nextcloud_enable_app_cmd.stdout | default('')) | lower)
+
+    - name: Disable unwanted Nextcloud apps
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -u
+          - www-data
+          - php
+          - occ
+          - app:disable
+          - "{{ item }}"
+      args:
+        chdir: "{{ nextcloud_web_root }}"
+      loop: "{{ nextcloud_disabled_apps | default([]) }}"
+      register: nextcloud_disable_app_cmd
+      changed_when: >-
+        'already disabled' not in ((nextcloud_disable_app_cmd.stdout | default('')) | lower)
+      failed_when: >-
+        nextcloud_disable_app_cmd.rc != 0 and
+        ('not enabled' not in ((nextcloud_disable_app_cmd.stderr | default('')) | lower))
+
     - name: Install system cron entry for Nextcloud
       ansible.builtin.copy:
         dest: /etc/cron.d/nextcloud
