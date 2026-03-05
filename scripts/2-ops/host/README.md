@@ -120,6 +120,13 @@ Current scripts:
 - reads OP item/title from `ops/pangolin/sites/required-sites.yaml` slug `n8n_vm`
 - expects Pangolin CLI host session auth to already be active
 
+17. `32-run-main-vps-security-maintenance.sh`
+- runs the canonical VPS security maintenance playbook for `main-vps`
+- enforces/validates SSH hardening, UFW policy, fail2ban, unattended-upgrades, and baseline sysctl values
+- writes/updates remote maintenance artifacts:
+  - `/var/lib/rita/security-maintenance.status`
+  - `/var/log/security-maintenance.log`
+
 Notes:
 1. site creation/reconciliation is now handled by `27-reconcile-pangolin-sites.sh` from canonical required-site records.
 2. service-account mode is acceptable for read-only host tasks that only need to resolve secrets or identifiers; human-session mode is required for any 1Password write/update flow.

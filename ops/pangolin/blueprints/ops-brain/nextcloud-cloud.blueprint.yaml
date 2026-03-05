@@ -8,7 +8,6 @@ public-resources:
     full-domain: cloud.virgil.info
     targets:
       - site: __SITE_IDENTIFIER__
-        hostname: 192.168.6.183
+        hostname: 127.0.0.1
         method: http
         port: 80
-

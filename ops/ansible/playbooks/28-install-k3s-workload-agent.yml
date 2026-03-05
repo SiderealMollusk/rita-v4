@@ -47,6 +47,7 @@
     - name: Install k3s agent if missing
       ansible.builtin.shell: |
         curl -sfL https://get.k3s.io | \
+          INSTALL_K3S_SKIP_START=true \
           INSTALL_K3S_CHANNEL={{ k3s_channel }} \
           K3S_URL=https://{{ hostvars[groups[internal_cluster_control_plane_group][0]].ansible_host }}:{{ internal_cluster_server_port }} \
           K3S_TOKEN={{ internal_cluster_node_token | quote }} \
@@ -55,7 +56,7 @@
         creates: /etc/systemd/system/k3s-agent.service
 
     - name: Ensure k3s-agent service is enabled and running
-      ansible.builtin.service:
+      ansible.builtin.systemd:
         name: k3s-agent
         enabled: true
         state: started

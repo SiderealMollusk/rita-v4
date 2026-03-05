@@ -11,6 +11,7 @@ nextcloud_trusted_proxy: "{{ lookup('env', 'NEXTCLOUD_TRUSTED_PROXY') | default(
 nextcloud_trusted_proxies:
   - "127.0.0.1"
   - "::1"
+  - "192.168.6.16"
 nextcloud_forwarded_for_headers:
   - "HTTP_X_FORWARDED_FOR"
 nextcloud_overwrite_protocol: "{{ lookup('env', 'NEXTCLOUD_OVERWRITE_PROTOCOL') | default('https', true) }}"

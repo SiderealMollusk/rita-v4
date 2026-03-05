@@ -74,6 +74,7 @@ Direct-entry scripts:
 35. `36-rollback-nextcloud-pair.sh`
 36. `37-prune-nextcloud-snapshots.sh`
 37. `38-configure-nextcloud-main-users.sh`
+38. `40-floating-checkpoint.sh`
 38. `39-bring-up-n8n-vm-k8s-pangolin.sh`
 
 Notes:
@@ -123,4 +124,6 @@ Notes:
 - `36-rollback-nextcloud-pair.sh` rolls both VMs back to the same tag (`NEXTCLOUD_ROLLBACK_CONFIRM=rollback-nextcloud-pair` required).
 - `37-prune-nextcloud-snapshots.sh` applies retention pruning (`NEXTCLOUD_PRUNE_CONFIRM=prune-nextcloud-snapshots` required).
 31. Nextcloud main user SoT is now tracked in `ops/nextcloud/main-users.yaml` (vault ID, item mapping, and role intent), and applied via `38-configure-nextcloud-main-users.sh`.
+32. `40-floating-checkpoint.sh` is the intentional "save-point" helper: it takes a coordinated Nextcloud VM pair snapshot and auto-generates a new progress note baseline entry under `docs/progress_log/`.
+33. The floating checkpoint script is expected to be manually renumbered over time as validation confidence increases (for example `40-*` -> `50-*`), so the lane reflects the current baseline ritual.
 32. `39-bring-up-n8n-vm-k8s-pangolin.sh` is the canonical full chain for n8n: VM rebuild, k3s join/label/verify, ESO+n8n runtime reconcile, Pangolin site reconcile, VM Newt connector wiring, n8n resource apply, and end-state verification.

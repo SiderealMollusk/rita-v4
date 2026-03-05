@@ -40,6 +40,15 @@ run_step "scripts/2-ops/workload/33-verify-n8n-node.sh"
 run_step "scripts/2-ops/ops-brain/14-apply-secret-bridge.sh"
 kubectl apply -f "$REPO_ROOT/ops/gitops/platform/apps/platform-postgres/postgres-auth-externalsecret.yaml"
 kubectl apply -k "$REPO_ROOT/ops/gitops/platform/apps/n8n"
+kubectl wait externalsecret/platform-postgres-auth -n platform --for='jsonpath={.status.conditions[0].status}'=True --timeout=180s || true
+kubectl wait externalsecret/n8n-secrets -n platform --for='jsonpath={.status.conditions[0].status}'=True --timeout=180s || true
+for _ in $(seq 1 60); do
+  if kubectl get secret n8n-secrets -n platform >/dev/null 2>&1; then
+    break
+  fi
+  sleep 2
+done
+kubectl get secret n8n-secrets -n platform >/dev/null 2>&1 || runbook_fail "n8n-secrets did not materialize after ExternalSecret apply"
 run_step "scripts/2-ops/host/22-bootstrap-n8n-db.sh"
 kubectl rollout status deploy/n8n -n platform --timeout=180s
 

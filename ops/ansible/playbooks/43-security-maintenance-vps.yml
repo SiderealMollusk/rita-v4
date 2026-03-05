@@ -1,0 +1,290 @@
+---
+- name: Harden and verify VPS security maintenance baseline
+  hosts: vps
+  become: true
+  gather_facts: true
+
+  vars:
+    security_log_file: /var/log/security-maintenance.log
+    security_status_file: /var/lib/rita/security-maintenance.status
+
+  handlers:
+    - name: Reload ssh
+      ansible.builtin.service:
+        name: ssh
+        state: reloaded
+
+    - name: Restart fail2ban
+      ansible.builtin.service:
+        name: fail2ban
+        state: restarted
+
+  pre_tasks:
+    - name: Require security vars
+      ansible.builtin.assert:
+        that:
+          - vps_ssh_allowed_users is defined
+          - vps_ssh_allowed_users | length > 0
+          - vps_public_tcp_ports is defined
+          - vps_public_tcp_ports | length > 0
+          - vps_public_udp_ports is defined
+          - vps_public_udp_ports | length > 0
+        fail_msg: "Missing security vars in ops/ansible/group_vars/vps.yml"
+
+    - name: Ensure maintenance state directory exists
+      ansible.builtin.file:
+        path: /var/lib/rita
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Ensure security maintenance status file exists
+      ansible.builtin.copy:
+        dest: "{{ security_status_file }}"
+        owner: root
+        group: root
+        mode: '0644'
+        force: false
+        content: |
+          last_success_utc=never
+          last_success_epoch=0
+          last_run_result=never
+
+    - name: Ensure security maintenance log file exists
+      ansible.builtin.copy:
+        dest: "{{ security_log_file }}"
+        owner: root
+        group: adm
+        mode: '0640'
+        force: false
+        content: ""
+
+    - name: Log maintenance run start
+      ansible.builtin.lineinfile:
+        path: "{{ security_log_file }}"
+        line: "{{ ansible_date_time.iso8601 }} START security-maintenance host={{ inventory_hostname }}"
+        insertafter: EOF
+
+  tasks:
+    - name: Install security baseline packages
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - ca-certificates
+          - ufw
+          - fail2ban
+          - unattended-upgrades
+          - apt-listchanges
+          - auditd
+          - aide
+          - apparmor
+          - apparmor-utils
+        state: present
+
+    - name: Enable baseline security services
+      ansible.builtin.service:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+      loop:
+        - ufw
+        - fail2ban
+        - unattended-upgrades
+        - auditd
+
+    - name: Ensure unattended-upgrades periodic config
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Unattended-Upgrade "1";
+
+    - name: Set hardening sysctl values
+      ansible.builtin.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        sysctl_set: true
+        reload: true
+      loop:
+        - { name: net.ipv4.tcp_syncookies, value: '1' }
+        - { name: net.ipv4.icmp_echo_ignore_broadcasts, value: '1' }
+        - { name: net.ipv4.conf.all.rp_filter, value: '1' }
+        - { name: net.ipv4.conf.default.rp_filter, value: '1' }
+        - { name: net.ipv4.conf.all.accept_redirects, value: '0' }
+        - { name: net.ipv4.conf.default.accept_redirects, value: '0' }
+        - { name: net.ipv4.conf.all.send_redirects, value: '0' }
+        - { name: net.ipv4.conf.default.send_redirects, value: '0' }
+        - { name: net.ipv4.conf.all.accept_source_route, value: '0' }
+        - { name: net.ipv4.conf.default.accept_source_route, value: '0' }
+        - { name: net.ipv6.conf.all.accept_redirects, value: '0' }
+        - { name: net.ipv6.conf.default.accept_redirects, value: '0' }
+
+    - name: Install SSH hardening config
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/99-hardening.conf
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          PermitRootLogin no
+          PasswordAuthentication no
+          PubkeyAuthentication yes
+          KbdInteractiveAuthentication no
+          X11Forwarding no
+          MaxAuthTries 3
+          LoginGraceTime 30
+          ClientAliveInterval 300
+          ClientAliveCountMax 2
+          AllowUsers {{ vps_ssh_allowed_users | join(' ') }}
+      notify: Reload ssh
+
+    - name: Validate sshd config
+      ansible.builtin.command: sshd -t
+      changed_when: false
+
+    - name: Install fail2ban SSH jail override
+      ansible.builtin.copy:
+        dest: /etc/fail2ban/jail.d/sshd.local
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          [DEFAULT]
+          bantime = {{ vps_fail2ban_bantime }}
+          findtime = {{ vps_fail2ban_findtime }}
+          maxretry = {{ vps_fail2ban_maxretry }}
+          banaction = ufw
+
+          [sshd]
+          enabled = true
+          backend = systemd
+      notify: Restart fail2ban
+
+    - name: Read UFW status
+      ansible.builtin.command: ufw status verbose
+      register: ufw_status
+      changed_when: false
+
+    - name: Derive UFW default policies
+      ansible.builtin.set_fact:
+        ufw_incoming_is_deny: "{{ 'Default: deny (incoming)' in ufw_status.stdout }}"
+        ufw_outgoing_is_allow: "{{ '(outgoing)' in ufw_status.stdout and 'allow (outgoing)' in ufw_status.stdout }}"
+
+    - name: Ensure UFW default deny incoming
+      ansible.builtin.command: ufw default deny incoming
+      when: not ufw_incoming_is_deny
+
+    - name: Ensure UFW default allow outgoing
+      ansible.builtin.command: ufw default allow outgoing
+      when: not ufw_outgoing_is_allow
+
+    - name: Ensure UFW SSH limit rule
+      ansible.builtin.command: ufw limit OpenSSH
+      register: ufw_limit_ssh
+      changed_when: "'Skipping adding existing rule' not in ufw_limit_ssh.stdout"
+
+    - name: Ensure UFW public TCP rules
+      ansible.builtin.command: "ufw allow {{ item }}/tcp"
+      loop: "{{ vps_public_tcp_ports }}"
+      register: ufw_allow_tcp
+      changed_when: "'Skipping adding existing rule' not in ufw_allow_tcp.stdout"
+
+    - name: Ensure UFW public UDP rules
+      ansible.builtin.command: "ufw allow {{ item }}/udp"
+      loop: "{{ vps_public_udp_ports }}"
+      register: ufw_allow_udp
+      changed_when: "'Skipping adding existing rule' not in ufw_allow_udp.stdout"
+
+    - name: Enable UFW
+      ansible.builtin.command: ufw --force enable
+      register: ufw_enable
+      changed_when: "'already enabled' not in ufw_enable.stdout"
+
+    - name: Ensure Docker daemon baseline config if absent
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: '0644'
+        force: false
+        content: |
+          {
+            "log-driver": "json-file",
+            "log-opts": {
+              "max-size": "10m",
+              "max-file": "3"
+            },
+            "live-restore": true,
+            "userland-proxy": false,
+            "iptables": true
+          }
+
+    - name: Validate sshd effective settings
+      ansible.builtin.command: sshd -T
+      register: sshd_t
+      changed_when: false
+
+    - name: Capture fail2ban status
+      ansible.builtin.command: fail2ban-client status sshd
+      register: fail2ban_status
+      changed_when: false
+
+    - name: Capture UFW status numbered
+      ansible.builtin.command: ufw status numbered
+      register: ufw_status_numbered
+      changed_when: false
+
+    - name: Flush handlers before service verification checks
+      ansible.builtin.meta: flush_handlers
+
+    - name: Ensure fail2ban is running before status capture
+      ansible.builtin.service:
+        name: fail2ban
+        state: started
+        enabled: true
+
+    - name: Capture Docker socket TCP listeners
+      ansible.builtin.shell: |
+        set -e
+        ss -lntp | egrep ':(2375|2376)' || true
+      args:
+        executable: /bin/bash
+      register: docker_tcp_socket_check
+      changed_when: false
+
+    - name: Capture security maintenance summary
+      ansible.builtin.copy:
+        dest: /var/lib/rita/security-maintenance-last-check.txt
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          checked_at_utc={{ ansible_date_time.iso8601 }}
+          host={{ inventory_hostname }}
+          ssh_hardening_expected=true
+          fail2ban_active={{ 'Status for the jail: sshd' in fail2ban_status.stdout }}
+          ufw_active={{ 'Status: active' in ufw_status_numbered.stdout }}
+          docker_tcp_socket_exposed={{ docker_tcp_socket_check.stdout | length > 0 }}
+
+  post_tasks:
+    - name: Mark security maintenance success status
+      ansible.builtin.copy:
+        dest: "{{ security_status_file }}"
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          last_success_utc={{ ansible_date_time.iso8601 }}
+          last_success_epoch={{ ansible_date_time.epoch }}
+          last_run_result=success
+
+    - name: Log maintenance run success
+      ansible.builtin.lineinfile:
+        path: "{{ security_log_file }}"
+        line: "{{ ansible_date_time.iso8601 }} SUCCESS security-maintenance host={{ inventory_hostname }}"
+        insertafter: EOF

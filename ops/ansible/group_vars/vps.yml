@@ -14,3 +14,21 @@ pangolin_advertise_ip: "{{ public_ip }}"
 pangolin_install_dir: "/opt/pangolin"
 pangolin_installer_url: "https://static.pangolin.net/get-installer.sh"
 docker_compose_version: "v2.39.1"
+
+# VPS security maintenance baseline.
+vps_ssh_allowed_users:
+  - virgil
+
+# Public service exposure expected on main-vps.
+vps_public_tcp_ports:
+  - 80
+  - 443
+
+vps_public_udp_ports:
+  - 51820
+  - 21820
+
+# fail2ban policy for sshd jail.
+vps_fail2ban_bantime: "1h"
+vps_fail2ban_findtime: "10m"
+vps_fail2ban_maxretry: 5
