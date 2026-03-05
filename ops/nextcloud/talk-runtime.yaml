@@ -1,0 +1,21 @@
+{
+  "inventory_file": "ops/ansible/inventory/nextcloud.ini",
+  "host_alias": "nextcloud-vm",
+  "occ_path": "/var/www/nextcloud/occ",
+  "notify_push": {
+    "enabled": true,
+    "endpoint": "https://cloud.virgil.info/push"
+  },
+  "talk": {
+    "signaling": {
+      "server": "ws://192.168.6.184:8080",
+      "secret_op_ref": "",
+      "verify_tls": false,
+      "secret": "3f77177c057af64853dfa5422d824f50edc71ece39049727da6e14cc09236097"
+    },
+    "stun_servers": [
+      "stun.nextcloud.com:443"
+    ],
+    "turn_servers": []
+  }
+}

@@ -6,6 +6,14 @@ Date: 2026-03-05
 
 Canonical active plan for Nextcloud warning remediation, Talk reliability, and upgrade execution.
 
+Current checkpoint (2026-03-05):
+1. Phase 2 core platform correctness work is substantially complete (headers, proxy handling, OCS routing, MIME handling, DB maintenance, memory/window/phone-region defaults).
+2. Plan remains active; Talk reliability and hardening scope is still open.
+3. Latest evidence snapshots:
+- [0610-nextcloud-phase2-core-warning-remediation.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0610-nextcloud-phase2-core-warning-remediation.md)
+- [0620-nextcloud-admin-overview-post-remediation-snapshot.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0620-nextcloud-admin-overview-post-remediation-snapshot.md)
+- [0630-nextcloud-talk-hpb-runtime-wired-and-upgraded.md](/Users/virgil/Dev/rita-v4/docs/progress_log/0630-nextcloud-talk-hpb-runtime-wired-and-upgraded.md)
+
 Supersedes:
 1. [0630-nextcloud-admin-warning-remediation-tracker.md](/Users/virgil/Dev/rita-v4/docs/plans/0630-nextcloud-admin-warning-remediation-tracker.md)
 2. [0640-nextcloud-official-upgrade-and-talk-reliability-plan.md](/Users/virgil/Dev/rita-v4/docs/plans/0640-nextcloud-official-upgrade-and-talk-reliability-plan.md)
@@ -57,6 +65,9 @@ Then complete:
 2. maintenance window
 3. default phone region
 
+Phase status:
+1. in_progress (major items complete; residual warnings tracked in Phase 5/ops integrations)
+
 ### Phase 3 - Talk Reliability Baseline
 
 1. configure HPB
@@ -68,6 +79,9 @@ Current observed gap that motivates this phase:
 1. media can connect while ringing state persists
 2. `talk:signaling:list`, `talk:stun:list`, and `talk:turn:list` were empty
 3. `notify_push` not present
+
+Phase status:
+1. in_progress
 
 ### Phase 4 - Upgrade Execution
 
@@ -84,6 +98,9 @@ Current observed gap that motivates this phase:
 2. configure/test SMTP
 3. close remaining warnings or mark `accepted_risk` with owner/rationale
 4. publish progress note with evidence
+
+Phase status:
+1. in_progress
 
 ## Combined Tracker
 
@@ -104,9 +121,9 @@ Use statuses:
 | Mimetype migrations | done | P2 | 2/4 | `occ maintenance:repair --include-expensive` success |
 | PHP memory limit >= 512M | done | P2 | 2 | `php -i | grep memory_limit` |
 | Maintenance window start | done | P2 | 2 | `occ config:system:get maintenance_window_start` |
-| High-performance backend (Talk) | todo | P2 | 3 | Talk admin reports HPB configured |
-| STUN/TURN configured | todo | P2 | 3 | `occ talk:stun:list`, `occ talk:turn:list` non-empty |
-| `notify_push` installed/configured | todo | P2 | 3 | app present + push validation |
+| High-performance backend (Talk) | in_progress | P2 | 3 | Talk admin reports HPB configured |
+| STUN/TURN configured | in_progress | P2 | 3 | `occ talk:stun:list`, `occ talk:turn:list` non-empty |
+| `notify_push` installed/configured | done | P2 | 3 | app present + push validation |
 | Ringing persistence repro test | todo | P1 | 3 | no persistent ringing after call answer |
 | AppAPI default deploy daemon | todo | P2 | 5 | AppAPI settings show default daemon |
 | 2FA provider available | todo | P2 | 5 | admin security page shows provider |
