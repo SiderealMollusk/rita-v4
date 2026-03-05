@@ -11,6 +11,31 @@ Top-level orchestration:
 1. `00-run-all.sh`
 - runs the current workload bootstrap and join sequence in order
 
+Snapshot discipline (recommended before risky moves):
+1. Create snapshots on `workload-pve` (`192.168.6.11`) before these scripts:
+- `09-rebuild-nextcloud-vm.sh`
+- `10-rebuild-talk-hpb-vm.sh`
+- `12-install-nextcloud-core.sh`
+- `18-register-nextcloud-appapi-daemon.sh`
+- `19-deploy-nextcloud-flow-exapp.sh`
+- `20-patch-nextcloud-flow-oss.sh`
+2. Snapshot commands (copy/paste):
+```bash
+SNAP_TAG="pre-$(date +%Y%m%d-%H%M)-nextcloud-change"
+ssh root@192.168.6.11 "qm snapshot 9301 ${SNAP_TAG} --description 'pre nextcloud risky move' --vmstate 0"
+ssh root@192.168.6.11 "qm snapshot 9302 ${SNAP_TAG} --description 'pre talk-hpb risky move' --vmstate 0"
+```
+3. Optional rollback:
+```bash
+ssh root@192.168.6.11 "qm rollback 9301 ${SNAP_TAG}"
+ssh root@192.168.6.11 "qm rollback 9302 ${SNAP_TAG}"
+```
+4. Optional post-change cleanup (after verification passes):
+```bash
+ssh root@192.168.6.11 "qm delsnapshot 9301 ${SNAP_TAG} --force 1"
+ssh root@192.168.6.11 "qm delsnapshot 9302 ${SNAP_TAG} --force 1"
+```
+
 Direct-entry scripts:
 1. `01-inspect-proxmox.sh`
 2. `02-rebuild-workload-vm.sh`
@@ -39,6 +64,15 @@ Direct-entry scripts:
 25. `26-configure-nextcloud-talk-runtime.sh`
 26. `27-verify-nextcloud-talk-runtime.sh`
 27. `28-seed-nextcloud-talk-signaling-secret-op.sh`
+28. `29-rebuild-n8n-vm.sh`
+29. `30-bootstrap-n8n-host.sh`
+30. `31-install-n8n-k3s-agent.sh`
+31. `32-label-n8n-node.sh`
+32. `33-verify-n8n-node.sh`
+33. `34-verify-nextcloud-exapps-health.sh`
+34. `35-snapshot-nextcloud-pair.sh`
+35. `36-rollback-nextcloud-pair.sh`
+36. `37-prune-nextcloud-snapshots.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -52,9 +86,9 @@ Notes:
 9. `workload-pve` now reserves dedicated standalone VM definitions for `nextcloud-core` and `nextcloud-talk-hpb`; the old giant-worker assumption is no longer the only modeled capacity shape.
 10. `09-rebuild-nextcloud-vm.sh` and `10-rebuild-talk-hpb-vm.sh` create the dedicated VMs directly from the same Proxmox template lane as the worker.
 11. `11-bootstrap-nextcloud-host.sh`, `12-install-nextcloud-core.sh`, and `13-verify-nextcloud-core.sh` are the VM-first operator path for bringing up a boring, tuned Nextcloud core before any Flow/AppAPI experimentation.
-12. `17-enable-nextcloud-flow.sh` is separate from the base suite bootstrap because Flow depends on AppAPI/webhook listeners plus an AppAPI deploy daemon.
-13. `18-register-nextcloud-appapi-daemon.sh` registers the AppAPI daemon non-interactively once the HaRP or Docker-backed endpoint exists.
-14. `19-deploy-nextcloud-flow-exapp.sh` deploys the Flow ExApp through the registered daemon rather than only enabling the UI-side app package.
+12. `17-enable-nextcloud-flow.sh` is VM-native and enables Flow prerequisites (`app_api`, `webhook_listeners`) on the official Nextcloud VM before ExApp deployment.
+13. `18-register-nextcloud-appapi-daemon.sh` is VM-native and registers the AppAPI daemon directly through `occ` on the official Nextcloud VM (no kubectl/k8s dependency); default mode is `docker-local` and supports `--prepare-docker-local` for first-time host bootstrap.
+14. `19-deploy-nextcloud-flow-exapp.sh` is VM-native and registers Flow ExApp against the configured AppAPI daemon.
 15. `20-patch-nextcloud-flow-oss.sh` reapplies the current Flow `1.3.1` Windmill OSS workaround after an ExApp redeploy until upstream `nextcloud/flow` fixes the initialization bug.
 16. `21-wire-vm-newt-connectors.sh` wires Pangolin Newt connector services on VM records from `ops/pangolin/sites/required-sites.yaml`.
 17. `22-rotate-nextcloud-user-password.sh` is the argument-driven password rotation path that reads username/password from a 1Password item and applies it to a Nextcloud user with `occ user:resetpassword`.
@@ -65,3 +99,23 @@ Notes:
 22. Talk runtime desired state is tracked in `ops/nextcloud/talk-runtime.yaml`; use `26-configure-nextcloud-talk-runtime.sh` to apply and `27-verify-nextcloud-talk-runtime.sh` to verify.
 23. Talk signaling secret is sourced from 1Password via `op://5vr4hef2746tpplvjx424xafvu/nextcloud-talk-runtime/password` (item: `nextcloud-talk-runtime`, field: `password`).
 24. `28-seed-nextcloud-talk-signaling-secret-op.sh` backfills/updates that OP item from live `occ talk:signaling:list` output so runtime config can stay secret-free in git.
+25. `29-rebuild-n8n-vm.sh` provisions a dedicated `n8n-vm` from `workload-pve` template capacity.
+26. `30-bootstrap-n8n-host.sh` through `33-verify-n8n-node.sh` join and verify `n8n-vm` as a dedicated workload-labeled k3s node with hostname `n8n`.
+27. `34-verify-nextcloud-exapps-health.sh` is a VM-first regression gate for AppAPI/ExApps that fails on stale signature loops (`Invalid signature for ExApp`), unauthorized ExApp state polling (`401` on `/ocs/v1.php/apps/app_api/ex-app/state`), and unexpected caller IPs (for example stale sidecars on non-official hosts).
+28. Post-change verification is now automatic:
+- `18-register-nextcloud-appapi-daemon.sh` runs `34` in daemon-only mode (`EXAPP_REQUIRE_APP_ENABLED=0`) by default.
+- `19-deploy-nextcloud-flow-exapp.sh` runs `34` by default.
+- `20-patch-nextcloud-flow-oss.sh` runs `34` by default.
+- Set `APPAPI_POST_VERIFY=0` or `FLOW_POST_VERIFY=0` only for deliberate break-glass debugging.
+29. Pre-change snapshots are automatic by default for risky Nextcloud scripts:
+- `12-install-nextcloud-core.sh`
+- `17-enable-nextcloud-flow.sh`
+- `18-register-nextcloud-appapi-daemon.sh`
+- `19-deploy-nextcloud-flow-exapp.sh`
+- `20-patch-nextcloud-flow-oss.sh`
+- `26-configure-nextcloud-talk-runtime.sh`
+- Disable only for deliberate break-glass debugging with `NEXTCLOUD_AUTO_SNAPSHOT_PRE=0`.
+30. Snapshot utility scripts:
+- `35-snapshot-nextcloud-pair.sh` creates coordinated snapshots for VM IDs `9301` and `9302`.
+- `36-rollback-nextcloud-pair.sh` rolls both VMs back to the same tag (`NEXTCLOUD_ROLLBACK_CONFIRM=rollback-nextcloud-pair` required).
+- `37-prune-nextcloud-snapshots.sh` applies retention pruning (`NEXTCLOUD_PRUNE_CONFIRM=prune-nextcloud-snapshots` required).

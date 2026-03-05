@@ -14,6 +14,7 @@ INSTANCES_FILE="$REPO_ROOT/ops/nextcloud/instances.yaml"
 [ -f "$GROUP_VARS" ] || runbook_fail "missing group vars file at $GROUP_VARS"
 [ -f "$INSTANCES_FILE" ] || runbook_fail "missing nextcloud instances file at $INSTANCES_FILE"
 runbook_source_labrc "${REPO_ROOT}"
+NEXTCLOUD_AUTO_SNAPSHOT_PRE="${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-1}"
 
 NEXTCLOUD_OP_ITEM="${NEXTCLOUD_OP_ITEM:-nextcloud-main}"
 NEXTCLOUD_ADMIN_PASSWORD_FIELD="${NEXTCLOUD_ADMIN_PASSWORD_FIELD:-nextcloud-admin}"
@@ -90,4 +91,11 @@ fi
 if [ -n "${NEXTCLOUD_DB_PASSWORD_OP_REF:-}" ]; then
   echo "[INFO] Using DB password ref: ${NEXTCLOUD_DB_PASSWORD_OP_REF}"
 fi
+
+if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+  echo "[INFO] Creating pre-change Nextcloud VM pair snapshot"
+  NEXTCLOUD_SNAPSHOT_CHANGE_ID="12-install-nextcloud-core" \
+    "${REPO_ROOT}/scripts/2-ops/workload/35-snapshot-nextcloud-pair.sh"
+fi
+
 ansible-playbook -i "$INV" "$PB" -e "@$GROUP_VARS"

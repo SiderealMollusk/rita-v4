@@ -6,11 +6,13 @@ ops_brain_k3s_api_port: "6443"
 ops_brain_k3s_api_allowed_sources:
   - "192.168.5.182"
   - "192.168.6.181"
+  - "192.168.6.185"
   - "192.168.5.227"
 ops_brain_flannel_vxlan_port: "8472"
 ops_brain_flannel_allowed_sources:
   - "192.168.5.182"
   - "192.168.6.181"
+  - "192.168.6.185"
 
 k3s_channel: "stable"
 helm_install_method: "script"

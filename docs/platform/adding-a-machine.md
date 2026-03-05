@@ -1,5 +1,7 @@
 # Adding A Machine
 
+Freshness stamp: 2026-03-05 (background agent)
+
 This doc defines the durable repo process for adding a new machine or VM.
 
 It is for:
@@ -170,3 +172,16 @@ Do not leave “adding a machine” as:
 - a progress-log-only fact
 
 If the machine matters operationally, its onboarding path must exist in repo state.
+
+## Dedicated VM Example: n8n
+If the target is a new dedicated VM for `n8n`, use this order and keep it repo-native:
+1. reserve VM identity and sizing in `ops/ansible/host_vars/workload-pve.yml`
+2. add dedicated inventory at `ops/ansible/inventory/n8n.ini` with canonical alias `n8n-vm`
+3. add a workload rebuild wrapper following the existing Proxmox VM pattern
+4. add bootstrap/install/verify playbooks and shell wrappers under `scripts/2-ops/workload/`
+5. add the VM to `ops/pangolin/sites/required-sites.yaml` (`connector_mode: vm`) if it will be externally routed
+6. apply in runtime order: rebuild -> bootstrap -> install -> verify -> connector wire-up
+7. record final verified state in `docs/progress_log/`
+
+For the full lane-specific procedure, see:
+- [n8n-vm-bringup.md](/Users/virgil/Dev/rita-v4/docs/platform/n8n-vm-bringup.md)

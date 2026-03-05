@@ -50,3 +50,12 @@ Copy this block:
 ## Recent Handoffs
 
 Move finished or paused entries here with their final state and next action.
+
+### Agent: background agent
+- Status: incomplete
+- Started: 2026-03-05 11:50 PST
+- Scope: Document dedicated `n8n` VM onboarding procedure and link it from machine onboarding guidance
+- Files: `docs/platform/adding-a-machine.md`, `docs/platform/n8n-vm-bringup.md`, `docs/progress_log/0660-n8n-dedicated-vm-runbook-added.md`
+- Blockers: none
+- Notes: Added freshness stamps, created a dedicated `n8n` VM bring-up runbook, and logged an incomplete progress note signed `background agent`.
+- Next step: Implement the referenced `n8n-vm` rebuild/bootstrap/install/verify wrappers and playbooks.

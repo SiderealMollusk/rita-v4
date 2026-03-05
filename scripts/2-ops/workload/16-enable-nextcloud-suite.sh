@@ -4,6 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 cd "${REPO_ROOT}"
+# shellcheck source=/dev/null
+source "${REPO_ROOT}/scripts/lib/runbook.sh"
 
 runbook_source_labrc "${REPO_ROOT}"
 runbook_export_default_kubeconfig

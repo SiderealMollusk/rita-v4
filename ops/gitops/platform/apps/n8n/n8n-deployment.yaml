@@ -25,7 +25,8 @@ spec:
         rita.backup/stateful: "true"
     spec:
       nodeSelector:
-        rita.role: platform
+        rita.role: workload
+        kubernetes.io/hostname: n8n
       containers:
         - name: n8n
           image: docker.n8n.io/n8nio/n8n:2.7.4

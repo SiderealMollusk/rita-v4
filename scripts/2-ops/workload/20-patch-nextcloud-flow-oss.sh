@@ -4,27 +4,59 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 cd "${REPO_ROOT}"
+# shellcheck source=/dev/null
+source "${REPO_ROOT}/scripts/lib/runbook.sh"
 
 runbook_source_labrc "${REPO_ROOT}"
-runbook_export_default_kubeconfig
 
-NAMESPACE="${NEXTCLOUD_NAMESPACE:-workload}"
-DEPLOYMENT="${NEXTCLOUD_DEPLOYMENT:-nextcloud}"
+INSTANCES_FILE="${REPO_ROOT}/ops/nextcloud/instances.yaml"
+INVENTORY_PATH=""
+HOST_ALIAS=""
+NEXTCLOUD_OCC_PATH="${NEXTCLOUD_OCC_PATH:-/var/www/nextcloud/occ}"
 FLOW_RUNTIME_HOST="${FLOW_RUNTIME_HOST:-virgil@192.168.6.181}"
 FLOW_IMAGE="${FLOW_IMAGE:-ghcr.io/nextcloud/flow:1.3.1}"
 FLOW_CONTAINER_NAME="${FLOW_CONTAINER_NAME:-nc_app_flow}"
 FLOW_PATCH_WAIT_SECONDS="${FLOW_PATCH_WAIT_SECONDS:-12}"
 FLOW_REENABLE_EXAPP="${FLOW_REENABLE_EXAPP:-1}"
+FLOW_POST_VERIFY="${FLOW_POST_VERIFY:-1}"
+NEXTCLOUD_AUTO_SNAPSHOT_PRE="${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-1}"
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
 flow_main_path="${tmp_dir}/main.py"
 
+instance_row="$(python3 - "$INSTANCES_FILE" <<'PY'
+import json, sys
+path = sys.argv[1]
+with open(path, "r", encoding="utf-8") as f:
+    obj = json.load(f)
+official = obj.get("official_instance", "")
+inst = (obj.get("instances", {}) or {}).get(official, {}) or {}
+print("\t".join([
+    str(inst.get("connector_mode", "")),
+    str(inst.get("inventory_file", "")),
+    str(inst.get("host_alias", "")),
+]))
+PY
+)"
+IFS=$'\t' read -r OFFICIAL_MODE OFFICIAL_INV_REL OFFICIAL_HOST_ALIAS <<<"${instance_row}"
+[ "${OFFICIAL_MODE}" = "vm" ] || runbook_fail "official instance is not vm-backed in ${INSTANCES_FILE}"
+[ -n "${INVENTORY_PATH}" ] || INVENTORY_PATH="${REPO_ROOT}/${OFFICIAL_INV_REL}"
+[ -n "${HOST_ALIAS}" ] || HOST_ALIAS="${OFFICIAL_HOST_ALIAS}"
+[ -f "${INVENTORY_PATH}" ] || runbook_fail "inventory file not found: ${INVENTORY_PATH}"
+[ -n "${HOST_ALIAS}" ] || runbook_fail "host alias resolved empty"
+runbook_require_cmd ansible
+
+if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
+  echo "[INFO] Creating pre-change Nextcloud VM pair snapshot"
+  NEXTCLOUD_SNAPSHOT_CHANGE_ID="20-patch-nextcloud-flow-oss" \
+    "${REPO_ROOT}/scripts/2-ops/workload/35-snapshot-nextcloud-pair.sh"
+fi
+
 occ() {
-  kubectl exec -n "${NAMESPACE}" deployment/"${DEPLOYMENT}" -- bash -lc "cd /var/www/html && $1"
+  ansible -i "${INVENTORY_PATH}" "${HOST_ALIAS}" -b -m shell -a "set -eu; sudo -u www-data php '${NEXTCLOUD_OCC_PATH}' $1"
 }
 
-echo "[INFO] Using kubeconfig: ${KUBECONFIG}"
 echo "[INFO] Fetching clean Flow main.py from ${FLOW_IMAGE} via ${FLOW_RUNTIME_HOST}"
 ssh "${FLOW_RUNTIME_HOST}" "\
   cid=\$(sudo docker create ${FLOW_IMAGE}) && \
@@ -114,12 +146,18 @@ base64 < "${flow_main_path}" | ssh "${FLOW_RUNTIME_HOST}" "\
   sudo docker cp /tmp/flow-main.patched.py ${FLOW_CONTAINER_NAME}:/ex_app/lib/main.py && \
   sudo docker start ${FLOW_CONTAINER_NAME} >/dev/null && \
   sleep ${FLOW_PATCH_WAIT_SECONDS} && \
-  sudo docker exec ${FLOW_CONTAINER_NAME} sh -lc 'curl --unix-socket /tmp/exapp.sock http://localhost/heartbeat'"
+  sudo docker exec ${FLOW_CONTAINER_NAME} sh -lc 'curl --unix-socket /tmp/exapp.sock http://localhost/heartbeat' || true"
 
 if [ "${FLOW_REENABLE_EXAPP}" = "1" ]; then
   echo "[INFO] Re-enabling Flow in Nextcloud AppAPI"
-  occ "php occ app_api:app:enable flow"
+  occ "app_api:app:enable flow"
 fi
 
 echo "[INFO] Current AppAPI app list"
-occ "php occ app_api:app:list"
+occ "app_api:app:list"
+
+if [ "${FLOW_POST_VERIFY}" = "1" ]; then
+  echo "[INFO] Running ExApps health verification"
+  APPAPI_EXPECTED_DAEMON="${APPAPI_DAEMON_NAME:-docker_local_vm}" EXAPP_APP_ID="flow" \
+    "${REPO_ROOT}/scripts/2-ops/workload/34-verify-nextcloud-exapps-health.sh"
+fi
