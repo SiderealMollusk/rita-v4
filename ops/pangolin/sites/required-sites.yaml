@@ -42,5 +42,16 @@
     "op_item_title": "pangolin_site_n8n_vm",
     "rebuild_policy": "rotate",
     "managed_mode": "managed"
+  },
+  {
+    "slug": "talk_recording_gpu",
+    "display_name": "talk-recording-gpu",
+    "host_alias": "talk-recording-gpu",
+    "inventory_file": "ops/ansible/inventory/talk-recording.ini",
+    "connector_mode": "vm",
+    "newt_enabled": true,
+    "op_item_title": "pangolin_site_talk_recording_gpu",
+    "rebuild_policy": "rotate",
+    "managed_mode": "managed"
   }
 ]

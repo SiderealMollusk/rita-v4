@@ -4,3 +4,4 @@ observatory
 nextcloud_core
 nextcloud_vm
 n8n_vm
+talk_recording_gpu

@@ -127,6 +127,24 @@ Current scripts:
   - `/var/lib/rita/security-maintenance.status`
   - `/var/log/security-maintenance.log`
 
+18. `33-validate-talk-recording-gpu-machine-sot.sh`
+- validates machine-level source-of-truth alignment for the GPU recording host
+- wraps a reusable args-based validator:
+  - `scripts/lib/validate-machine-sot.sh --lan-ip <ip>`
+- checks:
+  - inventory identity and host vars
+  - required-site record consistency
+  - node doc + lab index linkage
+  - TCP/SSH/Ansible reachability
+
+19. `34-validate-all-machine-sot.sh`
+- validates machine-level source-of-truth alignment for all hosts declared in:
+  - `ops/pangolin/sites/required-sites.yaml`
+- resolves each host's `ansible_host` from its canonical inventory file
+- runs the shared validator per machine:
+  - `scripts/lib/validate-machine-sot.sh --lan-ip <ip>`
+- fails fast at script exit when any machine fails validation
+
 Notes:
 1. site creation/reconciliation is now handled by `27-reconcile-pangolin-sites.sh` from canonical required-site records.
 2. service-account mode is acceptable for read-only host tasks that only need to resolve secrets or identifiers; human-session mode is required for any 1Password write/update flow.

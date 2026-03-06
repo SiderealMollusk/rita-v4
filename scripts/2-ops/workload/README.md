@@ -82,6 +82,10 @@ Direct-entry scripts:
 43. `44-clear-nextcloud-throttle-and-show-source.sh`
 44. `45-flush-nextcloud-logs.sh`
 45. `46-configure-nextcloud-appapi-harp-runtime.sh`
+46. `47-install-nextcloud-talk-recording-runtime.sh`
+47. `48-configure-nextcloud-talk-recording-runtime.sh`
+48. `49-verify-nextcloud-talk-recording-runtime.sh`
+49. `50-disable-talk-recording-gpu-sleep.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -142,3 +146,9 @@ Notes:
 39. `44-clear-nextcloud-throttle-and-show-source.sh` resets Nextcloud brute-force counters for a target IP and prints recent likely source lines (failed auth + AppAPI polling) so operators can separate stale client credentials from proxy/header issues quickly.
 40. `45-flush-nextcloud-logs.sh` truncates Nextcloud and Nginx logs on the official Nextcloud VM (`nextcloud.log`, `access.log`, `error.log`) behind an explicit confirm token (`NEXTCLOUD_LOG_FLUSH_CONFIRM=flush-nextcloud-logs`).
 41. AppAPI daemon/HaRP SoT now lives in `ops/nextcloud/appapi-runtime.yaml`; use `46-configure-nextcloud-appapi-harp-runtime.sh` to apply VM-local HaRP runtime + default daemon registration deterministically.
+42. Talk recording runtime SoT now lives in `ops/nextcloud/talk-recording-runtime.yaml`:
+- `47-install-nextcloud-talk-recording-runtime.sh` installs/updates the recording service runtime on `talk-recording-gpu`.
+- `48-configure-nextcloud-talk-recording-runtime.sh` applies `spreed.recording_servers` and `spreed.call_recording` on `nextcloud-vm`.
+- `49-verify-nextcloud-talk-recording-runtime.sh` verifies recording service health and Nextcloud-side runtime config alignment.
+43. `50-disable-talk-recording-gpu-sleep.sh` hard-disables suspend/hibernate and ignores lid actions on `talk-recording-gpu` (through reusable logic in `scripts/lib/disable-machine-sleep.sh`).
+- if host sudo is password-protected, run with `RUNBOOK_ASK_BECOME_PASS=1` to prompt for become password.

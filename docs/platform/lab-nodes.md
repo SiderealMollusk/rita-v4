@@ -16,12 +16,17 @@ Use the latest relevant progress note in `docs/progress_log/` as the practical t
 - [observatory](/Users/virgil/Dev/rita-v4/docs/nodes/observatory.md)
 - [platform-node](/Users/virgil/Dev/rita-v4/docs/nodes/platform-node.md)
 - [workload-node](/Users/virgil/Dev/rita-v4/docs/nodes/workload-node.md)
+- [nextcloud-vm](/Users/virgil/Dev/rita-v4/docs/nodes/nextcloud-vm.md)
+- [talk-hpb-vm](/Users/virgil/Dev/rita-v4/docs/nodes/talk-hpb-vm.md)
+- [n8n-vm](/Users/virgil/Dev/rita-v4/docs/nodes/n8n-vm.md)
+- [gpu-recording-node](/Users/virgil/Dev/rita-v4/docs/nodes/gpu-recording-node.md)
 
 ## Placement Model
 This placement reflects prior user research and later repo-side validation:
 - `observatory`: monitoring, operator-facing control, internal k3s control plane
 - `platform-node`: platform services worker capacity and clean declarative lane
 - `workload-node`: application and compute load
+- `gpu-recording-node`: dedicated Nextcloud Talk recording backend service host
 - `main-vps`: public edge runtime and `pangolin-server`
 
 ## Verify

@@ -1,0 +1,7 @@
+nextcloud_vm_host_alias: "nextcloud-vm"
+nextcloud_vm_host_ip_cidr: "192.168.6.183/22"
+nextcloud_vm_host_gateway: "192.168.4.1"
+nextcloud_vm_host_nameserver: "192.168.4.1"
+
+nextcloud_vm_role: "nextcloud-core-runtime"
+nextcloud_vm_newt_connector_mode: "vm"

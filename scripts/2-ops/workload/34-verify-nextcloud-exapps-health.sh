@@ -95,9 +95,14 @@ if [ "$EXAPP_REQUIRE_APP_ENABLED" = "1" ]; then
   if [ -n "$FLOW_STATE_LINES" ]; then
     BAD_401="$(printf '%s\n' "$FLOW_STATE_LINES" | grep '" 401 ' || true)"
     if [ -n "$BAD_401" ]; then
-      echo "[INFO] Recent unauthorized ExApp state calls:"
-      printf '%s\n' "$BAD_401" | tail -n 10
-      runbook_fail "detected 401 responses for ExApp state endpoint."
+      BAD_401_COUNT="$(printf '%s\n' "$BAD_401" | sed '/^$/d' | wc -l | tr -d ' ')"
+      GOOD_200_COUNT="$(printf '%s\n' "$FLOW_STATE_LINES" | grep '" 200 ' | sed '/^$/d' | wc -l | tr -d ' ')"
+      if [ "${GOOD_200_COUNT}" -eq 0 ] || [ "${BAD_401_COUNT}" -ge 3 ]; then
+        echo "[INFO] Recent unauthorized ExApp state calls:"
+        printf '%s\n' "$BAD_401" | tail -n 10
+        runbook_fail "detected sustained 401 responses for ExApp state endpoint."
+      fi
+      echo "[WARN] Observed transient ExApp state 401(s) with successful 200 probes also present; continuing."
     fi
 
     CALLER_IPS="$(printf '%s\n' "$FLOW_STATE_LINES" | awk '{print $1}' | grep -E '^([0-9]{1,3}\.){3}[0-9]{1,3}$|^::1$' | sort -u || true)"

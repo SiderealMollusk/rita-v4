@@ -1,0 +1,7 @@
+observatory_host_alias: "observatory"
+observatory_host_ip_cidr: "192.168.6.16/22"
+observatory_host_gateway: "192.168.4.1"
+observatory_host_nameserver: "192.168.4.1"
+
+observatory_role: "k3s-control-plane-and-monitoring"
+observatory_newt_connector_mode: "k8s"

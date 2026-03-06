@@ -1,0 +1,7 @@
+talk_hpb_vm_host_alias: "talk-hpb-vm"
+talk_hpb_vm_host_ip_cidr: "192.168.6.184/22"
+talk_hpb_vm_host_gateway: "192.168.4.1"
+talk_hpb_vm_host_nameserver: "192.168.4.1"
+
+talk_hpb_vm_role: "nextcloud-talk-hpb-runtime"
+talk_hpb_vm_newt_connector_mode: "vm"

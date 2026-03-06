@@ -19,6 +19,7 @@ FLOW_EXTERNAL_DATABASE="${FLOW_EXTERNAL_DATABASE:-}"
 FLOW_RUST_LOG="${FLOW_RUST_LOG:-}"
 FLOW_PURGE_DATA="${FLOW_PURGE_DATA:-1}"
 FLOW_POST_VERIFY="${FLOW_POST_VERIFY:-1}"
+FLOW_WAIT_FINISH="${FLOW_WAIT_FINISH:-0}"
 NEXTCLOUD_SNAPSHOT_MODE="${NEXTCLOUD_SNAPSHOT_MODE:-critical}"
 if [ -n "${NEXTCLOUD_AUTO_SNAPSHOT_PRE:-}" ]; then
   if [ "${NEXTCLOUD_AUTO_SNAPSHOT_PRE}" = "1" ]; then
@@ -126,11 +127,13 @@ fi
 
 register_cmd="app_api:app:register flow '${APPAPI_DAEMON_NAME}'"
 register_timeout_seconds=75
-if [ "${daemon_deploy_id}" != "manual-install" ]; then
+if [ "${daemon_deploy_id}" != "manual-install" ] && [ "${FLOW_WAIT_FINISH}" = "1" ]; then
   register_cmd="${register_cmd} --wait-finish"
   register_timeout_seconds=600
-else
+elif [ "${daemon_deploy_id}" = "manual-install" ]; then
   echo "[INFO] Daemon '${APPAPI_DAEMON_NAME}' uses manual-install; skipping --wait-finish."
+else
+  echo "[INFO] FLOW_WAIT_FINISH=${FLOW_WAIT_FINISH}; skipping --wait-finish for faster non-blocking register."
 fi
 if [ -n "${FLOW_NUM_WORKERS}" ]; then
   register_cmd="${register_cmd} --env='NUM_WORKERS=${FLOW_NUM_WORKERS}'"

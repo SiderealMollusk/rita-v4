@@ -1,0 +1,36 @@
+{
+  "inventory_file": "ops/ansible/inventory/talk-recording.ini",
+  "host_alias": "talk-recording-gpu",
+  "recording": {
+    "listen": "0.0.0.0:1234",
+    "welcome_url": "http://127.0.0.1:1234/api/v1/welcome",
+    "public_url": "http://192.168.6.19:1234",
+    "backend": {
+      "id": "cloud-main",
+      "url": "https://cloud.virgil.info",
+      "secret_op_ref": "op://5vr4hef2746tpplvjx424xafvu/nextcloud-talk-runtime/password",
+      "skip_verify": false
+    },
+    "signaling": {
+      "id": "cloud-signaling",
+      "url": "https://cloud.virgil.info/standalone-signaling",
+      "internalsecret_op_ref": "op://5vr4hef2746tpplvjx424xafvu/nextcloud-talk-runtime/password"
+    },
+    "storage": {
+      "directory": "/var/lib/nextcloud-talk-recording/data"
+    }
+  },
+  "nextcloud": {
+    "inventory_file": "ops/ansible/inventory/nextcloud.ini",
+    "host_alias": "nextcloud-vm",
+    "occ_path": "/var/www/nextcloud/occ",
+    "recording_servers": [
+      {
+        "server": "http://192.168.6.19:1234",
+        "verify": false
+      }
+    ],
+    "recording_secret_op_ref": "op://5vr4hef2746tpplvjx424xafvu/nextcloud-talk-runtime/password",
+    "call_recording": "yes"
+  }
+}

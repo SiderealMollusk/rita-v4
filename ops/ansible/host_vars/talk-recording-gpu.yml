@@ -1,0 +1,7 @@
+talk_recording_gpu_host_alias: "talk-recording-gpu"
+talk_recording_gpu_host_ip_cidr: "192.168.6.19/22"
+talk_recording_gpu_host_gateway: "192.168.4.1"
+talk_recording_gpu_host_nameserver: "192.168.4.1"
+
+talk_recording_gpu_role: "nextcloud-talk-recording-backend"
+talk_recording_gpu_newt_connector_mode: "vm"

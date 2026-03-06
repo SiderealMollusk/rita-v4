@@ -1,0 +1,7 @@
+n8n_vm_host_alias: "n8n-vm"
+n8n_vm_host_ip_cidr: "192.168.6.185/22"
+n8n_vm_host_gateway: "192.168.4.1"
+n8n_vm_host_nameserver: "192.168.4.1"
+
+n8n_vm_role: "n8n-runtime"
+n8n_vm_newt_connector_mode: "vm"
