@@ -190,6 +190,9 @@ allowed = ${NEXTCLOUD_DOMAIN}
 allowall = false
 secret = ${SIGNALING_SECRET}
 
+[clients]
+internalsecret = ${SIGNALING_SECRET}
+
 [sessions]
 hashkey = ${SESSIONS_HASHKEY}
 

@@ -88,6 +88,7 @@ Direct-entry scripts:
 49. `50-disable-talk-recording-gpu-sleep.sh`
 50. `51-install-talk-recording-docker-engine.sh`
 51. `52-install-talk-recording-metrics-exporters.sh`
+52. `53-rotate-nextcloud-talk-recording-secrets.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -160,3 +161,4 @@ Notes:
 - Docker engine metrics: `:9323`
 - cAdvisor metrics: `:8080`
 - after this, re-run observatory monitoring install (`scripts/2-ops/observatory/11-install-monitoring-stack.sh`) so Prometheus picks up new static scrape jobs from `ops/helm/monitoring/kube-prometheus-stack.values.yaml`.
+45. `53-rotate-nextcloud-talk-recording-secrets.sh` rotates both Talk signaling and recording shared secrets through 1Password refs in SoT, reapplies runtime configuration (`26`, `41`, `47`, `48`), and verifies (`42`, `49`).
