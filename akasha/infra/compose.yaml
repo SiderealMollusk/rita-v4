@@ -1,0 +1,72 @@
+name: akasha
+
+services:
+  akasha-api:
+    image: node:25-alpine
+    working_dir: /workspace
+    command: sh -lc "npm install && npm run dev --workspace @akasha/api"
+    ports:
+      - "8787:8787"
+    volumes:
+      - ../:/workspace
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8787/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    profiles: ["core"]
+
+  akasha-web:
+    image: node:25-alpine
+    working_dir: /workspace
+    command: sh -lc "npm install && npm run dev --workspace @akasha/web"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../:/workspace
+    depends_on:
+      akasha-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5173"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    profiles: ["core"]
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    command: ["--config.file=/etc/prometheus/prometheus.yml"]
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prom_data:/prometheus
+    ports:
+      - "9090:9090"
+    profiles: ["obs"]
+
+  loki:
+    image: grafana/loki:3.5.4
+    command: ["-config.file=/etc/loki/config.yml"]
+    volumes:
+      - ./loki/config.yml:/etc/loki/config.yml:ro
+      - loki_data:/loki
+    ports:
+      - "3100:3100"
+    profiles: ["obs"]
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.133.0
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./otel/config.yaml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      - prometheus
+      - loki
+    profiles: ["obs"]
+
+volumes:
+  prom_data:
+  loki_data:

@@ -1,0 +1,28 @@
+{
+  "name": "@akasha/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "flow check",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "effect": "^3.18.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "reactflow": "^11.11.4"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-flow-strip-types": "^7.27.1",
+    "@testing-library/react": "^16.3.0",
+    "@vitejs/plugin-react": "^5.0.2",
+    "flow-bin": "^0.291.0",
+    "jsdom": "^26.1.0",
+    "vite": "^7.1.3"
+  }
+}

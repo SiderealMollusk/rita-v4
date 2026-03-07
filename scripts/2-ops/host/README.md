@@ -145,6 +145,25 @@ Current scripts:
   - `scripts/lib/validate-machine-sot.sh --lan-ip <ip>`
 - fails fast at script exit when any machine fails validation
 
+20. `35-catalog-monitoring-streams.sh`
+- catalogs live Loki stream dimensions from observatory:
+  - labels, namespaces, jobs, nodes, stream pods
+- also captures currently running cluster pods for comparison context
+
+21. `36-verify-monitoring-streams.sh`
+- verifies live Loki stream state against SoT contract:
+  - `ops/monitoring/loki/stream-contract.json`
+- validates required namespaces, nodes, and job-pattern families
+- reports warnings for running pods that do not appear in Loki stream labels
+
+22. `37-establish-monitoring-streams.sh`
+- monitoring lane establish wrapper:
+  - reinstall/upgrade monitoring stack
+  - verify monitoring stack
+  - re-apply monitoring Pangolin blueprint
+  - best-effort required-site reconcile (requires OP human-session auth)
+  - catalog and verify Loki stream contract
+
 Notes:
 1. site creation/reconciliation is now handled by `27-reconcile-pangolin-sites.sh` from canonical required-site records.
 2. service-account mode is acceptable for read-only host tasks that only need to resolve secrets or identifiers; human-session mode is required for any 1Password write/update flow.

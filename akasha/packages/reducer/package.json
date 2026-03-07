@@ -1,0 +1,16 @@
+{
+  "name": "@akasha/reducer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/reducer.js"
+  },
+  "dependencies": {
+    "@akasha/schema": "0.1.0"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  }
+}

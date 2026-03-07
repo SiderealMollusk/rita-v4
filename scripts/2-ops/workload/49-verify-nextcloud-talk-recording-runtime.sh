@@ -14,7 +14,7 @@ runbook_require_cmd curl
 REPO_ROOT="$(runbook_detect_repo_root)"
 runbook_source_labrc "$REPO_ROOT"
 
-BECOME_PASSWORD_OP_REF="${TALK_RECORDING_BECOME_PASSWORD_OP_REF:-}"
+BECOME_PASSWORD_OP_REF="${TALK_RECORDING_BECOME_PASSWORD_OP_REF:-op://rita-v4/gpu-laptop/password}"
 BECOME_PASSWORD="${TALK_RECORDING_BECOME_PASSWORD:-}"
 
 CONFIG_FILE="${TALK_RECORDING_RUNTIME_FILE:-$REPO_ROOT/ops/nextcloud/talk-recording-runtime.yaml}"
@@ -28,10 +28,12 @@ with open(sys.argv[1], 'r', encoding='utf-8') as f:
     data = json.load(f)
 
 recording = data.get('recording') or {}
+runtime = recording.get('runtime') or {}
 nextcloud = data.get('nextcloud') or {}
 
 print('RECORDING_INVENTORY=' + str(data.get('inventory_file') or 'ops/ansible/inventory/talk-recording.ini').strip())
 print('RECORDING_HOST_ALIAS=' + str(data.get('host_alias') or 'talk-recording-gpu').strip())
+print('CONTAINER_NAME=' + str(runtime.get('container_name') or 'nextcloud-talk-recording').strip())
 print('WELCOME_URL=' + str(recording.get('welcome_url') or 'http://127.0.0.1:1234/api/v1/welcome').strip())
 print('PUBLIC_URL=' + str(recording.get('public_url') or '').strip())
 print('NEXTCLOUD_INVENTORY=' + str(nextcloud.get('inventory_file') or 'ops/ansible/inventory/nextcloud.ini').strip())
@@ -43,6 +45,7 @@ PY
 
 RECORDING_INVENTORY_REL="$(printf '%s\n' "$PARSED" | sed -n 's/^RECORDING_INVENTORY=//p' | head -n1)"
 RECORDING_HOST_ALIAS="$(printf '%s\n' "$PARSED" | sed -n 's/^RECORDING_HOST_ALIAS=//p' | head -n1)"
+CONTAINER_NAME="$(printf '%s\n' "$PARSED" | sed -n 's/^CONTAINER_NAME=//p' | head -n1)"
 WELCOME_URL="$(printf '%s\n' "$PARSED" | sed -n 's/^WELCOME_URL=//p' | head -n1)"
 PUBLIC_URL="$(printf '%s\n' "$PARSED" | sed -n 's/^PUBLIC_URL=//p' | head -n1)"
 NEXTCLOUD_INVENTORY_REL="$(printf '%s\n' "$PARSED" | sed -n 's/^NEXTCLOUD_INVENTORY=//p' | head -n1)"
@@ -63,15 +66,19 @@ if [ -z "$BECOME_PASSWORD" ] && [ -n "$BECOME_PASSWORD_OP_REF" ]; then
 fi
 if [ -n "$BECOME_PASSWORD" ]; then
   TMP_BECOME_VARS="$(mktemp)"
-  cat >"$TMP_BECOME_VARS" <<EOF
+  cat >"$TMP_BECOME_VARS" <<EOF_JSON
 {"ansible_become_password":"$BECOME_PASSWORD"}
-EOF
+EOF_JSON
   ANSIBLE_EXTRA_ARGS+=(-e "@$TMP_BECOME_VARS")
 fi
 
+CONTAINER_NAME_B64="$(printf '%s' "$CONTAINER_NAME" | base64 | tr -d '\n')"
+
 echo "[INFO] Verifying recording runtime host service"
 REC_VERIFY_CMD=(ansible -i "$RECORDING_INVENTORY_PATH" "$RECORDING_HOST_ALIAS" -b -m shell -a "set -eu
-systemctl is-active --quiet nextcloud-talk-recording.service
+CONTAINER_NAME=\"\$(printf '%s' '$CONTAINER_NAME_B64' | base64 -d)\"
+command -v docker >/dev/null 2>&1
+docker ps | awk 'NR>1 {print \$NF}' | grep -Fx \"\$CONTAINER_NAME\" >/dev/null
 curl -fsS '$WELCOME_URL' >/dev/null
 ")
 if [ "${#ANSIBLE_EXTRA_ARGS[@]}" -gt 0 ]; then
@@ -98,7 +105,6 @@ export RAW
 python3 - <<'PY'
 import json
 import os
-import sys
 
 raw = os.environ['RAW']
 expected_servers = json.loads(os.environ['EXPECTED_SERVERS_JSON'])

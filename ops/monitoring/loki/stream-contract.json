@@ -1,0 +1,35 @@
+{
+  "required_namespaces": [
+    "external-secrets",
+    "flux-system",
+    "kube-system",
+    "monitoring",
+    "newt",
+    "platform",
+    "workload"
+  ],
+  "required_node_names": [
+    "monitoring",
+    "platform",
+    "workload",
+    "n8n"
+  ],
+  "required_job_patterns": [
+    "^external-secrets/external-secrets-(cert-controller|webhook)$",
+    "^flux-system/(helm-controller|kustomize-controller|notification-controller|source-controller)$",
+    "^kube-system/(coredns|metrics-server|traefik)$",
+    "^monitoring/(grafana|kube-prometheus-stack-prometheus-operator|loki|prometheus|promtail)$",
+    "^newt/.+newt-main$",
+    "^platform/(n8n|postgresql)$",
+    "^workload/(nextcloud|nextcloud-edge|redis)$"
+  ],
+  "allow_missing_pod_patterns": [
+    "^kube-system/svclb-traefik-.*$",
+    "^kube-system/local-path-provisioner-.*$",
+    "^kube-system/helm-install-traefik.*$",
+    "^monitoring/observatory-promtail-.*$",
+    "^monitoring/observatory-kube-prometheus-prometheus-node-exporter-.*$",
+    "^monitoring/observatory-kube-prometheus-kube-state-metrics-.*$",
+    "^monitoring/alertmanager-observatory-kube-prometheu-alertmanager-.*$"
+  ]
+}

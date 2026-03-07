@@ -40,6 +40,40 @@ prometheus:
   prometheusSpec:
     retention: 7d
     retentionSize: 8GB
+    additionalScrapeConfigs:
+      - job_name: talk-recording-gpu-node
+        scrape_interval: 30s
+        static_configs:
+          - targets:
+              - 192.168.6.19:9100
+            labels:
+              role: talk-recording-gpu
+              metrics_source: node_exporter
+      - job_name: talk-recording-gpu-docker
+        scrape_interval: 30s
+        static_configs:
+          - targets:
+              - 192.168.6.19:9323
+            labels:
+              role: talk-recording-gpu
+              metrics_source: docker_engine
+      - job_name: talk-recording-gpu-cadvisor
+        scrape_interval: 30s
+        static_configs:
+          - targets:
+              - 192.168.6.19:8080
+            labels:
+              role: talk-recording-gpu
+              metrics_source: cadvisor
+      - job_name: talk-recording-runtime
+        metrics_path: /metrics
+        scrape_interval: 30s
+        static_configs:
+          - targets:
+              - 192.168.6.19:1234
+            labels:
+              role: talk-recording-gpu
+              metrics_source: talk_recording_runtime
     storageSpec:
       volumeClaimTemplate:
         spec:

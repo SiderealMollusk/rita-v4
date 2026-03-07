@@ -8,7 +8,7 @@
     "backend": {
       "id": "cloud-main",
       "url": "https://cloud.virgil.info",
-      "secret_op_ref": "op://5vr4hef2746tpplvjx424xafvu/nextcloud-talk-runtime/password",
+      "secret_op_ref": "op://rita-v4/nextcloud-main/nextcloud-talk-recording-runtime",
       "skip_verify": false
     },
     "signaling": {
@@ -16,8 +16,18 @@
       "url": "https://cloud.virgil.info/standalone-signaling",
       "internalsecret_op_ref": "op://5vr4hef2746tpplvjx424xafvu/nextcloud-talk-runtime/password"
     },
+    "stats_allowed_ips": [
+      "127.0.0.1/32",
+      "192.168.6.16/32"
+    ],
     "storage": {
       "directory": "/var/lib/nextcloud-talk-recording/data"
+    },
+    "runtime": {
+      "container_name": "nextcloud-talk-recording",
+      "image": "nextcloud-talk-recording:local",
+      "source_repo": "https://github.com/nextcloud/nextcloud-talk-recording",
+      "source_ref": "main"
     }
   },
   "nextcloud": {
@@ -30,7 +40,7 @@
         "verify": false
       }
     ],
-    "recording_secret_op_ref": "op://5vr4hef2746tpplvjx424xafvu/nextcloud-talk-runtime/password",
+    "recording_secret_op_ref": "op://rita-v4/nextcloud-main/nextcloud-talk-recording-runtime",
     "call_recording": "yes"
   }
 }

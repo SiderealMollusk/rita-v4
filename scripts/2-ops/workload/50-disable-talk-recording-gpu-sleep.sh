@@ -13,7 +13,7 @@ runbook_source_labrc "$REPO_ROOT"
 
 INVENTORY_PATH="${TALK_RECORDING_INVENTORY_PATH:-$REPO_ROOT/ops/ansible/inventory/talk-recording.ini}"
 HOST_ALIAS="${TALK_RECORDING_HOST_ALIAS:-talk-recording-gpu}"
-BECOME_PASSWORD_OP_REF="${TALK_RECORDING_BECOME_PASSWORD_OP_REF:-}"
+BECOME_PASSWORD_OP_REF="${TALK_RECORDING_BECOME_PASSWORD_OP_REF:-op://rita-v4/gpu-laptop/password}"
 BECOME_PASSWORD="${TALK_RECORDING_BECOME_PASSWORD:-}"
 
 [ -f "$INVENTORY_PATH" ] || runbook_fail "missing inventory file: $INVENTORY_PATH"

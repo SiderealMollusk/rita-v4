@@ -86,6 +86,8 @@ Direct-entry scripts:
 47. `48-configure-nextcloud-talk-recording-runtime.sh`
 48. `49-verify-nextcloud-talk-recording-runtime.sh`
 49. `50-disable-talk-recording-gpu-sleep.sh`
+50. `51-install-talk-recording-docker-engine.sh`
+51. `52-install-talk-recording-metrics-exporters.sh`
 
 Notes:
 1. `workload-pve` is the canonical Proxmox substrate identity.
@@ -147,8 +149,14 @@ Notes:
 40. `45-flush-nextcloud-logs.sh` truncates Nextcloud and Nginx logs on the official Nextcloud VM (`nextcloud.log`, `access.log`, `error.log`) behind an explicit confirm token (`NEXTCLOUD_LOG_FLUSH_CONFIRM=flush-nextcloud-logs`).
 41. AppAPI daemon/HaRP SoT now lives in `ops/nextcloud/appapi-runtime.yaml`; use `46-configure-nextcloud-appapi-harp-runtime.sh` to apply VM-local HaRP runtime + default daemon registration deterministically.
 42. Talk recording runtime SoT now lives in `ops/nextcloud/talk-recording-runtime.yaml`:
-- `47-install-nextcloud-talk-recording-runtime.sh` installs/updates the recording service runtime on `talk-recording-gpu`.
+- `51-install-talk-recording-docker-engine.sh` installs/enables Docker Engine on `talk-recording-gpu`.
+- `47-install-nextcloud-talk-recording-runtime.sh` builds the official recording server container image and runs the recording runtime container on `talk-recording-gpu` (expects Docker Engine already installed).
 - `48-configure-nextcloud-talk-recording-runtime.sh` applies `spreed.recording_servers` and `spreed.call_recording` on `nextcloud-vm`.
-- `49-verify-nextcloud-talk-recording-runtime.sh` verifies recording service health and Nextcloud-side runtime config alignment.
+- `49-verify-nextcloud-talk-recording-runtime.sh` verifies recording container runtime health and Nextcloud-side runtime config alignment.
 43. `50-disable-talk-recording-gpu-sleep.sh` hard-disables suspend/hibernate and ignores lid actions on `talk-recording-gpu` (through reusable logic in `scripts/lib/disable-machine-sleep.sh`).
-- if host sudo is password-protected, run with `RUNBOOK_ASK_BECOME_PASS=1` to prompt for become password.
+- default become secret ref is hard-coded to `op://rita-v4/gpu-laptop/password`; env overrides remain available for break-glass.
+44. `52-install-talk-recording-metrics-exporters.sh` enables host + container metrics on `talk-recording-gpu`:
+- node exporter: `:9100`
+- Docker engine metrics: `:9323`
+- cAdvisor metrics: `:8080`
+- after this, re-run observatory monitoring install (`scripts/2-ops/observatory/11-install-monitoring-stack.sh`) so Prometheus picks up new static scrape jobs from `ops/helm/monitoring/kube-prometheus-stack.values.yaml`.
