@@ -66,6 +66,8 @@ nextcloud_system_packages:
 
 nextcloud_apcu_shm_size: "128M"
 nextcloud_php_memory_limit: "512M"
+nextcloud_php_upload_max_filesize: "512M"
+nextcloud_php_post_max_size: "512M"
 nextcloud_opcache_memory_consumption: "128"
 nextcloud_opcache_interned_strings_buffer: "16"
 nextcloud_opcache_max_accelerated_files: "10000"
@@ -73,6 +75,8 @@ nextcloud_opcache_save_comments: "1"
 nextcloud_opcache_revalidate_freq: "60"
 nextcloud_hsts_max_age: "15552000"
 nextcloud_talk_signaling_upstream: "http://192.168.6.184:8080"
+nextcloud_appapi_harp_upstream: "http://127.0.0.1:8780"
+nextcloud_appapi_harp_gpu_upstream: "http://192.168.6.19:8780"
 
 # App policy:
 # - easy/core apps are always enforced

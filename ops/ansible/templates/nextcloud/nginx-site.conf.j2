@@ -107,6 +107,32 @@ server {
         return 301 /remote.php$request_uri;
     }
 
+    # AppAPI ExApps reverse proxy.
+    # Route llm2 to GPU HaRP while keeping all other ExApps on local HaRP.
+    location ^~ /exapps/llm2 {
+        proxy_pass {{ nextcloud_appapi_harp_gpu_upstream }}/exapps/llm2;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_read_timeout 3600;
+        proxy_send_timeout 3600;
+        proxy_buffering off;
+    }
+
+    # Default ExApps reverse proxy for local HaRP runtime.
+    # Required so Nextcloud can reach ExApp heartbeat and API paths at /exapps/<appId>/...
+    location ^~ /exapps/ {
+        proxy_pass {{ nextcloud_appapi_harp_upstream }}/exapps/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_read_timeout 3600;
+        proxy_send_timeout 3600;
+        proxy_buffering off;
+    }
+
     # Nextcloud Talk external signaling websocket endpoint.
     # Keep this on the same public HTTPS origin so browser clients use secure WSS.
     location ^~ /standalone-signaling/ {
